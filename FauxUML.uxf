@@ -1,0 +1,58 @@
+<diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>160</x><y>190</y><w>100</w><h>270</h></coordinates><panel_attributes>User
+-
+id
+userName
+email
+password
+balance
+buddies
+transactions
+(dateCreated)
+-
+askBuddy
+respondBuddyRequest
+sendMoney
+deposit
+withdraw
+
+login
+logout
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>570</x><y>160</y><w>100</w><h>100</h></coordinates><panel_attributes>UserTransaction
+-
+sender
+receiver
+description
+-
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>570</x><y>440</y><w>100</w><h>100</h></coordinates><panel_attributes>BankTransaction
+-
+user
+bankIban
+type(debit/crédit)
+-
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>160</x><y>530</y><w>100</w><h>130</h></coordinates><panel_attributes>Relation
+-
+sender
+receiver
+accepted
+(dateCreated)
+-
+addToBuddyList</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>430</x><y>300</y><w>100</w><h>100</h></coordinates><panel_attributes>/Transaction/
+-
+amount
+fee
+date
+-
+updateBalances
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>250</x><y>330</y><w>200</w><h>50</h></coordinates><panel_attributes>lt=-
+m1=1..2
+m2=0..*
+</panel_attributes><additional_attributes>10;20;180;20</additional_attributes></element><element><id>Relation</id><coordinates><x>200</x><y>450</y><w>50</w><h>100</h></coordinates><panel_attributes>lt=-
+m1=0..*
+m2=2</panel_attributes><additional_attributes>10;80;10;10</additional_attributes></element><element><id>UMLNote</id><coordinates><x>110</x><y>130</y><w>280</w><h>50</h></coordinates><panel_attributes>Voir si je scinde User en User et Account
+mais ça ne me parait pas forcément nécéssaire.
+et si oui, quelle frontière?(buddies)
+bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLNote</id><coordinates><x>550</x><y>320</y><w>210</w><h>60</h></coordinates><panel_attributes>Ou sinon pas d'héritage
+mais 2 listes transactions ds User
+peut-être - pratique pour l'affichage
+bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLNote</id><coordinates><x>290</x><y>50</y><w>270</w><h>30</h></coordinates><panel_attributes>En partant du principe que le compte est créé</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>470</x><y>190</y><w>120</w><h>130</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;110;100;10</additional_attributes></element><element><id>Relation</id><coordinates><x>470</x><y>390</y><w>120</w><h>120</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;100;100</additional_attributes></element></diagram>
