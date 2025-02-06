@@ -1,0 +1,22 @@
+#connection mysql
+mysql -u root -p  
+
+# executer fichier script:
+mysql> SOURCE C:/Users/gbujon/Desktop/gits/P6-pay-my-buddy/PayMyBuddy/database/initialize_database.sql;
+
+# exporter bd vers mon dossier database
+mysqldump -u root -p paymybuddy > C:/Users/gbujon/Desktop/gits/P6-pay-my-buddy/PayMyBuddy/database/paymybuddy.sql
+
+# executer script import
+powershell ./import-db.ps1
+
+# sauvegarde
+bash ./scripts/backup.sh
+
+# restauration
+bash ./scripts/restore.sh ./backups/paymybuddy_backup_20250206_120000.sql
+
+# Accorder privileges
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;
+# Puis, actualisez les privilèges pour qu'ils soient appliqués :
+FLUSH PRIVILEGES;
