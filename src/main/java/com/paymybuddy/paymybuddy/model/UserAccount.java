@@ -29,4 +29,7 @@ public class UserAccount {
     private User user;
 
     private BigDecimal balance;
+
+    @OneToOne(mappedBy = "userAccount")
+    private Account account;
 }

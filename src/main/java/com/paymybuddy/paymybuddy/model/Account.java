@@ -1,9 +1,13 @@
 package com.paymybuddy.paymybuddy.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,13 +22,22 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Account {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_account_id", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "user_account_id", nullable = true)
     private UserAccount userAccount;
 
-    @ManyToOne
-    @JoinColumn(name = "bank_account_id", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "bank_account_id", nullable = true)
     private BankAccount bankAccount;
+
+    @PrePersist
+    @PreUpdate
+    private void validateAccount(){
+        if((userAccount != null && bankAccount != null) || (userAccount == null && bankAccount == null)){
+            throw new IllegalStateException("An account must be linked to either a user account or a bank account, but not both");
+        }
+    }
 }
