@@ -1,35 +1,26 @@
--- Insérer des utilisateurs
-INSERT INTO `paymybuddy`.`USER` (user_name, email, password, date_created) VALUES
-('JeanDupont', 'jean.dupont@email.com', 'password123', NOW()),
-('MarieMartin', 'marie.martin@email.com', 'password456', NOW()),
-('TomiLapipe', 'tomi.lapipe@email.com', 'password789', NOW());
+DELETE FROM `paymybuddy`.`TRANSACTION`;
+DELETE FROM `paymybuddy`.`RELATION`;
+DELETE FROM `paymybuddy`.`USER`;
 
--- Insérer des comptes utilisateurs
-INSERT INTO `paymybuddy`.`USER_ACCOUNT` (USER_id, balance) VALUES
-(1, 1500.00),
-(2, 2300.50),
-(3, 200.75);
+ALTER TABLE `paymybuddy`.`TRANSACTION` AUTO_INCREMENT = 1;
+ALTER TABLE `paymybuddy`.`USER` AUTO_INCREMENT = 1;
 
--- Insérer des comptes bancaires
-INSERT INTO `paymybuddy`.`BANK_ACCOUNT` (id, iban) VALUES
-(1, 'FR7630004000031234567890143'),
-(2, 'FR7630004000039876543210987'),
-(3, 'FR7630004000035647382910562');
+INSERT INTO `paymybuddy`.`USER` (`user_name`, `email`, `password`, `balance`, `date_created`)
+VALUES
+    ('john_doe', 'john.doe@example.com', 'password123', 100.00, NOW()),
+    ('jane_smith', 'jane.smith@example.com', 'password456', 150.00, NOW()),
+    ('alex_lee', 'alex.lee@example.com', 'password789', 200.00, NOW());
 
--- Associer comptes utilisateurs et bancaires
-INSERT INTO `paymybuddy`.`ACCOUNT_ID` (id, user_account_id, bank_account_id) VALUES
-(1, 1, 1),
-(2, 2, 2),
-(3, 3, 3);
+INSERT INTO `paymybuddy`.`RELATION` (`sender_id`, `receiver_id`, `accepted`, `date_created`)
+VALUES
+    (1, 2, 0, NOW()), -- John a envoyé une demande à Jane, mais la relation n'est pas acceptée
+    (2, 3, 1, NOW()), -- Jane a accepté la relation avec Alex
+    (1, 3, 1, NOW()); -- John a accepté la relation avec Alex
 
--- Insérer des transactions
-INSERT INTO `paymybuddy`.`TRANSACTION` (amount, sender_id, receiver_id, description, fee, date_created) VALUES
-(250.00, 1, 2, 'Paiement loyer', 2.50, NOW()),
-(100.00, 2, 3, 'Remboursement dîner', 1.00, NOW()),
-(75.50, 3, 1, 'Achat en commun', 0.75, NOW());
+INSERT INTO `paymybuddy`.`TRANSACTION` (`amount`, `sender_id`, `receiver_id`, `description`, `fee`, `date_created`)
+VALUES
+    (50.00, 2, 3, 'Gift for birthday', 20.00, NOW());
 
--- Insérer des relations (amis)
-INSERT INTO `paymybuddy`.`RELATION` (id, sender_id, receiver_id, accepted, date_created) VALUES
-(1, 1, 2, 1, NOW()),
-(2, 1, 3, 1, NOW()),
-(3, 2, 3, 0, NOW());
+INSERT INTO `paymybuddy`.`TRANSACTION` (`amount`, `sender_id`, `receiver_id`, `description`, `fee`, `date_created`)
+VALUES
+    (20.00, 1, 3, 'Transfer for lunch', 10.60, NOW());
