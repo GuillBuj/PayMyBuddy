@@ -8,6 +8,8 @@ import com.paymybuddy.paymybuddy.model.User;
 @Repository
 public interface UserRepository extends CrudRepository<User, Integer>{
     
+    User getById(int id);
+
     boolean existsByUserName(String userName);
     boolean existsByEmail(String email);
 

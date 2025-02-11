@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.paymybuddy.paymybuddy.dto.RegisterUserDTO;
+import com.paymybuddy.paymybuddy.dto.UserDTO;
 import com.paymybuddy.paymybuddy.exception.AlreadyExistsException;
 import com.paymybuddy.paymybuddy.model.User;
 import com.paymybuddy.paymybuddy.repository.UserRepository;
@@ -45,5 +46,10 @@ public class UserService {
         user.setDateCreated(LocalDateTime.now());
 
         return userRepository.save(user);
+    }
+
+    public UserDTO getUserById(int id){
+        User user = userRepository.getById(id);
+        return new UserDTO(user.getUserName(), user.getEmail());
     }
 }

@@ -35,7 +35,7 @@ public class SecurityConfig{
         http
             .csrf().disable() // Désactive CSRF (à activer plus tard avec token CSRF)
             .authorizeHttpRequests()
-                .requestMatchers("/register").permitAll() // Autorise l'inscription sans authentification
+                .requestMatchers("/register","/user/**").permitAll() // Autorise l'inscription sans authentification
                 .anyRequest().authenticated() // Protège toutes les autres routes
             .and()
             .formLogin()
