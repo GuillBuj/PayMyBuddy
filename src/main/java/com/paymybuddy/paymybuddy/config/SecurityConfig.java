@@ -12,19 +12,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig{
 
-    // @Bean
-    // public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-    //     http.authorizeHttpRequests()
-    //             .requestMatchers("/login", "/register").permitAll()
-    //             .anyRequest().authenticated()
-    //         .and()
-    //         .formLogin().permitAll()
-    //         .and()
-    //         .logout().permitAll();
-
-    //     return http.build();
-    // }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -35,8 +22,9 @@ public class SecurityConfig{
         http
             .csrf().disable() // Désactive CSRF (à activer plus tard avec token CSRF)
             .authorizeHttpRequests()
-                .requestMatchers("/register","/user/**").permitAll() // Autorise l'inscription sans authentification
-                .anyRequest().authenticated() // Protège toutes les autres routes
+                //.requestMatchers("/register").permitAll() // Autorise l'inscription sans authentification
+                //.anyRequest().authenticated() // Protège toutes les autres routes
+                .anyRequest().permitAll()
             .and()
             .formLogin()
             .and()

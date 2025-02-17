@@ -1,6 +1,10 @@
 package com.paymybuddy.paymybuddy.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,11 +30,19 @@ public class User {
     private String email;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
 
-    @Column(nullable = false)
-    private double balance;
+    @Column(nullable = false, precision = 9, scale = 2)
+    private BigDecimal balance;
 
-    @Column(name = "date_created")
+    @ManyToMany
+    @JoinTable(
+        name = "buddies",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "buddy_id"))
+    private Set<User> buddies;
+
+    @Column(name = "date_created", nullable = false, updatable = false)
     private LocalDateTime dateCreated;
 }
