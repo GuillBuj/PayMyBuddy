@@ -4,6 +4,7 @@ package com.paymybuddy.paymybuddy.service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
