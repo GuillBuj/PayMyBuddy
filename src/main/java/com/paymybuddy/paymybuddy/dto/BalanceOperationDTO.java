@@ -1,10 +1,14 @@
 package com.paymybuddy.paymybuddy.dto;
 
+import java.math.BigDecimal;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
-public record BuddyConnectionDTO(
+public record BalanceOperationDTO(
     @NotNull @Email String userEmail,
-    @NotNull @Email String buddyEmail
+    @NotNull @Positive BigDecimal amount
 ) {
+
 }
