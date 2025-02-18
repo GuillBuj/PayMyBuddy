@@ -4,12 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.paymybuddy.paymybuddy.dto.RegisterUserDTO;
 import com.paymybuddy.paymybuddy.dto.UserResponseDTO;
+import com.paymybuddy.paymybuddy.exception.AlreadyExistsException;
 import com.paymybuddy.paymybuddy.model.User;
 import com.paymybuddy.paymybuddy.service.UserService;
 
@@ -22,16 +27,24 @@ public class RegistrationController {
     @Autowired
     private UserService userService;
 
-    @PostMapping
-    public ResponseEntity<UserResponseDTO> registerUser(@Valid @RequestBody RegisterUserDTO userDTO){
-        User createdUser = userService.createUser(userDTO);
+    @GetMapping
+    public String showRegistrationForm(Model model) {
+        model.addAttribute("userDTO", new RegisterUserDTO());
+        return "register"; // Redirige vers le template Thymeleaf "register.html"
+    }
     
-        UserResponseDTO response = new UserResponseDTO(
-            createdUser.getId(),
-            createdUser.getUserName(),
-            createdUser.getEmail()
-        );
+    @PostMapping
+    public String registerUser(@Valid @ModelAttribute RegisterUserDTO userDTO, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "register"; // Retourner le formulaire en cas d'erreur de validation
+        }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        try {
+            userService.createUser(userDTO);
+            return "redirect:/login"; // Après l'enregistrement, rediriger vers la page de connexion
+        } catch (AlreadyExistsException ex) {
+            model.addAttribute("error", ex.getMessage());
+            return "register"; // En cas d'erreur d'existence de l'utilisateur ou de l'email
+        }
     }
 }

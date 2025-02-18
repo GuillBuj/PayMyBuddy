@@ -19,7 +19,6 @@ import com.paymybuddy.paymybuddy.dto.TransactionListDTO;
 import com.paymybuddy.paymybuddy.dto.UserDTO;
 import com.paymybuddy.paymybuddy.exception.AlreadyExistsException;
 import com.paymybuddy.paymybuddy.exception.NotFoundException;
-import com.paymybuddy.paymybuddy.model.Transaction;
 import com.paymybuddy.paymybuddy.model.User;
 import com.paymybuddy.paymybuddy.repository.TransactionRepository;
 import com.paymybuddy.paymybuddy.repository.UserRepository;
@@ -42,22 +41,22 @@ public class UserService {
     @Transactional
     public User createUser(RegisterUserDTO userDTO){
         
-        String lowerCaseUserName = userDTO.userName().toLowerCase();
-        if(userRepository.existsByUserName(lowerCaseUserName)){
+        String lowerCaseUserName = userDTO.getUserName().toLowerCase();
+        if(userRepository.existsByUsername(lowerCaseUserName)){
             log.error("Username already taken: {}", lowerCaseUserName);
             throw new AlreadyExistsException("Username already taken: " + lowerCaseUserName);
         }
         
-        String normalizedEmail = userDTO.email().trim().toLowerCase();
+        String normalizedEmail = userDTO.getEmail().trim().toLowerCase();
         if(userRepository.existsByEmail(normalizedEmail)){
             log.error("Email already used: {}", normalizedEmail);
             throw new AlreadyExistsException("Email already used:" + normalizedEmail);
         }
         
         User user = new User();
-        user.setUserName(lowerCaseUserName);
+        user.setUsername(lowerCaseUserName);
         user.setEmail(normalizedEmail);
-        user.setPassword(passwordEncoder.encode(userDTO.password()));
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setBalance(BigDecimal.ZERO);
         user.setBuddies(new HashSet<>());
         user.setDateCreated(LocalDateTime.now());
@@ -70,7 +69,7 @@ public class UserService {
         if (user == null){
             throw new NotFoundException("User not found with id " + id);
         }
-        return new UserDTO(user.getUserName(), user.getEmail(), user.getBuddies());
+        return new UserDTO(user.getUsername(), user.getEmail(), user.getBuddies());
     }
 
     //on considère qu'il n'y a pas de réciprocité ni d'acceptation d'ajout
@@ -122,17 +121,17 @@ public class UserService {
 
     public TransactionListDTO getTransactions(int id){
         List<TransactionInList> transactions = transactionRepository
-        .findBySenderIdOrReceiverIdOrderByDateCreatedDesc(id, id)
-        .stream()
-        .map(transaction -> new TransactionInList(
-            transaction.getDateCreated(),
-            transaction.getSender().getUserName(),
-            transaction.getReceiver().getUserName(),
-            transaction.getAmount(),
-            transaction.getDescription()
-        ))
-        .collect(Collectors.toList());
+            .findBySenderIdOrReceiverIdOrderByDateCreatedDesc(id, id)
+            .stream()
+            .map(transaction -> new TransactionInList(
+                transaction.getDateCreated(),
+                transaction.getSender().getUsername(),
+                transaction.getReceiver().getUsername(),
+                transaction.getAmount(),
+                transaction.getDescription()
+            ))
+            .collect(Collectors.toList());
 
-    return new TransactionListDTO(transactions);
+        return new TransactionListDTO(transactions);
     }
 }
