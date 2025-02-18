@@ -3,7 +3,10 @@ package com.paymybuddy.paymybuddy.service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.naming.TransactionRef;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,10 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.paymybuddy.paymybuddy.dto.BalanceOperationDTO;
 import com.paymybuddy.paymybuddy.dto.BuddyConnectionDTO;
 import com.paymybuddy.paymybuddy.dto.RegisterUserDTO;
+import com.paymybuddy.paymybuddy.dto.TransactionInList;
+import com.paymybuddy.paymybuddy.dto.TransactionListDTO;
 import com.paymybuddy.paymybuddy.dto.UserDTO;
 import com.paymybuddy.paymybuddy.exception.AlreadyExistsException;
 import com.paymybuddy.paymybuddy.exception.NotFoundException;
+import com.paymybuddy.paymybuddy.model.Transaction;
 import com.paymybuddy.paymybuddy.model.User;
+import com.paymybuddy.paymybuddy.repository.TransactionRepository;
 import com.paymybuddy.paymybuddy.repository.UserRepository;
 
 import lombok.AllArgsConstructor;
@@ -26,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserService {
     
     private final UserRepository userRepository;
+    private final TransactionRepository transactionRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -110,5 +118,21 @@ public class UserService {
     @Transactional
     public void withdraw(BalanceOperationDTO operation){
         operationService.updateBalance(operation, false);
+    }
+
+    public TransactionListDTO getTransactions(int id){
+        List<TransactionInList> transactions = transactionRepository
+        .findBySenderIdOrReceiverIdOrderByDateCreatedDesc(id, id)
+        .stream()
+        .map(transaction -> new TransactionInList(
+            transaction.getDateCreated(),
+            transaction.getSender().getUserName(),
+            transaction.getReceiver().getUserName(),
+            transaction.getAmount(),
+            transaction.getDescription()
+        ))
+        .collect(Collectors.toList());
+
+    return new TransactionListDTO(transactions);
     }
 }

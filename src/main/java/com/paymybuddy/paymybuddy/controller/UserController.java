@@ -1,5 +1,7 @@
 package com.paymybuddy.paymybuddy.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.paymybuddy.paymybuddy.dto.BalanceOperationDTO;
+import com.paymybuddy.paymybuddy.dto.TransactionInList;
+import com.paymybuddy.paymybuddy.dto.TransactionListDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionRequestDTO;
 import com.paymybuddy.paymybuddy.dto.UserDTO;
 import com.paymybuddy.paymybuddy.model.Transaction;
@@ -40,11 +44,16 @@ public class UserController {
         Transaction transaction = transactionService.createTransaction(transactionDTO);
         return ResponseEntity.ok(transaction);
     }
-    
+
     //pour test transaction
     @PostMapping("/deposit")
     public ResponseEntity<String> deposit(@RequestBody BalanceOperationDTO operation){
         userService.deposit(operation);
         return ResponseEntity.ok("Money added");
+    }
+
+    @GetMapping("/transactions")
+    public TransactionListDTO getTransactions(@RequestParam int id){
+        return userService.getTransactions(id);
     }
 }
