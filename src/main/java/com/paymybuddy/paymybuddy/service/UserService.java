@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,10 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.paymybuddy.paymybuddy.dto.BalanceOperationDTO;
 import com.paymybuddy.paymybuddy.dto.BuddyConnectionDTO;
 import com.paymybuddy.paymybuddy.dto.RegisterUserDTO;
-import com.paymybuddy.paymybuddy.dto.TransactionRequestDTO;
 import com.paymybuddy.paymybuddy.dto.UserDTO;
 import com.paymybuddy.paymybuddy.exception.AlreadyExistsException;
-import com.paymybuddy.paymybuddy.exception.NotEnoughMoneyException;
 import com.paymybuddy.paymybuddy.exception.NotFoundException;
 import com.paymybuddy.paymybuddy.model.User;
 import com.paymybuddy.paymybuddy.repository.UserRepository;
@@ -33,7 +29,7 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
-    //private final TransactionService transactionService;
+    private final BalanceService operationService;
 
     @Transactional
     public User createUser(RegisterUserDTO userDTO){
@@ -66,7 +62,7 @@ public class UserService {
         if (user == null){
             throw new NotFoundException("User not found with id " + id);
         }
-        return new UserDTO(user.getUserName(), user.getEmail());
+        return new UserDTO(user.getUserName(), user.getEmail(), user.getBuddies());
     }
 
     //on considère qu'il n'y a pas de réciprocité ni d'acceptation d'ajout
@@ -98,44 +94,21 @@ public class UserService {
         
         if (!user.getBuddies().contains(buddy)){
             throw new NotFoundException("Buddy connection between " + 
-                buddyConnection.userEmail() + " and " + buddyConnection.buddyEmail() + "does not exist");
+                buddyConnection.userEmail() + " and " + buddyConnection.buddyEmail() + " does not exist");
         }
         
         user.getBuddies().remove(buddy);
 
         userRepository.save(user);
     }
-
-    // public void sendMoney(TransactionRequestDTO transaction){
-    //     validateEnoughMoney(new BalanceOperationDTO(transaction.senderEmail(), transaction.amount()));
-        
-    //     transactionService.createTransaction(transaction);
-    // }
     
-    public void addToBalance(BalanceOperationDTO operation){
-        User user = userRepository.findByEmail(operation.userEmail())
-            .orElseThrow(()-> new NotFoundException("User not found with email " + operation.userEmail()));
-
-        user.setBalance(user.getBalance().add(operation.amount()));
-
-        userRepository.save(user);
+    @Transactional
+    public void deposit(BalanceOperationDTO operation){
+        operationService.updateBalance(operation, true);
     }
 
-    public void subtractFromBalance(BalanceOperationDTO operation){
-        User user = userRepository.findByEmail(operation.userEmail())
-            .orElseThrow(()-> new NotFoundException("User not found with email " + operation.userEmail()));
-
-        user.setBalance(user.getBalance().subtract(operation.amount()));
-
-        userRepository.save(user);
-    }
-
-    public void validateEnoughMoney(BalanceOperationDTO operation){
-        User user = userRepository.findByEmail(operation.userEmail())
-                .orElseThrow(()-> new NotFoundException("User not found with email " + operation.userEmail()));
-
-        if(user.getBalance().compareTo(operation.amount())<0){
-            throw new NotEnoughMoneyException("Not enough money for this operation");
-        }
+    @Transactional
+    public void withdraw(BalanceOperationDTO operation){
+        operationService.updateBalance(operation, false);
     }
 }

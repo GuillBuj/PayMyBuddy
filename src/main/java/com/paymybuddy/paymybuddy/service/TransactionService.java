@@ -27,7 +27,7 @@ public class TransactionService {
 
     private final UserRepository userRepository;
 
-    private UserService userService;
+    private BalanceService operationService;
 
     @Transactional
     public Transaction createTransaction(TransactionRequestDTO transaction){
@@ -41,10 +41,10 @@ public class TransactionService {
         
         BalanceOperationDTO operation = new BalanceOperationDTO(transaction.senderEmail(),amount);
         
-        userService.validateEnoughMoney(operation);
+        validateEnoughMoney(operation);
 
-        userService.subtractFromBalance(operation);
-        userService.addToBalance(new BalanceOperationDTO(transaction.receiverEmail(), amount));
+        subtractFromBalance(operation);
+        addToBalance(new BalanceOperationDTO(transaction.receiverEmail(), amount));
 
         Transaction transactionDone = new Transaction();
         transactionDone.setSender(sender);
@@ -55,7 +55,23 @@ public class TransactionService {
         transactionDone.setFee(BigDecimal.ZERO);
         transactionDone.setDateCreated(LocalDateTime.now());
 
-
         return transactionRepository.save(transactionDone);
+    }
+
+    public void addToBalance(BalanceOperationDTO operation){
+        operationService.updateBalance(operation, true);
+    }
+
+    public void subtractFromBalance(BalanceOperationDTO operation){
+        operationService.updateBalance(operation, false);
+    }
+
+    public void validateEnoughMoney(BalanceOperationDTO operation){
+        User user = userRepository.findByEmail(operation.userEmail())
+                .orElseThrow(()-> new NotFoundException("User not found with email " + operation.userEmail()));
+
+        if(user.getBalance().compareTo(operation.amount())<0){
+            throw new NotEnoughMoneyException("Not enough money for this operation");
+        }
     }
 }

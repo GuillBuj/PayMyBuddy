@@ -42,9 +42,9 @@ public class UserController {
     }
     
     //pour test transaction
-    @PostMapping("/balance")
-    public ResponseEntity<String> addToBalance(@RequestBody BalanceOperationDTO operation){
-        userService.addToBalance(operation);
+    @PostMapping("/deposit")
+    public ResponseEntity<String> deposit(@RequestBody BalanceOperationDTO operation){
+        userService.deposit(operation);
         return ResponseEntity.ok("Money added");
     }
 }
