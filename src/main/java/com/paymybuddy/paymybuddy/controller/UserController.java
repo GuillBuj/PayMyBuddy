@@ -56,4 +56,6 @@ public class UserController {
     public TransactionListDTO getTransactions(@RequestParam int id){
         return userService.getTransactions(id);
     }
+
+    
 }
