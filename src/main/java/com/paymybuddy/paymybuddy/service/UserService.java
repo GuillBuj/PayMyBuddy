@@ -41,7 +41,7 @@ public class UserService {
     @Transactional
     public User createUser(RegisterUserDTO userDTO){
         
-        String lowerCaseUserName = userDTO.getUserName().toLowerCase();
+        String lowerCaseUserName = userDTO.getUsername().toLowerCase();
         if(userRepository.existsByUsername(lowerCaseUserName)){
             log.error("Username already taken: {}", lowerCaseUserName);
             throw new AlreadyExistsException("Username already taken: " + lowerCaseUserName);
@@ -60,6 +60,8 @@ public class UserService {
         user.setBalance(BigDecimal.ZERO);
         user.setBuddies(new HashSet<>());
         user.setDateCreated(LocalDateTime.now());
+
+        log.info("User created: {}", user.getEmail());
         
         return userRepository.save(user);
     }

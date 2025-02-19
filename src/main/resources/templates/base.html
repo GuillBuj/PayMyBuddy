@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="/css/style.css">
+    <title th:text="${title}">Pay My Buddy</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Pay My Buddy</h1>
+        <nav>
+            <a href="/transfer">Transferer</a>
+            <a href="/profile">Profil</a>
+            <a href="/relation">Ajouter relation</a>
+            <a href="/logout">Se déconnecter</a>
+        </nav>
+        <div th:replace="${content}"></div>
+    </div>
+</body>
+</html>
