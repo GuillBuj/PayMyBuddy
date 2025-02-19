@@ -30,21 +30,21 @@ public class RegistrationController {
     @GetMapping
     public String showRegistrationForm(Model model) {
         model.addAttribute("userDTO", new RegisterUserDTO());
-        return "register"; // Redirige vers le template Thymeleaf "register.html"
+        return "register";
     }
     
     @PostMapping
     public String registerUser(@Valid @ModelAttribute RegisterUserDTO userDTO, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            return "register"; // Retourner le formulaire en cas d'erreur de validation
+            return "register";
         }
 
         try {
             userService.createUser(userDTO);
-            return "redirect:/login"; // Après l'enregistrement, rediriger vers la page de connexion
-        } catch (AlreadyExistsException ex) {
-            model.addAttribute("error", ex.getMessage());
-            return "register"; // En cas d'erreur d'existence de l'utilisateur ou de l'email
+            return "redirect:/login";
+        } catch (AlreadyExistsException e) {
+            model.addAttribute("error", e.getMessage());
+            return "register";
         }
     }
 }
