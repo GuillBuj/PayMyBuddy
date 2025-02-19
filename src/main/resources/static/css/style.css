@@ -55,7 +55,7 @@ input {
     margin: 0 auto;
 }
 
-button {
+.buttonValid {
     width: 60%;
     padding: 10px;
     background-color: #0088cc;
@@ -75,10 +75,34 @@ nav {
     top: 0;
     text-align: center;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
 
-nav a {
-    margin: 0 10px;
+nav a, 
+nav form {
+    display: inline;
     text-decoration: none;
     color: #333;
+}
+
+.logout-form {
+    display: inline;
+}
+
+.logout-form button {
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    font-size: inherit;
+    font-family: inherit;
+    text-decoration: none;
+    padding: 0;
+    border-radius: 4px;
+}
+
+.logout-form button:hover {
+    background-color: lightsalmon;
 }
