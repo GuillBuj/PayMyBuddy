@@ -6,13 +6,15 @@
 </head>
 <body>
     <div class="container">
-        <h1>Pay My Buddy</h1>
+        
         <nav>
+            Pay My Buddy
             <a href="/transfer">Transferer</a>
             <a href="/profile">Profil</a>
             <a href="/relation">Ajouter relation</a>
             <a href="/logout">Se déconnecter</a>
         </nav>
+        <div th:include="${content}"></div>
     </div>
 </body>
 </html>

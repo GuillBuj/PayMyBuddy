@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,12 +20,13 @@ import com.paymybuddy.paymybuddy.dto.TransactionListDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionRequestDTO;
 import com.paymybuddy.paymybuddy.dto.UserDTO;
 import com.paymybuddy.paymybuddy.model.Transaction;
+import com.paymybuddy.paymybuddy.model.User;
 import com.paymybuddy.paymybuddy.service.TransactionService;
 import com.paymybuddy.paymybuddy.service.UserService;
 
 import lombok.AllArgsConstructor;
 
-@RestController
+@Controller
 @RequestMapping("/user")
 @AllArgsConstructor
 public class UserController {
@@ -57,5 +61,23 @@ public class UserController {
         return userService.getTransactions(id);
     }
 
-    
+    //web
+    @GetMapping("/profile")
+    public String getProfile(Model model, Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            String email = authentication.getName();
+            User user = userService.getUserByEmail(email);
+
+            String username = user.getUsername();
+            String userEmail = user.getEmail();
+
+            model.addAttribute("username", username);
+            model.addAttribute("email", userEmail);
+
+            return "profile";
+        }
+
+        return "redirect:/login";
+    }
 }
+

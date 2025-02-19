@@ -5,10 +5,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/base")
+@RequestMapping
 public class BaseController {
-    @GetMapping
+    @GetMapping("/base")
         public String showBasePage() {
             return "base";
         }
+    // @GetMapping("/profile")
+    // public String showProfilePage() {
+    //     return "profile";
+    // }
 }
