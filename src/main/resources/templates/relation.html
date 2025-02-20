@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Pay My Buddy - Ajouter relation</title>
+</head>
+<body>
+    <div class="container">
+        <div th:insert="~{fragment/navbar :: navbar}"></div>
+        <div th:if="${param.error}" class="alert alert-danger">
+            <p th:text="${param.error}"></p>
+        </div>
+        <form th:action="@{relation}" method="post">
+            <div class="form-group">
+                <input class="buddyEmail" type="email" id="buddyEmail" name="buddyEmail" placeholder="Mail à ajouter" required>
+            </div>
+            <button class="buttonSubmit" type="submit">Ajouter</button>
+        </form>
+        
+    </div>
+</body>
+</html>

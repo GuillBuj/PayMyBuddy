@@ -12,23 +12,26 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.paymybuddy.paymybuddy.dto.BalanceOperationDTO;
-import com.paymybuddy.paymybuddy.dto.TransactionInList;
+import com.paymybuddy.paymybuddy.dto.BuddyConnectionDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionListDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionRequestDTO;
 import com.paymybuddy.paymybuddy.dto.UserDTO;
+import com.paymybuddy.paymybuddy.exception.AlreadyExistsException;
+import com.paymybuddy.paymybuddy.exception.NotFoundException;
 import com.paymybuddy.paymybuddy.model.Transaction;
 import com.paymybuddy.paymybuddy.model.User;
 import com.paymybuddy.paymybuddy.service.TransactionService;
 import com.paymybuddy.paymybuddy.service.UserService;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequestMapping("/user")
 @AllArgsConstructor
+@Slf4j
 public class UserController {
 
     @Autowired
@@ -78,6 +81,47 @@ public class UserController {
         }
 
         return "redirect:/login";
+    }
+
+    @GetMapping("/transfer")
+    public String getTransfer(Model model, Authentication authentication){
+        if (authentication != null && authentication.isAuthenticated()){
+            String email = authentication.getName();
+            User user = userService.getUserByEmail(email);
+
+            TransactionListDTO transactions = userService.getTransactions(user);
+
+            model.addAttribute("transactions", transactions);
+
+            return "transfer";
+        }
+
+        return "redirect:/profile";
+    }
+
+    @PostMapping("/relation")
+    public String addBuddy(@RequestParam("buddyEmail") String buddyEmail, Authentication authentication){
+        log.info("--- debut addBuddy ---");
+        String userEmail = authentication.getName();
+        BuddyConnectionDTO buddyConnectionDTO = new BuddyConnectionDTO(userEmail, buddyEmail);
+
+        try{
+            log.info("--- try avant addBuddy service ---");
+            userService.addBuddy(buddyConnectionDTO);
+            log.info("--- try apres addBuddy service ---");
+        } catch (NotFoundException | AlreadyExistsException e){
+            log.info("--- dans le catch ---");
+            return "redirect:/user/profile";
+        }
+
+        log.info("--- apres try/catch ---");
+        return "redirect:/user/transfer";
+    }
+
+    @GetMapping("/relation")
+    public String showRelationForm() {
+        log.info("--- dans le get ---");
+        return "relation";
     }
 }
 

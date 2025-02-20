@@ -19,7 +19,7 @@ VALUES
 
 INSERT INTO `paymybuddy`.`TRANSACTION` (`amount`, `sender_id`, `receiver_id`, `description`, `fee`, `date_created`)
 VALUES
-    (50.00, 2, 3, 'Gift for birthday', 20.00, NOW());
+    (50.00, 2,5, 'Gift for birthday', 20.00, NOW());
 
 INSERT INTO `paymybuddy`.`TRANSACTION` (`amount`, `sender_id`, `receiver_id`, `description`, `fee`, `date_created`)
 VALUES

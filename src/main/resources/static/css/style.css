@@ -4,7 +4,6 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     margin: 0;
-    
     padding: 0;
     display: flex;
     justify-content: center;
@@ -128,6 +127,21 @@ a:hover{
     color: darkred;
 }
 
+div.transactions {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
+table.transactions {
+    border-spacing: 30px;
+    width: 100%;
+}
+
+h2 {
+    padding: 20px;
+}
+
+input.buddyEmail{
+    width: 100%;
+}
 
 

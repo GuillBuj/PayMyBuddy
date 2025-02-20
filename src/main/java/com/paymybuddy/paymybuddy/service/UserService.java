@@ -7,6 +7,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.naming.TransactionRef;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +28,7 @@ import com.paymybuddy.paymybuddy.model.User;
 import com.paymybuddy.paymybuddy.repository.TransactionRepository;
 import com.paymybuddy.paymybuddy.repository.UserRepository;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,6 +43,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final BalanceService operationService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Transactional
     public User createUser(RegisterUserDTO userDTO){
@@ -74,6 +83,25 @@ public class UserService {
         return new UserDTO(user.getUsername(), user.getEmail(), user.getBuddies());
     }
 
+    // on considère qu'il n'y a pas de réciprocité ni d'acceptation d'ajout
+    // @Transactional
+    // public void addBuddy(BuddyConnectionDTO buddyConnection){
+    //     User user = userRepository.findByEmail(buddyConnection.userEmail())
+    //             .orElseThrow(()-> new NotFoundException("User not found with email " + buddyConnection.userEmail()));
+                
+    //     User buddy = userRepository.findByEmail(buddyConnection.buddyEmail())
+    //             .orElseThrow(()-> new NotFoundException("Buddy not found with email " + buddyConnection.buddyEmail()));
+
+    //     if (user.getBuddies().contains(buddy)){
+    //         throw new AlreadyExistsException("Buddy connection between " + 
+    //             buddyConnection.userEmail() + " and " + buddyConnection.buddyEmail() + "already exists");
+    //     };
+        
+    //     user.getBuddies().add(buddy);
+
+    //     userRepository.save(user);
+    // }
+
     //on considère qu'il n'y a pas de réciprocité ni d'acceptation d'ajout
     @Transactional
     public void addBuddy(BuddyConnectionDTO buddyConnection){
@@ -92,6 +120,7 @@ public class UserService {
 
         userRepository.save(user);
     }
+  
 
     @Transactional
     public void removeBuddy(BuddyConnectionDTO buddyConnection){
@@ -121,6 +150,10 @@ public class UserService {
         operationService.updateBalance(operation, false);
     }
 
+    public TransactionListDTO getTransactions(User user){
+        return getTransactions(user.getId());
+    }
+    
     public TransactionListDTO getTransactions(int id){
         List<TransactionInList> transactions = transactionRepository
             .findBySenderIdOrReceiverIdOrderByDateCreatedDesc(id, id)
@@ -139,5 +172,15 @@ public class UserService {
 
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+    }
+
+    public void authenticateUser(HttpServletRequest request, String email, String password){
+
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(email, password);
+
+        Authentication authentication = authenticationManager.authenticate(token);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
     }
 }
