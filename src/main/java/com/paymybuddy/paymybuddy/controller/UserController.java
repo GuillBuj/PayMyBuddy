@@ -1,6 +1,10 @@
 package com.paymybuddy.paymybuddy.controller;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.paymybuddy.paymybuddy.dto.BalanceOperationDTO;
 import com.paymybuddy.paymybuddy.dto.BuddyConnectionDTO;
+import com.paymybuddy.paymybuddy.dto.BuddyForTransferDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionListDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionRequestDTO;
 import com.paymybuddy.paymybuddy.dto.UserDTO;
@@ -90,8 +95,13 @@ public class UserController {
             User user = userService.getUserByEmail(email);
 
             TransactionListDTO transactions = userService.getTransactions(user);
+            Set<BuddyForTransferDTO> buddies = user.getBuddies().stream()
+                                .map(buddy -> new BuddyForTransferDTO(buddy.getId(), buddy.getUsername()))
+                                .collect(Collectors.toSet());
+            log.info(buddies.toString());
 
             model.addAttribute("transactions", transactions);
+            model.addAttribute("buddies", buddies);
 
             return "transfer";
         }

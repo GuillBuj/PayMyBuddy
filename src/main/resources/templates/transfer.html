@@ -8,6 +8,17 @@
     <div class="container">
         <div th:insert="~{fragment/navbar :: navbar}"></div>
         <section>
+            <form class="formHorizontal">
+                <select id="buddySelect" name="buddy">
+                    <option value="">-- Sélectionner une relation --</option>
+                    <option th:each="buddy : ${buddies}" 
+                            th:value="${buddy.id}" 
+                            th:text="${buddy.username}">
+                    </option>
+                </select>
+                <input type="text" name="description" id="description" placeholder="Description">
+                <input type="number" name="amount" id="amount" min="0" step="0.01" placeholder="Montant">
+            </form>
             <div class="transactions">
                 <h2>Mes transactions</h2>
                 <table class="transactions">

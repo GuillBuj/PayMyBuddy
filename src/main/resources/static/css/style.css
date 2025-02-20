@@ -144,4 +144,9 @@ input.buddyEmail{
     width: 100%;
 }
 
-
+.formHorizontal {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+}
