@@ -12,12 +12,13 @@ body {
     height: 100vh;
 }
 
-.register-container {
+.registerlogin-container {
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
+    width: 280px;
+    height: 280px;
     text-align: center;
 }
 
@@ -55,7 +56,7 @@ input {
     margin: 0 auto;
 }
 
-.buttonValid {
+.buttonSubmit {
     width: 60%;
     padding: 10px;
     background-color: #0088cc;
@@ -64,10 +65,6 @@ input {
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-}
-
-button:hover {
-    background-color: #0088ccee;
 }
 
 nav {
@@ -93,14 +90,21 @@ nav {
     gap: 35px;
 }
 
+a {
+    color: #555;
+    text-decoration: none;
+    font-size: small;
+}
+
 nav a, 
 nav form {
     color: #333;
     margin-left: 30px;
     text-decoration: none;
+    font-size: medium;
 }
 
-nav a:hover{
+a:hover{
     color: darkblue;
 }
 
@@ -123,3 +127,7 @@ nav a:hover{
 .logout-form button:hover {
     color: darkred;
 }
+
+
+
+

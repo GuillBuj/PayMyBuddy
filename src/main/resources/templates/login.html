@@ -5,7 +5,7 @@
     <title>Pay My Buddy - Login</title>
 </head>
 <body>
-    <div class="register-container">
+    <div class="registerlogin-container">
         <div class="appTitle">Pay My Buddy</div>
         <form th:action="@{/login}" method="post">
             <div class="form-group">
@@ -14,8 +14,9 @@
             <div class="form-group">
                 <input type="password" id="password" name="password" placeholder="Mot de passe" required>
             </div>
-            <button class="buttonValid" type="submit">Se connecter</button>
+            <button class="buttonSubmit" type="submit">Se connecter</button>
         </form>
+        <a href="/register"> S'inscrire </a>
     </div>
 </body>
 </html>
