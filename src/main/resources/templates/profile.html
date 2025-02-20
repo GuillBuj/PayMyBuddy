@@ -6,15 +6,7 @@
 </head>
 <body>
     <div class="container">
-        <nav>
-            <a href="/transfer">Transferer</a>
-            <a href="/user/profile">Profil</a>
-            <a href="/relation">Ajouter relation</a>
-            <form th:action="@{/logout}" method="post" class="logout-form">
-                <button type="submit" class="logout-link">Se déconnecter</button>
-            </form>
-        </nav>
-        
+        <div th:insert="~{fragment/navbar :: navbar}"></div>
         <section>
             <div class="profile-info">
                 <h2>Profil</h2>

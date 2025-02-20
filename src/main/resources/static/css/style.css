@@ -73,18 +73,35 @@ button:hover {
 nav {
     position: fixed;
     top: 0;
-    text-align: center;
-    margin-bottom: 20px;
+    left: 0;
+    width: 100%;
+    padding: 40px;
     display: flex;
-    justify-content: center;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8f9fa;
+    box-sizing: border-box;
+}
+
+.titleleft {
+    flex: 1;
+    font-weight: bold;
+}
+
+.linkright {
+    display: flex;
+    gap: 35px;
 }
 
 nav a, 
 nav form {
-    display: inline;
-    text-decoration: none;
     color: #333;
+    margin-left: 30px;
+    text-decoration: none;
+}
+
+nav a:hover{
+    color: darkblue;
 }
 
 .logout-form {
@@ -104,5 +121,5 @@ nav form {
 }
 
 .logout-form button:hover {
-    background-color: lightsalmon;
+    color: darkred;
 }

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="/css/style.css">
+    <title th:text="${title}">Pay My Buddy</title>
+</head>
+<body>
+    <div th:fragment="navbar">
+        <nav>
+            <div class="titleleft">
+                <span>Pay My Buddy</span>
+            </div>
+            <div class="rightlink">
+                <a href="/transfer">Transferer</a>
+            <a href="/profile">Profil</a>
+            <a href="/relation">Ajouter relation</a>
+            <form th:action="@{/logout}" method="post" class="logout-form">
+                <button type="submit" class="logout-link">Se déconnecter</button>
+            </form>
+            </div>
+        </nav>
+    </div>
+</body>
+</html>
