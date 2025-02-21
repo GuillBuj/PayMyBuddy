@@ -36,15 +36,20 @@ public class RegistrationController {
             log.error("Binding has error:" + bindingResult.getAllErrors());
             return "register";
         }
+        
+        if(userService.existsByUsername(userDTO.getUsername())){
+            model.addAttribute("errorMessage", "Username already taken");
+            return "register";
+        }
+        
+        if(userService.existsByEmail(userDTO.getEmail())){
+            model.addAttribute("errorMessage", "Email already used");
+            return "register";
+        }
 
-        try {
+        
             userService.createUser(userDTO);
             log.debug("*** User created ***");
             return "redirect:/login";
-        } catch (AlreadyExistsException e) {
-            model.addAttribute("error", e.getMessage());
-            log.debug("*** User already exists ***");
-            return "register";
         }
-    }
 }

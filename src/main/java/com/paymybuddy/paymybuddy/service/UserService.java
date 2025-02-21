@@ -47,6 +47,14 @@ public class UserService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    public boolean existsByUsername(String username){
+        return userRepository.existsByUsername(username.toLowerCase());
+    }
+
+    public boolean existsByEmail(String email){
+        return userRepository.existsByEmail(email.trim().toLowerCase());
+    }
+
     @Transactional
     public User createUser(RegisterUserDTO userDTO){
         
