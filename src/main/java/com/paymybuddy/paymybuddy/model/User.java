@@ -2,6 +2,7 @@ package com.paymybuddy.paymybuddy.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -43,8 +44,15 @@ public class User {
         name = "buddies",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "buddy_id"))
+    @JsonIgnore
     private Set<User> buddies;
 
     @Column(name = "date_created", nullable = false, updatable = false)
     private LocalDateTime dateCreated;
+
+    // évite erreur boucle lors d'un ajout de relation déjà existante dans l'autre sens
+    @Override
+    public int hashCode(){
+        return Objects.hash(id);
+    }
 }

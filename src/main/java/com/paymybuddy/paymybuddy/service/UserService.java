@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.naming.TransactionRef;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -90,25 +89,6 @@ public class UserService {
         }
         return new UserDTO(user.getUsername(), user.getEmail(), user.getBuddies());
     }
-
-    // on considère qu'il n'y a pas de réciprocité ni d'acceptation d'ajout
-    // @Transactional
-    // public void addBuddy(BuddyConnectionDTO buddyConnection){
-    //     User user = userRepository.findByEmail(buddyConnection.userEmail())
-    //             .orElseThrow(()-> new NotFoundException("User not found with email " + buddyConnection.userEmail()));
-                
-    //     User buddy = userRepository.findByEmail(buddyConnection.buddyEmail())
-    //             .orElseThrow(()-> new NotFoundException("Buddy not found with email " + buddyConnection.buddyEmail()));
-
-    //     if (user.getBuddies().contains(buddy)){
-    //         throw new AlreadyExistsException("Buddy connection between " + 
-    //             buddyConnection.userEmail() + " and " + buddyConnection.buddyEmail() + "already exists");
-    //     };
-        
-    //     user.getBuddies().add(buddy);
-
-    //     userRepository.save(user);
-    // }
 
     //on considère qu'il n'y a pas de réciprocité ni d'acceptation d'ajout
     @Transactional

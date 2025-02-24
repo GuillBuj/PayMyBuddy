@@ -150,3 +150,11 @@ input.buddyEmail{
     justify-content: flex-start;
     gap: 10px;
 }
+
+div.balance{
+    text-align: right;
+}
+
+alert-danger{
+    background-color: lightcoral;
+}

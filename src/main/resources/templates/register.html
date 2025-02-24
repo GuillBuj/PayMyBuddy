@@ -21,8 +21,7 @@
                 <small th:errors="*{password}" class="text-danger">Password is required</small>
             </div>
             <div th:if="${errorMessage}">
-                <h3>Error occurred:</h3>
-                <p th:text="${errorMessage}"></p>
+                <p th:text="${errorMessage}" class="alert-danger"></p>
             </div>
             <button class="buttonSubmit"  type="submit">S'inscrire</button>
         </form>

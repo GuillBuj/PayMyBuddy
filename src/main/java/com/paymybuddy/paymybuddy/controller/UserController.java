@@ -1,5 +1,6 @@
 package com.paymybuddy.paymybuddy.controller;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,10 +13,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.paymybuddy.paymybuddy.dto.BalanceOperationDTO;
 import com.paymybuddy.paymybuddy.dto.BuddyConnectionDTO;
@@ -89,17 +92,22 @@ public class UserController {
     }
 
     @GetMapping("/transfer")
-    public String getTransfer(Model model, Authentication authentication){
+    public String getTransfer(/*@RequestParam("buddy") String buddyEmail,
+                    @RequestParam("amount") BigDecimal amount,
+                    @RequestParam("description") String description,*/
+                    Model model, Authentication authentication){
         if (authentication != null && authentication.isAuthenticated()){
             String email = authentication.getName();
             User user = userService.getUserByEmail(email);
 
+            BigDecimal balance = user.getBalance();
             TransactionListDTO transactions = userService.getTransactions(user);
             Set<BuddyForTransferDTO> buddies = user.getBuddies().stream()
                                 .map(buddy -> new BuddyForTransferDTO(buddy.getId(), buddy.getUsername()))
                                 .collect(Collectors.toSet());
             log.info(buddies.toString());
 
+            model.addAttribute("balance", balance);
             model.addAttribute("transactions", transactions);
             model.addAttribute("buddies", buddies);
 
@@ -109,8 +117,14 @@ public class UserController {
         return "redirect:/profile";
     }
 
+    // @GetMapping("/transfer")
+    // public String showTransfer() {
+    //     log.info("--- dans le get ---");
+    //     return "transfer";
+    // }
+
     @PostMapping("/relation")
-    public String addBuddy(@RequestParam("buddyEmail") String buddyEmail, Authentication authentication){
+    public String addBuddy(@RequestParam("buddyEmail") String buddyEmail, Authentication authentication, RedirectAttributes redirectAttributes){
         log.info("--- debut addBuddy ---");
         String userEmail = authentication.getName();
         BuddyConnectionDTO buddyConnectionDTO = new BuddyConnectionDTO(userEmail, buddyEmail);
@@ -119,13 +133,19 @@ public class UserController {
             log.info("--- try avant addBuddy service ---");
             userService.addBuddy(buddyConnectionDTO);
             log.info("--- try apres addBuddy service ---");
-        } catch (NotFoundException | AlreadyExistsException e){
-            log.info("--- dans le catch ---");
-            return "redirect:/user/profile";
+            redirectAttributes.addFlashAttribute("successMessage", "Relation ajoutée avec succès!");
+        } catch (NotFoundException e) {
+            log.info("--- dans le catch pour NotFoundException ---");
+            redirectAttributes.addFlashAttribute("errorMessage", "L'utilisateur avec cet email n'a pas été trouvé.");
+            return "redirect:/user/relation";
+        } catch (AlreadyExistsException e) {
+            log.info("--- dans le catch pour AlreadyExistsException ---");
+            redirectAttributes.addFlashAttribute("errorMessage", "Cette relation existe déjà entre les utilisateurs.");
+            return "redirect:/user/relation";
         }
 
         log.info("--- apres try/catch ---");
-        return "redirect:/user/transfer";
+        return "redirect:/user/relation";
     }
 
     @GetMapping("/relation")
