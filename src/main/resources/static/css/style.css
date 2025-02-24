@@ -155,6 +155,16 @@ div.balance{
     text-align: right;
 }
 
-alert-danger{
-    background-color: lightcoral;
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.alert-success {
+    background-color: #e2f8d7;
+    color: #1c7223;
+}
+
+.alert {
+    border-radius: 0.25rem;
 }

@@ -92,13 +92,7 @@ public class SecurityConfig {
                                                 AuthenticationException exception) throws IOException, ServletException {
                 log.info("---- " + exception);
 
-                String errorMessage = "Invalid login attempt.";
-
-                if (exception instanceof BadCredentialsException) {
-                    errorMessage = "Invalid password. Please try again.";
-                } else if (exception instanceof UsernameNotFoundException) {
-                    errorMessage = "Email not found. Please check your email address.";
-                }
+                String errorMessage = "Invalid login attempt";
 
                 httpServletRequest.getSession().setAttribute("errorMessage", errorMessage);
 
