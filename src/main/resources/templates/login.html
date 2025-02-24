@@ -17,7 +17,7 @@
             <div class="form-group">
                 <input type="password" id="password" name="password" placeholder="Mot de passe" required>
             </div>
-            <div th:if="${errorMessage}" class="alert-danger">
+            <div th:if="${errorMessage}" class="alert alert-danger">
                 <p th:text="${errorMessage}"></p>
             </div>
             <button class="buttonSubmit" type="submit">Se connecter</button>

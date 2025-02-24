@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.paymybuddy.paymybuddy.dto.RegisterUserDTO;
-import com.paymybuddy.paymybuddy.exception.AlreadyExistsException;
 import com.paymybuddy.paymybuddy.service.UserService;
 
 import jakarta.validation.Valid;
