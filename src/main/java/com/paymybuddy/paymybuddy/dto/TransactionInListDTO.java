@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 
-public record TransactionInList(
+public record TransactionInListDTO(
     LocalDateTime dateCreated,
     String senderName,
     String receiverName,

@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,11 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.paymybuddy.paymybuddy.dto.BalanceOperationDTO;
 import com.paymybuddy.paymybuddy.dto.BuddyConnectionDTO;
 import com.paymybuddy.paymybuddy.dto.RegisterUserDTO;
-import com.paymybuddy.paymybuddy.dto.TransactionInList;
+import com.paymybuddy.paymybuddy.dto.TransactionInListDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionListDTO;
 import com.paymybuddy.paymybuddy.dto.UserDTO;
 import com.paymybuddy.paymybuddy.exception.AlreadyExistsException;
 import com.paymybuddy.paymybuddy.exception.NotFoundException;
+import com.paymybuddy.paymybuddy.model.Transaction;
 import com.paymybuddy.paymybuddy.model.User;
 import com.paymybuddy.paymybuddy.repository.TransactionRepository;
 import com.paymybuddy.paymybuddy.repository.UserRepository;
@@ -139,24 +144,43 @@ public class UserService {
         operationService.updateBalance(operation, false);
     }
 
-    public TransactionListDTO getTransactions(User user){
-        return getTransactions(user.getId());
+    // public TransactionListDTO getTransactions(User user){
+    //     return getTransactions(user.getId());
+    // }
+    
+    // public TransactionListDTO getTransactions(int userId){
+    //     List<TransactionInListDTO> transactions = transactionRepository
+    //         .findBySenderIdOrReceiverIdOrderByDateCreatedDesc(userId, userId)
+    //         .stream()
+    //         .map(transaction -> new TransactionInListDTO(
+    //             transaction.getDateCreated(),
+    //             transaction.getSender().getUsername(),
+    //             transaction.getReceiver().getUsername(),
+    //             transaction.getAmount(),
+    //             transaction.getDescription()
+    //         ))
+    //         .collect(Collectors.toList());
+
+    //     return new TransactionListDTO(transactions);
+    // }
+
+    public Page<TransactionInListDTO> getTransactionsPaginated(User user, int page, int size){
+        return getTransactionsPaginated(user.getId(), page, size);
     }
     
-    public TransactionListDTO getTransactions(int id){
-        List<TransactionInList> transactions = transactionRepository
-            .findBySenderIdOrReceiverIdOrderByDateCreatedDesc(id, id)
-            .stream()
-            .map(transaction -> new TransactionInList(
-                transaction.getDateCreated(),
-                transaction.getSender().getUsername(),
-                transaction.getReceiver().getUsername(),
-                transaction.getAmount(),
-                transaction.getDescription()
-            ))
-            .collect(Collectors.toList());
+    public Page<TransactionInListDTO> getTransactionsPaginated(int userId, int page, int size){
+        Pageable pageable = PageRequest.of(page, size, Sort.by("dateCreated").descending());
 
-        return new TransactionListDTO(transactions);
+        Page<Transaction> transactionsPage =
+            transactionRepository.findBySenderIdOrReceiverIdOrderByDateCreatedDesc(userId, userId, pageable);
+
+        return transactionsPage.map(transaction -> new TransactionInListDTO(
+            transaction.getDateCreated(),
+            transaction.getSender().getUsername(),
+            transaction.getReceiver().getUsername(),
+            transaction.getAmount(),
+            transaction.getDescription()
+        ));
     }
 
     public User getUserByEmail(String email) {

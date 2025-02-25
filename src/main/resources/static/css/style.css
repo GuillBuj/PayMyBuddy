@@ -58,12 +58,16 @@ input {
 .buttonSubmit {
     width: 60%;
     padding: 10px;
-    background-color: #0088cc;
+    background-color: #04c;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
+}
+
+.buttonSubmit:hover {
+    background-color: #06c;
 }
 
 nav {
@@ -127,13 +131,21 @@ a:hover{
     color: darkred;
 }
 
+h2{
+    padding: 3px;
+    margin: 0;
+    text-align: center;
+}
+
 div.transactions {
+    height: 60vh;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 table.transactions {
     border-spacing: 30px;
     width: 100%;
+    
 }
 
 h2 {
@@ -169,4 +181,15 @@ div.balance{
     text-align: center;
     border-radius: 0.25rem;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+div.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.btnPagination {
+    padding: 5px;
 }

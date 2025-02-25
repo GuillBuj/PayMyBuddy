@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.paymybuddy.paymybuddy.dto.BalanceOperationDTO;
 import com.paymybuddy.paymybuddy.dto.BuddyConnectionDTO;
 import com.paymybuddy.paymybuddy.dto.BuddyForTransferDTO;
+import com.paymybuddy.paymybuddy.dto.TransactionInListDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionListDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionRequestDTO;
 import com.paymybuddy.paymybuddy.dto.UserDTO;
@@ -64,10 +66,10 @@ public class UserController {
         return ResponseEntity.ok("Money added");
     }
 
-    @GetMapping("/transactions")
-    public TransactionListDTO getTransactions(@RequestParam int id){
-        return userService.getTransactions(id);
-    }
+    // @GetMapping("/transactions")
+    // public TransactionListDTO getTransactions(@RequestParam int id){
+    //     return userService.getTransactions(id);
+    // }
 
     //web
     @GetMapping("/profile")
@@ -87,38 +89,6 @@ public class UserController {
 
         return "redirect:/login";
     }
-
-    // @PostMapping("/transfer")
-    // public String getTransfer(/*@RequestParam("buddy") String buddyEmail,
-    //                 @RequestParam("amount") BigDecimal amount,
-    //                 @RequestParam("description") String description,*/
-    //                 Model model, Authentication authentication){
-    //     if (authentication != null && authentication.isAuthenticated()){
-    //         String email = authentication.getName();
-    //         User user = userService.getUserByEmail(email);
-
-    //         BigDecimal balance = user.getBalance();
-    //         TransactionListDTO transactions = userService.getTransactions(user);
-    //         Set<BuddyForTransferDTO> buddies = user.getBuddies().stream()
-    //                             .map(buddy -> new BuddyForTransferDTO(buddy.getId(), buddy.getUsername()))
-    //                             .collect(Collectors.toSet());
-    //         log.info(buddies.toString());
-
-    //         model.addAttribute("balance", balance);
-    //         model.addAttribute("transactions", transactions);
-    //         model.addAttribute("buddies", buddies);
-
-    //         return "transfer";
-    //     }
-
-    //     return "redirect:/profile";
-    // }
-
-    // @GetMapping("/transfer")
-    // public String showTransfer() {
-    //     log.info("--- dans le get ---");
-    //     return "transfer";
-    // }
 
     @PostMapping("/transfer")
     public String handleTransfer(@RequestParam("buddy") String buddyEmail,
@@ -144,30 +114,60 @@ public class UserController {
     }
 
     
+    // @GetMapping("/transfer")
+    // public String showTransferForm(Model model, Authentication authentication) {
+    //     if (authentication != null && authentication.isAuthenticated()) {
+    //         String email = authentication.getName();
+    //         User user = userService.getUserByEmail(email);
+    
+    //         BigDecimal balance = user.getBalance();
+    //         TransactionListDTO transactions = userService.getTransactions(user);
+    //         Set<BuddyForTransferDTO> buddies = user.getBuddies().stream()
+    //                                 .map(buddy -> new BuddyForTransferDTO(buddy.getId(), buddy.getUsername(), buddy.getEmail()))
+    //                                 .collect(Collectors.toSet());
+    
+    //         model.addAttribute("balance", balance);
+    //         model.addAttribute("transactions", transactions);
+    //         model.addAttribute("buddies", buddies);
+    
+    //         return "transfer";
+    //     }
+    
+    //     return "redirect:/profile";
+    // }
+
     @GetMapping("/transfer")
-    public String showTransferForm(Model model, Authentication authentication) {
+    public String showTransferForm( Model model,
+                                    Authentication authentication,
+                                    @RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "8") int size
+                                    ) {
+        
         if (authentication != null && authentication.isAuthenticated()) {
             String email = authentication.getName();
             User user = userService.getUserByEmail(email);
     
             BigDecimal balance = user.getBalance();
-            TransactionListDTO transactions = userService.getTransactions(user);
+            
+            Page<TransactionInListDTO> transactionsPage = userService.getTransactionsPaginated(user.getId(), page, size);
+            if (page < 0 || page >= transactionsPage.getTotalPages()) {
+                page = 0;
+            }
             Set<BuddyForTransferDTO> buddies = user.getBuddies().stream()
                                     .map(buddy -> new BuddyForTransferDTO(buddy.getId(), buddy.getUsername(), buddy.getEmail()))
                                     .collect(Collectors.toSet());
     
             model.addAttribute("balance", balance);
-            model.addAttribute("transactions", transactions);
+            model.addAttribute("transactions", transactionsPage);
             model.addAttribute("buddies", buddies);
-    
+            model.addAttribute("currentPage", transactionsPage.getNumber());
+            model.addAttribute("totalPages", transactionsPage.getTotalPages());
+            
             return "transfer";
         }
     
         return "redirect:/profile";
     }
-
-
-
 
     @PostMapping("/relation")
     public String addBuddy(@RequestParam("buddyEmail") String buddyEmail, Authentication authentication, RedirectAttributes redirectAttributes){

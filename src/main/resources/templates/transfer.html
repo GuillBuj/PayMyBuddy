@@ -39,7 +39,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="transaction : ${transactions.transactions}">
+                        <tr th:each="transaction : ${transactions}">
                             <td th:text="${transaction.senderName}"></td>
                             <td th:text="${transaction.receiverName}"></td>
                             <td th:text="${transaction.description}"></td>
@@ -47,6 +47,15 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="pagination">
+                <a th:if="${currentPage > 0 and totalPages > 1}" 
+                   th:href="@{/user/transfer(page=${currentPage - 1}, size=${8})}" 
+                   class="btnPagination">&lt;</a>
+                <span>Page <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span></span>
+                <a th:if="${currentPage + 1 < totalPages and totalPages > 1}" 
+                   th:href="@{/user/transfer(page=${currentPage + 1}, size=${8})}" 
+                   class="btnPagination">&gt;</a>
             </div>
         </section>
     </div>
