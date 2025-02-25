@@ -23,6 +23,7 @@ import com.paymybuddy.paymybuddy.dto.TransactionListDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionRequestDTO;
 import com.paymybuddy.paymybuddy.dto.UserDTO;
 import com.paymybuddy.paymybuddy.exception.AlreadyExistsException;
+import com.paymybuddy.paymybuddy.exception.NotEnoughMoneyException;
 import com.paymybuddy.paymybuddy.exception.NotFoundException;
 import com.paymybuddy.paymybuddy.model.Transaction;
 import com.paymybuddy.paymybuddy.model.User;
@@ -87,37 +88,86 @@ public class UserController {
         return "redirect:/login";
     }
 
-    @GetMapping("/transfer")
-    public String getTransfer(/*@RequestParam("buddy") String buddyEmail,
-                    @RequestParam("amount") BigDecimal amount,
-                    @RequestParam("description") String description,*/
-                    Model model, Authentication authentication){
-        if (authentication != null && authentication.isAuthenticated()){
-            String email = authentication.getName();
-            User user = userService.getUserByEmail(email);
+    // @PostMapping("/transfer")
+    // public String getTransfer(/*@RequestParam("buddy") String buddyEmail,
+    //                 @RequestParam("amount") BigDecimal amount,
+    //                 @RequestParam("description") String description,*/
+    //                 Model model, Authentication authentication){
+    //     if (authentication != null && authentication.isAuthenticated()){
+    //         String email = authentication.getName();
+    //         User user = userService.getUserByEmail(email);
 
-            BigDecimal balance = user.getBalance();
-            TransactionListDTO transactions = userService.getTransactions(user);
-            Set<BuddyForTransferDTO> buddies = user.getBuddies().stream()
-                                .map(buddy -> new BuddyForTransferDTO(buddy.getId(), buddy.getUsername()))
-                                .collect(Collectors.toSet());
-            log.info(buddies.toString());
+    //         BigDecimal balance = user.getBalance();
+    //         TransactionListDTO transactions = userService.getTransactions(user);
+    //         Set<BuddyForTransferDTO> buddies = user.getBuddies().stream()
+    //                             .map(buddy -> new BuddyForTransferDTO(buddy.getId(), buddy.getUsername()))
+    //                             .collect(Collectors.toSet());
+    //         log.info(buddies.toString());
 
-            model.addAttribute("balance", balance);
-            model.addAttribute("transactions", transactions);
-            model.addAttribute("buddies", buddies);
+    //         model.addAttribute("balance", balance);
+    //         model.addAttribute("transactions", transactions);
+    //         model.addAttribute("buddies", buddies);
 
-            return "transfer";
-        }
+    //         return "transfer";
+    //     }
 
-        return "redirect:/profile";
-    }
+    //     return "redirect:/profile";
+    // }
 
     // @GetMapping("/transfer")
     // public String showTransfer() {
     //     log.info("--- dans le get ---");
     //     return "transfer";
     // }
+
+    @PostMapping("/transfer")
+    public String handleTransfer(@RequestParam("buddy") String buddyEmail,
+                                @RequestParam("amount") BigDecimal amount,
+                                @RequestParam("description") String description,
+                                Model model,
+                                RedirectAttributes redirectAttributes,
+                                Authentication authentication) {
+        
+        try{if (authentication != null && authentication.isAuthenticated()) {
+            String email = authentication.getName();
+            User user = userService.getUserByEmail(email);
+
+            transactionService.createTransaction(new TransactionRequestDTO(email, buddyEmail, amount, description));
+
+            redirectAttributes.addFlashAttribute("successMessage", "Transfer successful!");
+            return "redirect:/user/transfer";
+        }} catch(NotEnoughMoneyException e) {
+            log.info("--- NotEnoughMoney ---");
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());}
+        
+        return "redirect:/user/transfer";
+    }
+
+    
+    @GetMapping("/transfer")
+    public String showTransferForm(Model model, Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            String email = authentication.getName();
+            User user = userService.getUserByEmail(email);
+    
+            BigDecimal balance = user.getBalance();
+            TransactionListDTO transactions = userService.getTransactions(user);
+            Set<BuddyForTransferDTO> buddies = user.getBuddies().stream()
+                                    .map(buddy -> new BuddyForTransferDTO(buddy.getId(), buddy.getUsername(), buddy.getEmail()))
+                                    .collect(Collectors.toSet());
+    
+            model.addAttribute("balance", balance);
+            model.addAttribute("transactions", transactions);
+            model.addAttribute("buddies", buddies);
+    
+            return "transfer";
+        }
+    
+        return "redirect:/profile";
+    }
+
+
+
 
     @PostMapping("/relation")
     public String addBuddy(@RequestParam("buddyEmail") String buddyEmail, Authentication authentication, RedirectAttributes redirectAttributes){

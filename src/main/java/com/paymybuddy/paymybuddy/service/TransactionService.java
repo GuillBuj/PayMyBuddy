@@ -17,9 +17,11 @@ import com.paymybuddy.paymybuddy.repository.TransactionRepository;
 import com.paymybuddy.paymybuddy.repository.UserRepository;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class TransactionService {
     
     private final TransactionRepository transactionRepository;
@@ -70,6 +72,7 @@ public class TransactionService {
                 .orElseThrow(()-> new NotFoundException("User not found with email " + operation.userEmail()));
 
         if(user.getBalance().compareTo(operation.amount())<0){
+            log.info("--- validateEnoughMoney: Not enough money");
             throw new NotEnoughMoneyException("Not enough money for this operation");
         }
     }
