@@ -12,6 +12,7 @@ powershell ./import-db.ps1
 
 # sauvegarde
 bash ./scripts/backup.sh
+(powershell -ExecutionPolicy Bypass -File .\scripts\backup.ps1)
 
 # restauration
 bash ./scripts/restore.sh ./backups/paymybuddy_backup_20250206_120000.sql

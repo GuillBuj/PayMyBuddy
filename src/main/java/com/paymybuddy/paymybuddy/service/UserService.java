@@ -21,7 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.paymybuddy.paymybuddy.dto.BalanceOperationDTO;
+import com.paymybuddy.paymybuddy.dto.BuddiesDTO;
 import com.paymybuddy.paymybuddy.dto.BuddyConnectionDTO;
+import com.paymybuddy.paymybuddy.dto.BuddyForTransferDTO;
 import com.paymybuddy.paymybuddy.dto.RegisterUserDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionInListDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionListDTO;
@@ -33,6 +35,7 @@ import com.paymybuddy.paymybuddy.model.User;
 import com.paymybuddy.paymybuddy.repository.TransactionRepository;
 import com.paymybuddy.paymybuddy.repository.UserRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -195,5 +198,19 @@ public class UserService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+    }
+
+    public BuddiesDTO getBuddies(int userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
+
+        return new BuddiesDTO(user.getBuddies()
+                            .stream()
+                            .map(buddy -> new BuddyForTransferDTO(
+                                buddy.getId(),
+                                buddy.getUsername(),
+                                buddy.getEmail()
+                            ))
+                            .collect(Collectors.toSet()));
     }
 }

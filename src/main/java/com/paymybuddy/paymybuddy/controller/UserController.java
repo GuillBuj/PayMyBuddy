@@ -8,9 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.paymybuddy.paymybuddy.dto.BalanceOperationDTO;
+import com.paymybuddy.paymybuddy.dto.BuddiesDTO;
 import com.paymybuddy.paymybuddy.dto.BuddyConnectionDTO;
 import com.paymybuddy.paymybuddy.dto.BuddyForTransferDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionInListDTO;
@@ -138,13 +143,12 @@ public class UserController {
 
     @GetMapping("/transfer")
     public String showTransferForm( Model model,
-                                    Authentication authentication,
+                                    @AuthenticationPrincipal UserDetails userDetails,
                                     @RequestParam(defaultValue = "0") int page,
                                     @RequestParam(defaultValue = "8") int size
                                     ) {
         
-        if (authentication != null && authentication.isAuthenticated()) {
-            String email = authentication.getName();
+            String email = userDetails.getUsername();
             User user = userService.getUserByEmail(email);
     
             BigDecimal balance = user.getBalance();
@@ -153,9 +157,9 @@ public class UserController {
             if (page < 0 || page >= transactionsPage.getTotalPages()) {
                 page = 0;
             }
-            Set<BuddyForTransferDTO> buddies = user.getBuddies().stream()
+            BuddiesDTO buddies = new BuddiesDTO(user.getBuddies().stream()
                                     .map(buddy -> new BuddyForTransferDTO(buddy.getId(), buddy.getUsername(), buddy.getEmail()))
-                                    .collect(Collectors.toSet());
+                                    .collect(Collectors.toSet()));
     
             model.addAttribute("balance", balance);
             model.addAttribute("transactions", transactionsPage);
@@ -164,9 +168,6 @@ public class UserController {
             model.addAttribute("totalPages", transactionsPage.getTotalPages());
             
             return "transfer";
-        }
-    
-        return "redirect:/profile";
     }
 
     @PostMapping("/relation")
@@ -195,9 +196,22 @@ public class UserController {
     }
 
     @GetMapping("/relation")
-    public String showRelationForm() {
-        log.info("--- dans le get ---");
+    public String showRelationForm(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        String email = userDetails.getUsername();
+        User user = userService.getUserByEmail(email);
+
+        BuddiesDTO buddies = userService.getBuddies(user.getId());
+
+        model.addAttribute("buddies", buddies);
+
         return "relation";
     }
+
+    @DeleteMapping("/relation/{id}")
+    public String deleteBuddy(@PathVariable int id, @AuthenticationPrincipal UserDetails userDetails) {
+        userService.removeBuddy(new BuddyConnectionDTO(userDetails.getUsername(), userService.getUserById(id).email()));
+        return "redirect:/user/relation";
+    }
+
 }
 

@@ -153,13 +153,12 @@ h2 {
 }
 
 input.buddyEmail{
-    width: 100%;
+    width: 300px;
 }
 
 .formHorizontal {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
     gap: 10px;
 }
 

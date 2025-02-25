@@ -13,12 +13,36 @@
         <div th:if="${errorMessage}" class="alert alert-danger">
             <p th:text="${errorMessage}"></p>
         </div>
-        <form th:action="@{relation}" method="post">
+        <form class="formHorizontal" th:action="@{relation}" method="post">
             <div class="form-group">
                 <input class="buddyEmail" type="email" id="buddyEmail" name="buddyEmail" placeholder="Mail à ajouter" required>
             </div>
             <button class="buttonSubmit" type="submit">Ajouter</button>
-        </form>    
+        </form>
+        
+        <div class="transactions">
+            <h2>Mes Buddies</h2>
+            <table class="transactions">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="buddy : ${buddies.buddies}">
+                        <td th:text="${buddy.username}"></td>
+                        <td th:text="${buddy.email}"></td>
+                        <td>
+                            <form th:action="@{/user/relation/{id}(id=${buddy.id})}" method="post">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn-delete">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>  
+        </div>  
     </div>
 </body>
 </html>

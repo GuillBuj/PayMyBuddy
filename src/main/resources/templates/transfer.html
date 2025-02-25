@@ -18,7 +18,7 @@
             <form class="formHorizontal" th:action="@{transfer}" method="post">
                 <select id="buddySelect" name="buddy">
                     <option value="">-- Sélectionner une relation --</option>
-                    <option th:each="buddy : ${buddies}" 
+                    <option th:each="buddy : ${buddies.buddies}" 
                             th:value="${buddy.email}" 
                             th:text="${buddy.username}">
                     </option>
