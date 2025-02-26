@@ -192,3 +192,12 @@ div.pagination {
 .btnPagination {
     padding: 5px;
 }
+
+.profile-table tr {
+    height: 50px;
+}
+
+.profile-info {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 0px 20px 20px 20px;
+}

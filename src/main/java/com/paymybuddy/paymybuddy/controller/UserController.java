@@ -1,7 +1,6 @@
 package com.paymybuddy.paymybuddy.controller;
 
 import java.math.BigDecimal;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,6 @@ import com.paymybuddy.paymybuddy.dto.BuddiesDTO;
 import com.paymybuddy.paymybuddy.dto.BuddyConnectionDTO;
 import com.paymybuddy.paymybuddy.dto.BuddyForTransferDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionInListDTO;
-import com.paymybuddy.paymybuddy.dto.TransactionListDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionRequestDTO;
 import com.paymybuddy.paymybuddy.dto.UserDTO;
 import com.paymybuddy.paymybuddy.exception.AlreadyExistsException;
@@ -71,28 +69,21 @@ public class UserController {
         return ResponseEntity.ok("Money added");
     }
 
-    // @GetMapping("/transactions")
-    // public TransactionListDTO getTransactions(@RequestParam int id){
-    //     return userService.getTransactions(id);
-    // }
-
     //web
     @GetMapping("/profile")
-    public String getProfile(Model model, Authentication authentication) {
-        if (authentication != null && authentication.isAuthenticated()) {
-            String email = authentication.getName();
-            User user = userService.getUserByEmail(email);
+    public String getProfile(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        
+        String email = userDetails.getUsername();
+        User user = userService.getUserByEmail(email);
 
-            String username = user.getUsername();
-            String userEmail = user.getEmail();
+        String username = user.getUsername();
+        String userEmail = user.getEmail();
 
-            model.addAttribute("username", username);
-            model.addAttribute("email", userEmail);
+        model.addAttribute("username", username);
+        model.addAttribute("email", userEmail);
+        model.addAttribute("editMode", false);
 
-            return "profile";
-        }
-
-        return "redirect:/login";
+        return "profile";
     }
 
     @PostMapping("/transfer")
@@ -101,11 +92,10 @@ public class UserController {
                                 @RequestParam("description") String description,
                                 Model model,
                                 RedirectAttributes redirectAttributes,
-                                Authentication authentication) {
+                                @AuthenticationPrincipal UserDetails userDetails) {
         
-        try{if (authentication != null && authentication.isAuthenticated()) {
-            String email = authentication.getName();
-            User user = userService.getUserByEmail(email);
+        try{ {
+            String email = userDetails.getUsername();
 
             transactionService.createTransaction(new TransactionRequestDTO(email, buddyEmail, amount, description));
 
@@ -118,29 +108,6 @@ public class UserController {
         return "redirect:/user/transfer";
     }
 
-    
-    // @GetMapping("/transfer")
-    // public String showTransferForm(Model model, Authentication authentication) {
-    //     if (authentication != null && authentication.isAuthenticated()) {
-    //         String email = authentication.getName();
-    //         User user = userService.getUserByEmail(email);
-    
-    //         BigDecimal balance = user.getBalance();
-    //         TransactionListDTO transactions = userService.getTransactions(user);
-    //         Set<BuddyForTransferDTO> buddies = user.getBuddies().stream()
-    //                                 .map(buddy -> new BuddyForTransferDTO(buddy.getId(), buddy.getUsername(), buddy.getEmail()))
-    //                                 .collect(Collectors.toSet());
-    
-    //         model.addAttribute("balance", balance);
-    //         model.addAttribute("transactions", transactions);
-    //         model.addAttribute("buddies", buddies);
-    
-    //         return "transfer";
-    //     }
-    
-    //     return "redirect:/profile";
-    // }
-
     @GetMapping("/transfer")
     public String showTransferForm( Model model,
                                     @AuthenticationPrincipal UserDetails userDetails,
@@ -148,32 +115,32 @@ public class UserController {
                                     @RequestParam(defaultValue = "8") int size
                                     ) {
         
-            String email = userDetails.getUsername();
-            User user = userService.getUserByEmail(email);
-    
-            BigDecimal balance = user.getBalance();
-            
-            Page<TransactionInListDTO> transactionsPage = userService.getTransactionsPaginated(user.getId(), page, size);
-            if (page < 0 || page >= transactionsPage.getTotalPages()) {
-                page = 0;
-            }
-            BuddiesDTO buddies = new BuddiesDTO(user.getBuddies().stream()
-                                    .map(buddy -> new BuddyForTransferDTO(buddy.getId(), buddy.getUsername(), buddy.getEmail()))
-                                    .collect(Collectors.toSet()));
-    
-            model.addAttribute("balance", balance);
-            model.addAttribute("transactions", transactionsPage);
-            model.addAttribute("buddies", buddies);
-            model.addAttribute("currentPage", transactionsPage.getNumber());
-            model.addAttribute("totalPages", transactionsPage.getTotalPages());
-            
-            return "transfer";
+        String email = userDetails.getUsername();
+        User user = userService.getUserByEmail(email);
+
+        BigDecimal balance = user.getBalance();
+        
+        Page<TransactionInListDTO> transactionsPage = userService.getTransactionsPaginated(user.getId(), page, size);
+        if (page < 0 || page >= transactionsPage.getTotalPages()) {
+            page = 0;
+        }
+        BuddiesDTO buddies = new BuddiesDTO(user.getBuddies().stream()
+                                .map(buddy -> new BuddyForTransferDTO(buddy.getId(), buddy.getUsername(), buddy.getEmail()))
+                                .collect(Collectors.toSet()));
+
+        model.addAttribute("balance", balance);
+        model.addAttribute("transactions", transactionsPage);
+        model.addAttribute("buddies", buddies);
+        model.addAttribute("currentPage", transactionsPage.getNumber());
+        model.addAttribute("totalPages", transactionsPage.getTotalPages());
+        
+        return "transfer";
     }
 
     @PostMapping("/relation")
-    public String addBuddy(@RequestParam("buddyEmail") String buddyEmail, Authentication authentication, RedirectAttributes redirectAttributes){
+    public String addBuddy(@RequestParam("buddyEmail") String buddyEmail, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes){
         log.info("--- debut addBuddy ---");
-        String userEmail = authentication.getName();
+        String userEmail = userDetails.getUsername();
         BuddyConnectionDTO buddyConnectionDTO = new BuddyConnectionDTO(userEmail, buddyEmail);
 
         try{
