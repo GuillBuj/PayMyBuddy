@@ -66,8 +66,33 @@ input {
     font-size: 16px;
 }
 
+.buttonCancel {
+    width: 40%;
+    padding: 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+}
+
 .buttonSubmit:hover {
     background-color: #06c;
+}
+
+.buttonCancel:hover {
+    background-color: rgb(235, 65, 65);
+}
+
+a.btn{
+    text-align: center;
+    color: white;
+}
+
+a.btn:hover{
+    color: white;
 }
 
 nav {
@@ -145,7 +170,6 @@ div.transactions {
 table.transactions {
     border-spacing: 30px;
     width: 100%;
-    
 }
 
 h2 {
@@ -193,11 +217,27 @@ div.pagination {
     padding: 5px;
 }
 
+.profile-table{
+    margin-bottom: 20px;
+}
+
 .profile-table tr {
     height: 50px;
 }
 
 .profile-info {
+    width: 350px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 0px 20px 20px 20px;
+}
+
+.profile-info input{
+    width: 200px;
+}
+
+div.profileBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
 }

@@ -86,6 +86,22 @@ public class UserController {
         return "profile";
     }
 
+    @GetMapping("/profile/edit")
+    public String editProfile(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        
+        String email = userDetails.getUsername();
+        User user = userService.getUserByEmail(email);
+
+        String username = user.getUsername();
+        String userEmail = user.getEmail();
+
+        model.addAttribute("username", username);
+        model.addAttribute("email", userEmail);
+        model.addAttribute("editMode", true);
+
+        return "profile";
+    }
+
     @PostMapping("/transfer")
     public String handleTransfer(@RequestParam("buddy") String buddyEmail,
                                 @RequestParam("amount") BigDecimal amount,
