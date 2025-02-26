@@ -1,5 +1,8 @@
 package com.paymybuddy.paymybuddy.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,20 +34,23 @@ public class RegistrationController {
     }
     
     @PostMapping
-    public String registerUser(@Valid @ModelAttribute RegisterUserDTO userDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String registerUser(@Valid @ModelAttribute("userDTO") RegisterUserDTO userDTO,
+                                BindingResult bindingResult,
+                                Model model,
+                                RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            log.error("Binding has error:" + bindingResult.getAllErrors());
+            log.error("Validation errors: {}", bindingResult.getAllErrors());
             return "register";
         }
         
         if(userService.existsByUsername(userDTO.getUsername())){
-            redirectAttributes.addFlashAttribute("errorMessage", "Username already taken");
-            return "redirect:/register";
+            model.addAttribute("errorUsername", "Username already taken");
+            return "register";
         }
         
         if(userService.existsByEmail(userDTO.getEmail())){
-            redirectAttributes.addFlashAttribute("errorMessage", "Email already taken");
-            return "redirect:/register";
+            model.addAttribute("errorEmail", "Email already taken");
+            return "register";
         }
 
         userService.createUser(userDTO);

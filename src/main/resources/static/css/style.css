@@ -195,6 +195,14 @@ div.balance{
     color: #721c24;
 }
 
+small.text-danger {
+    display: block;         /* Pour forcer l'élément à occuper toute la largeur */
+    text-align: center;     /* Centre le texte */
+    margin-top: 5px;        /* Ajoute un petit espace au-dessus */
+    font-size: 0.75rem;    /* Optionnel : réduit légèrement la taille du texte */
+}
+
+
 .alert-success {
     background-color: #e2f8d7;
     color: #1c7223;

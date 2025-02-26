@@ -13,8 +13,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +28,7 @@ import com.paymybuddy.paymybuddy.dto.BuddyConnectionDTO;
 import com.paymybuddy.paymybuddy.dto.BuddyForTransferDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionInListDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionRequestDTO;
+import com.paymybuddy.paymybuddy.dto.UpdateUserDTO;
 import com.paymybuddy.paymybuddy.dto.UserDTO;
 import com.paymybuddy.paymybuddy.exception.AlreadyExistsException;
 import com.paymybuddy.paymybuddy.exception.NotEnoughMoneyException;
@@ -100,6 +103,40 @@ public class UserController {
         model.addAttribute("editMode", true);
 
         return "profile";
+    }
+
+    @PatchMapping("/profile")
+    public String updateProfile(@RequestParam String username,
+                                @RequestParam String email,
+                                @RequestParam String password,
+                                @AuthenticationPrincipal UserDetails userDetails,
+                                RedirectAttributes redirectAttributes
+                                ) {
+        User user = userService.getUserByEmail(userDetails.getUsername());
+        log.info("Avant: " + user.getUsername() + "/" + user.getEmail());
+        log.info("Apres: " + username + "/" + email);
+        if(!username.equals(user.getUsername())){
+            log.info(username +" != " + user.getUsername());
+            if(userService.existsByUsername(username)) {
+                log.error("Username already taken.");
+                redirectAttributes.addFlashAttribute("errorMessage", "Username already taken");
+                return "redirect:/user/profile/edit";
+            }
+        }
+        
+        if(!email.equals(user.getEmail())){
+            log.info(email +" != " + user.getEmail());
+            if(userService.existsByEmail(email)){
+            log.error("Email already taken.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Email already taken");
+            return "redirect:/user/profile/edit";
+            }
+        }
+
+        userService.updateUser(new UpdateUserDTO(user.getId(),username, email, password));
+        redirectAttributes.addFlashAttribute("successMessage", "Profile updated");
+        
+        return "redirect:/user/profile";
     }
 
     @PostMapping("/transfer")

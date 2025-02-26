@@ -5,27 +5,31 @@
     <title>Pay My Buddy - S'inscrire</title>
 </head>
 <body>
+    <section>
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <p th:text="${errorMessage}"></p>
+    </div>
     <div class="registerlogin-container">
         <div class="appTitle">Pay My Buddy</div>
         <form th:action="@{/register}" method="post" th:object="${userDTO}">
             <div class="form-group">
-                <input type="text" id="username" name="username" placeholder="Username" required>
-                <small th:errors="*{username}" class="text-danger">Username is required</small>
+                <input type="text" id="username" th:field="*{username}" name="username" placeholder="Username">
+                <small th:if="${errorUsername}" th:text="${errorUsername}" class="text-danger alert alert-danger"></small>
+                <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger alert-danger alert"></small>
             </div>
             <div class="form-group">
-                <input type="email" id="email" name="email" placeholder="Mail" required>
-                <small th:errors="*{email}" class="text-danger">Email is required</small>
+                <input type="email" id="email" th:field="*{email}" name="email" placeholder="Mail">
+                <small th:if="${errorEmail}" th:text="${errorEmail}" class="text-danger alert alert-danger"></small>
+                <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger alert alert-danger"></small>
             </div>
             <div class="form-group">
-                <input type="password" id="password" name="password" placeholder="Mot de passe" required>
-                <small th:errors="*{password}" class="text-danger">Password is required</small>
-            </div>
-            <div th:if="${errorMessage}" class="alert-danger">
-                <p th:text="${errorMessage}"></p>
+                <input type="password" id="password" th:field="*{password}" name="password" placeholder="Mot de passe">
+                <small th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger alert alert-danger"></small>
             </div>
             <button class="buttonSubmit"  type="submit">S'inscrire</button>
         </form>
         <a href="/login"> Se connecter </a>
     </div>
+    </section>
 </body>
 </html>

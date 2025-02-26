@@ -8,36 +8,45 @@
     <div class="container">
         <div th:insert="~{fragment/navbar :: navbar}"></div>
         <section>
+            <div th:if="${successMessage}" class="alert alert-success">
+                <p th:text="${successMessage}"></p>
+            </div>
+            <div th:if="${errorMessage}" class="alert alert-danger">
+                <p th:text="${errorMessage}"></p>
+            </div>
             <div class="profile-info">
                 <h2>Profil</h2>
-                <table class="profile-table">
-                    <tr>
-                        <td><strong>Nom d'utilisateur:</strong></td>
-                        <td>
-                            <span  th:if="${!editMode}" th:text="${username}"></span>
-                            <input th:if="${editMode}" type="text" name="username" th:value="${username}">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>Email:</strong></td>
-                        <td>
-                            <span  th:if="${!editMode}" th:text="${email}"></span>
-                            <input th:if="${editMode}" type="email" name="email" th:value="${email}">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>Mot de passe:</strong></td>
-                        <td>
-                            <span  th:if="${!editMode}">********</span>
-                            <input th:if="${editMode}" type="password" name="password">
-                        </td>
-                    </tr>
-                </table>
+                <form th:action="@{/user/profile}" method="post">
+                    <input type="hidden" name="_method" value="patch">
+                    <table class="profile-table">
+                        <tr>
+                            <td><strong>Nom d'utilisateur:</strong></td>
+                            <td>
+                                <span  th:if="${!editMode}" th:text="${username}"></span>
+                                <input th:if="${editMode}" type="text" name="username" th:value="${username}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Email:</strong></td>
+                            <td>
+                                <span  th:if="${!editMode}" th:text="${email}"></span>
+                                <input th:if="${editMode}" type="email" name="email" th:value="${email}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mot de passe:</strong></td>
+                            <td>
+                                <span  th:if="${!editMode}">********</span>
+                                <input th:if="${editMode}" type="password" name="password">
+                            </td>
+                        </tr>
+                    </table>
                     <div class="profileBtn">
                         <a th:if="${!editMode}" href="/user/profile/edit" class="btn buttonSubmit">Modifier</a>
                         <button th:if="${editMode}" type="submit" class="buttonSubmit">Enregistrer</button>
                         <a th:if="${editMode}" href="/user/profile" class="btn buttonCancel">Annuler</a>
                     </div>
+                </form>     
             </div>
         </section>
     </div>

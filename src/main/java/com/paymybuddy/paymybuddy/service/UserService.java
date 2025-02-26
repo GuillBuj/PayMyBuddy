@@ -3,7 +3,6 @@ package com.paymybuddy.paymybuddy.service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ import com.paymybuddy.paymybuddy.dto.BuddyConnectionDTO;
 import com.paymybuddy.paymybuddy.dto.BuddyForTransferDTO;
 import com.paymybuddy.paymybuddy.dto.RegisterUserDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionInListDTO;
-import com.paymybuddy.paymybuddy.dto.TransactionListDTO;
+import com.paymybuddy.paymybuddy.dto.UpdateUserDTO;
 import com.paymybuddy.paymybuddy.dto.UserDTO;
 import com.paymybuddy.paymybuddy.exception.AlreadyExistsException;
 import com.paymybuddy.paymybuddy.exception.NotFoundException;
@@ -87,6 +86,36 @@ public class UserService {
         user.setDateCreated(LocalDateTime.now());
 
         log.info("User created: {}", user.getEmail());
+        
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User updateUser(UpdateUserDTO userDTO){
+        
+        User user = userRepository.getById(userDTO.getId());
+
+        if(!userDTO.getUsername().equals(user.getUsername())){
+            String lowerCaseUserName = userDTO.getUsername().toLowerCase();
+            if(userRepository.existsByUsername(lowerCaseUserName)){
+                log.error("Username already taken: {}", lowerCaseUserName);
+                throw new AlreadyExistsException("Username already taken: " + lowerCaseUserName);
+            } else user.setUsername(lowerCaseUserName);
+        }
+        
+        if(!userDTO.getEmail().equals(user.getEmail())){
+            String normalizedEmail = userDTO.getEmail().trim().toLowerCase();
+            if(userRepository.existsByEmail(normalizedEmail)){
+                log.error("Email already used: {}", normalizedEmail);
+                throw new AlreadyExistsException("Email already used:" + normalizedEmail);
+            } else user.setEmail(normalizedEmail);
+        }
+        
+        if(userDTO.getPassword()!=""){
+            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        }
+        
+        log.info("User updated: {}", user.getEmail());
         
         return userRepository.save(user);
     }
