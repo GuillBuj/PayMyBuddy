@@ -14,17 +14,38 @@
         <form th:action="@{/register}" method="post" th:object="${userDTO}">
             <div class="form-group">
                 <input type="text" id="username" th:field="*{username}" name="username" placeholder="Username">
-                <small th:if="${errorUsername}" th:text="${errorUsername}" class="text-danger alert alert-danger"></small>
-                <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger alert-danger alert"></small>
+                <small th:if="${errorUsername != null}" th:text="${errorUsername}" class="text-danger alert alert-danger"></small>
+                <small th:if="${#fields.hasErrors('username') and username == ''}" 
+                    th:errors="*{username}" 
+                    class="text-danger alert alert-danger">
+                </small>
+                <small th:if="${#fields.hasErrors('username') and username != ''}" 
+                    th:text="${#fields.errors('username')[0]}" 
+                    class="text-danger alert alert-danger">
+                </small>
             </div>
             <div class="form-group">
                 <input type="email" id="email" th:field="*{email}" name="email" placeholder="Mail">
                 <small th:if="${errorEmail}" th:text="${errorEmail}" class="text-danger alert alert-danger"></small>
-                <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger alert alert-danger"></small>
+                <small th:if="${#fields.hasErrors('email') and email == ''}" 
+                    th:errors="*{email}" 
+                    class="text-danger alert alert-danger">
+                </small>
+                <small th:if="${#fields.hasErrors('email') and email != ''}" 
+                    th:text="${#fields.errors('email')[0]}" 
+                    class="text-danger alert alert-danger">
+                </small>
             </div>
             <div class="form-group">
                 <input type="password" id="password" th:field="*{password}" name="password" placeholder="Mot de passe">
-                <small th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger alert alert-danger"></small>
+                <small th:if="${#fields.hasErrors('password') and #fields.errors('password')[0] == 'Password is required'}" 
+                        th:text="${#fields.errors('password')[0]}" 
+                        class="text-danger alert alert-danger">
+                </small>
+                <small th:if="${#fields.hasErrors('password') and #fields.errors('password')[0] != 'Password is required'}" 
+                        th:text="${#fields.errors('password')[0]}" 
+                        class="text-danger alert alert-danger">
+                </small>
             </div>
             <button class="buttonSubmit"  type="submit">S'inscrire</button>
         </form>
