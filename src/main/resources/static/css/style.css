@@ -67,7 +67,7 @@ input {
 }
 
 .buttonCancel {
-    width: 40%;
+    /* width: 40%; */
     padding: 10px;
     background-color: red;
     color: white;
@@ -248,4 +248,13 @@ div.profileBtn {
     justify-content: center;
     align-items: center;
     gap: 30px;
+}
+
+.deposit {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }

@@ -37,4 +37,12 @@ public class Transaction {
 
     @Column(name = "date_created")
     private LocalDateTime dateCreated;
+
+    @Override
+    public String toString() {
+        return String.format(
+            "Transaction{id=%d, sender=%s, receiver=%s, amount=%s, fee=%s, description='%s', dateCreated=%s}",
+            id, sender.getUsername(), receiver.getUsername(), amount, fee, description, dateCreated
+        );
+}
 }

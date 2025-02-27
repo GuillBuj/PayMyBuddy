@@ -64,16 +64,17 @@ public class UserService {
 
     @Transactional
     public User createUser(RegisterUserDTO userDTO){
+        log.debug("*** Creating user: {}", userDTO);
         
         String lowerCaseUserName = userDTO.getUsername().toLowerCase();
         if(userRepository.existsByUsername(lowerCaseUserName)){
-            log.error("Username already taken: {}", lowerCaseUserName);
+            log.error("*** Username already taken: {}", lowerCaseUserName);
             throw new AlreadyExistsException("Username already taken: " + lowerCaseUserName);
         }
         
         String normalizedEmail = userDTO.getEmail().trim().toLowerCase();
         if(userRepository.existsByEmail(normalizedEmail)){
-            log.error("Email already used: {}", normalizedEmail);
+            log.error("*** Email already used: {}", normalizedEmail);
             throw new AlreadyExistsException("Email already used:" + normalizedEmail);
         }
         
@@ -85,20 +86,22 @@ public class UserService {
         user.setBuddies(new HashSet<>());
         user.setDateCreated(LocalDateTime.now());
 
-        log.info("User created: {}", user.getEmail());
+        User createdUser = userRepository.save(user);
+        log.info("*** User created: {}, {}", createdUser.getEmail(), createdUser.getUsername());
         
-        return userRepository.save(user);
+        return createdUser;
     }
 
     @Transactional
     public User updateUser(UpdateUserDTO userDTO){
-        
+        log.debug("*** Updating user: {}", userDTO);
+
         User user = userRepository.getById(userDTO.getId());
 
         if(!userDTO.getUsername().equals(user.getUsername())){
             String lowerCaseUserName = userDTO.getUsername().toLowerCase();
             if(userRepository.existsByUsername(lowerCaseUserName)){
-                log.error("Username already taken: {}", lowerCaseUserName);
+                log.error("*** Username already taken: {}", lowerCaseUserName);
                 throw new AlreadyExistsException("Username already taken: " + lowerCaseUserName);
             } else user.setUsername(lowerCaseUserName);
         }
@@ -106,7 +109,7 @@ public class UserService {
         if(!userDTO.getEmail().equals(user.getEmail())){
             String normalizedEmail = userDTO.getEmail().trim().toLowerCase();
             if(userRepository.existsByEmail(normalizedEmail)){
-                log.error("Email already used: {}", normalizedEmail);
+                log.error("*** Email already used: {}", normalizedEmail);
                 throw new AlreadyExistsException("Email already used:" + normalizedEmail);
             } else user.setEmail(normalizedEmail);
         }
@@ -115,12 +118,14 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         }
         
-        log.info("User updated: {}", user.getEmail());
+        User updatedUser = userRepository.save(user);
+        log.info("*** User updated: {}, {}", updatedUser.getEmail(), updatedUser.getUsername());
         
-        return userRepository.save(user);
+        return updatedUser;
     }
 
     public UserDTO getUserById(int id){
+        log.debug("*** Getting user by id: {}", id);
         User user = userRepository.findById(id).orElse(null);
         if (user == null){
             throw new NotFoundException("User not found with id " + id);
@@ -131,6 +136,8 @@ public class UserService {
     //on considère qu'il n'y a pas de réciprocité ni d'acceptation d'ajout
     @Transactional
     public void addBuddy(BuddyConnectionDTO buddyConnection){
+        log.debug("*** Adding buddy: {}", buddyConnection);
+
         User user = userRepository.findByEmail(buddyConnection.userEmail())
                 .orElseThrow(()-> new NotFoundException("User not found with email " + buddyConnection.userEmail()));
                 
@@ -143,13 +150,16 @@ public class UserService {
         };
         
         user.getBuddies().add(buddy);
-
         userRepository.save(user);
+
+        log.info("*** Buddy {} added to {} 's list", buddyConnection.buddyEmail(), buddyConnection.userEmail());
     }
   
 
     @Transactional
     public void removeBuddy(BuddyConnectionDTO buddyConnection){
+        log.debug("*** Removing buddy: {}", buddyConnection);
+
         User user = userRepository.findByEmail(buddyConnection.userEmail())
                 .orElseThrow(()-> new NotFoundException("User not found with email " + buddyConnection.userEmail()));
                 
@@ -162,38 +172,20 @@ public class UserService {
         }
         
         user.getBuddies().remove(buddy);
-
         userRepository.save(user);
+
+        log.info("*** Buddy {} removed from {} 's list", buddyConnection.buddyEmail(), buddyConnection.userEmail());
     }
     
     @Transactional
     public void deposit(BalanceOperationDTO operation){
+        log.debug("*** Processing deposit operation: {}", operation);
         operationService.updateBalance(operation, true);
     }
 
-    @Transactional
-    public void withdraw(BalanceOperationDTO operation){
-        operationService.updateBalance(operation, false);
-    }
-
-    // public TransactionListDTO getTransactions(User user){
-    //     return getTransactions(user.getId());
-    // }
-    
-    // public TransactionListDTO getTransactions(int userId){
-    //     List<TransactionInListDTO> transactions = transactionRepository
-    //         .findBySenderIdOrReceiverIdOrderByDateCreatedDesc(userId, userId)
-    //         .stream()
-    //         .map(transaction -> new TransactionInListDTO(
-    //             transaction.getDateCreated(),
-    //             transaction.getSender().getUsername(),
-    //             transaction.getReceiver().getUsername(),
-    //             transaction.getAmount(),
-    //             transaction.getDescription()
-    //         ))
-    //         .collect(Collectors.toList());
-
-    //     return new TransactionListDTO(transactions);
+    // @Transactional
+    // public void withdraw(BalanceOperationDTO operation){
+    //     operationService.updateBalance(operation, false);
     // }
 
     public Page<TransactionInListDTO> getTransactionsPaginated(User user, int page, int size){
@@ -201,6 +193,8 @@ public class UserService {
     }
     
     public Page<TransactionInListDTO> getTransactionsPaginated(int userId, int page, int size){
+        log.debug("*** Getting transactions for userId: {}", userId);
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("dateCreated").descending());
 
         Page<Transaction> transactionsPage =
@@ -216,20 +210,23 @@ public class UserService {
     }
 
     public User getUserByEmail(String email) {
+        log.debug("*** Getting user by email: {}", email);
+
         return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé: " + email));
     }
 
     public void authenticateUser(HttpServletRequest request, String email, String password){
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(email, password);
-
         Authentication authentication = authenticationManager.authenticate(token);
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        log.info("* User connected: {}", email);
     }
 
     public BuddiesDTO getBuddies(int userId) {
+        log.debug("*** Getting buddies for userId: {}", userId);
+
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
 

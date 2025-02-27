@@ -29,6 +29,8 @@ public class RegistrationController {
 
     @GetMapping
     public String showRegistrationForm(Model model) {
+        log.debug("- GET /register");
+
         model.addAttribute("userDTO", new RegisterUserDTO());
         return "register";
     }
@@ -38,24 +40,29 @@ public class RegistrationController {
                                 BindingResult bindingResult,
                                 Model model,
                                 RedirectAttributes redirectAttributes) {
+        log.debug("- POST /register : {}, {}", userDTO.getEmail(), userDTO.getUsername());
+
         if (bindingResult.hasErrors()) {
             log.error("Validation errors: {}", bindingResult.getAllErrors());
             return "register";
         }
         
         if(userService.existsByUsername(userDTO.getUsername())){
+            log.error("Username already taken: {}", userDTO.getUsername());
             model.addAttribute("errorUsername", "Username already taken");
             return "register";
         }
         
         if(userService.existsByEmail(userDTO.getEmail())){
-            model.addAttribute("errorEmail", "Email already taken");
+            log.error("Email already used: {}", userDTO.getPassword());
+            model.addAttribute("errorEmail", "Email already used");
             return "register";
         }
 
         userService.createUser(userDTO);
         log.debug("*** User created ***");
         redirectAttributes.addFlashAttribute("successMessage", "Account successfully created!");
+        
         return "redirect:/login";
     }
 }

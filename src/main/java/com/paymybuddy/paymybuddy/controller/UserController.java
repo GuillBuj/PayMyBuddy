@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,23 +54,41 @@ public class UserController {
     @Autowired
     private final TransactionService transactionService;
 
-    @GetMapping(produces = "application/json")
-    public ResponseEntity<UserDTO> getUserById(@RequestParam int id) {
-        UserDTO userDTO = userService.getUserById(id);
-        return ResponseEntity.ok(userDTO);
-    }
+    // @GetMapping(produces = "application/json")
+    // public ResponseEntity<UserDTO> getUserById(@RequestParam int id) {
+    //     UserDTO userDTO = userService.getUserById(id);
+    //     return ResponseEntity.ok(userDTO);
+    // }
 
-    @PostMapping("/pay")
-    public ResponseEntity<Transaction> sendMoney(@RequestBody TransactionRequestDTO transactionDTO){
-        Transaction transaction = transactionService.createTransaction(transactionDTO);
-        return ResponseEntity.ok(transaction);
-    }
+    // @PostMapping("/pay")
+    // public ResponseEntity<Transaction> sendMoney(@RequestBody TransactionRequestDTO transactionDTO){
+    //     Transaction transaction = transactionService.createTransaction(transactionDTO);
+    //     return ResponseEntity.ok(transaction);
+    // }
 
-    //pour test transaction
+    @GetMapping("/deposit")
+    public String showDepositPage(Model model) {
+        log.debug("- GET /user/deposit");
+
+        model.addAttribute("balanceOperationDTO", new BalanceOperationDTO("", BigDecimal.ZERO));
+        
+        return "deposit";
+    }
+    
     @PostMapping("/deposit")
-    public ResponseEntity<String> deposit(@RequestBody BalanceOperationDTO operation){
-        userService.deposit(operation);
-        return ResponseEntity.ok("Money added");
+    public String deposit(@ModelAttribute BalanceOperationDTO operation, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
+        log.debug("- POST /user/deposit: {}", operation);
+        
+        String userEmail = userDetails.getUsername();
+        
+        try {
+            userService.deposit(new BalanceOperationDTO(userEmail, operation.amount()));
+            redirectAttributes.addFlashAttribute("successMessage", "Money added to balance");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Deposit failed");
+        }
+        
+        return "redirect:/user/transfer";
     }
 
     //web
@@ -77,8 +96,9 @@ public class UserController {
     public String getProfile(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         
         String email = userDetails.getUsername();
-        User user = userService.getUserByEmail(email);
+        log.debug("- GET /user/profile: {}", email);
 
+        User user = userService.getUserByEmail(email);
         String username = user.getUsername();
         String userEmail = user.getEmail();
 
@@ -93,6 +113,8 @@ public class UserController {
     public String editProfile(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         
         String email = userDetails.getUsername();
+        log.debug("- GET /user/profile/edit: {}", email);
+
         User user = userService.getUserByEmail(email);
 
         String username = user.getUsername();
@@ -112,24 +134,23 @@ public class UserController {
                                 @AuthenticationPrincipal UserDetails userDetails,
                                 RedirectAttributes redirectAttributes
                                 ) {
+        log.debug("- PATCH /user/profile: {}", email);
+        
         User user = userService.getUserByEmail(userDetails.getUsername());
-        log.info("Avant: " + user.getUsername() + "/" + user.getEmail());
-        log.info("Apres: " + username + "/" + email);
+        
         if(!username.equals(user.getUsername())){
-            log.info(username +" != " + user.getUsername());
             if(userService.existsByUsername(username)) {
-                log.error("Username already taken.");
+                log.error("- Username already taken.");
                 redirectAttributes.addFlashAttribute("errorMessage", "Username already taken");
                 return "redirect:/user/profile/edit";
             }
         }
         
         if(!email.equals(user.getEmail())){
-            log.info(email +" != " + user.getEmail());
             if(userService.existsByEmail(email)){
-            log.error("Email already taken.");
-            redirectAttributes.addFlashAttribute("errorMessage", "Email already taken");
-            return "redirect:/user/profile/edit";
+                log.error("- Email already taken.");
+                redirectAttributes.addFlashAttribute("errorMessage", "Email already taken");
+                return "redirect:/user/profile/edit";
             }
         }
 
@@ -147,14 +168,15 @@ public class UserController {
                                 RedirectAttributes redirectAttributes,
                                 @AuthenticationPrincipal UserDetails userDetails) {
         
-        try{ {
-            String email = userDetails.getUsername();
+        String email = userDetails.getUsername();
+        TransactionRequestDTO transaction = new TransactionRequestDTO(email, buddyEmail, amount, description);
+        log.debug("- POST /user/transfer: {}", transaction);
 
-            transactionService.createTransaction(new TransactionRequestDTO(email, buddyEmail, amount, description));
-
+        try{
+            transactionService.createTransaction(transaction);
             redirectAttributes.addFlashAttribute("successMessage", "Transfer successful!");
             return "redirect:/user/transfer";
-        }} catch(NotEnoughMoneyException e) {
+        } catch(NotEnoughMoneyException e) {
             log.info("--- NotEnoughMoney ---");
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());}
         
@@ -169,8 +191,9 @@ public class UserController {
                                     ) {
         
         String email = userDetails.getUsername();
-        User user = userService.getUserByEmail(email);
+        log.debug("- GET /user/transfer: {}", email);
 
+        User user = userService.getUserByEmail(email);
         BigDecimal balance = user.getBalance();
         
         Page<TransactionInListDTO> transactionsPage = userService.getTransactionsPaginated(user.getId(), page, size);
@@ -192,34 +215,34 @@ public class UserController {
 
     @PostMapping("/relation")
     public String addBuddy(@RequestParam("buddyEmail") String buddyEmail, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes){
-        log.info("--- debut addBuddy ---");
+        
         String userEmail = userDetails.getUsername();
         BuddyConnectionDTO buddyConnectionDTO = new BuddyConnectionDTO(userEmail, buddyEmail);
+        log.debug("- POST /user/relation: {}", buddyConnectionDTO);
 
         try{
-            log.info("--- try avant addBuddy service ---");
             userService.addBuddy(buddyConnectionDTO);
-            log.info("--- try apres addBuddy service ---");
             redirectAttributes.addFlashAttribute("successMessage", "Relation ajoutée avec succès!");
         } catch (NotFoundException e) {
-            log.info("--- dans le catch pour NotFoundException ---");
+            log.error("- User not found: {}", buddyEmail);
             redirectAttributes.addFlashAttribute("errorMessage", "L'utilisateur avec cet email n'a pas été trouvé.");
             return "redirect:/user/relation";
         } catch (AlreadyExistsException e) {
-            log.info("--- dans le catch pour AlreadyExistsException ---");
+            log.error("- Buddy {} already in {} list", buddyEmail, userEmail);
             redirectAttributes.addFlashAttribute("errorMessage", "Cette relation existe déjà entre les utilisateurs.");
             return "redirect:/user/relation";
         }
 
-        log.info("--- apres try/catch ---");
         return "redirect:/user/relation";
     }
 
     @GetMapping("/relation")
     public String showRelationForm(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        
         String email = userDetails.getUsername();
-        User user = userService.getUserByEmail(email);
+        log.debug("- GET /user/relation: {}", email);
 
+        User user = userService.getUserByEmail(email);
         BuddiesDTO buddies = userService.getBuddies(user.getId());
 
         model.addAttribute("buddies", buddies);
@@ -228,8 +251,12 @@ public class UserController {
     }
 
     @DeleteMapping("/relation/{id}")
-    public String deleteBuddy(@PathVariable int id, @AuthenticationPrincipal UserDetails userDetails) {
-        userService.removeBuddy(new BuddyConnectionDTO(userDetails.getUsername(), userService.getUserById(id).email()));
+    public String removeBuddy(@PathVariable int id, @AuthenticationPrincipal UserDetails userDetails) {
+        BuddyConnectionDTO buddyConnection = new BuddyConnectionDTO(userDetails.getUsername(), userService.getUserById(id).email());
+        log.debug("- DELETE /user/relation", buddyConnection);
+
+        userService.removeBuddy(buddyConnection);
+        
         return "redirect:/user/relation";
     }
 

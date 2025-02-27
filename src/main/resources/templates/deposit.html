@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>Pay My Buddy - Deposit</title>
+</head>
+<body>
+    <div class="container">
+        <div th:insert="~{fragment/navbar :: navbar}"></div>
+        <section>
+            <div class="deposit">
+                <h2>Déposer</h2>
+                <form th:action="@{/user/deposit}" method="POST" th:object="${balanceOperationDTO}" class="deposit">
+                    <div class="form-group">
+                        <input type="number" th:field="*{amount}" min="0" step="0.01" required />
+                    </div>
+                    <button type="submit" class="buttonSubmit">Valider</button>
+                </form>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

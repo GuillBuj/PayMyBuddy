@@ -31,49 +31,60 @@ public class TransactionService {
     private BalanceService operationService;
 
     @Transactional
-    public Transaction createTransaction(TransactionRequestDTO transaction){
-        User sender = userRepository.findByEmail(transaction.senderEmail())
-                .orElseThrow(()-> new NotFoundException("User not found with email " + transaction.senderEmail()));
-                
-        User receiver = userRepository.findByEmail(transaction.receiverEmail())
-                .orElseThrow(()-> new NotFoundException("Buddy not found with email " + transaction.receiverEmail()));
+    public Transaction createTransaction(TransactionRequestDTO transactionDTO){
+        log.debug("*** Creating transaction: {}", transactionDTO);
 
-        BigDecimal amount = transaction.amount();
+        User sender = userRepository.findByEmail(transactionDTO.senderEmail())
+                .orElseThrow(()-> new NotFoundException("User not found:" + transactionDTO.senderEmail()));
+                
+        User receiver = userRepository.findByEmail(transactionDTO.receiverEmail())
+                .orElseThrow(()-> new NotFoundException("Buddy not found:" + transactionDTO.receiverEmail()));
+
+        BigDecimal amount = transactionDTO.amount();
         
-        BalanceOperationDTO operation = new BalanceOperationDTO(transaction.senderEmail(),amount);
+        BalanceOperationDTO operation = new BalanceOperationDTO(transactionDTO.senderEmail(),amount);
         
         validateEnoughMoney(operation);
 
         subtractFromBalance(operation);
-        addToBalance(new BalanceOperationDTO(transaction.receiverEmail(), amount));
+        addToBalance(new BalanceOperationDTO(transactionDTO.receiverEmail(), amount));
 
-        Transaction transactionDone = new Transaction();
-        transactionDone.setSender(sender);
-        transactionDone.setReceiver(receiver);
-        transactionDone.setAmount(amount);
-        transactionDone.setDescription(transaction.description());
+        Transaction transaction = new Transaction();
+        transaction.setSender(sender);
+        transaction.setReceiver(receiver);
+        transaction.setAmount(amount);
+        transaction.setDescription(transactionDTO.description());
         //pour l'instant à zéro
-        transactionDone.setFee(BigDecimal.ZERO);
-        transactionDone.setDateCreated(LocalDateTime.now());
+        transaction.setFee(BigDecimal.ZERO);
+        transaction.setDateCreated(LocalDateTime.now());
 
-        return transactionRepository.save(transactionDone);
+        Transaction transactionDone = transactionRepository.save(transaction);
+        log.info("*** Transaction saved: {}", transactionDone);
+
+        return transactionDone;
     }
 
     public void addToBalance(BalanceOperationDTO operation){
+        log.debug("*** Adding to balance");
+
         operationService.updateBalance(operation, true);
     }
 
     public void subtractFromBalance(BalanceOperationDTO operation){
+        log.debug("*** Subtracting from balance");
+
         operationService.updateBalance(operation, false);
     }
 
     public void validateEnoughMoney(BalanceOperationDTO operation){
+        log.debug("*** Validating enough money for transaction: ", operation);
+
         User user = userRepository.findByEmail(operation.userEmail())
-                .orElseThrow(()-> new NotFoundException("User not found with email " + operation.userEmail()));
+                .orElseThrow(()-> new NotFoundException("User not found:" + operation.userEmail()));
 
         if(user.getBalance().compareTo(operation.amount())<0){
-            log.info("--- validateEnoughMoney: Not enough money");
-            throw new NotEnoughMoneyException("Not enough money for this operation");
+            log.error("*** Not enough money for this transaction: {}", operation);
+            throw new NotEnoughMoneyException("Not enough money for this transaction");
         }
     }
 }
