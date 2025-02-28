@@ -35,6 +35,10 @@
                             <td>
                                 <span  th:if="${!editMode}" th:text="${email}"></span>
                                 <input th:if="${editMode}" type="email" name="email" th:value="${updateUserDTO.email}">
+                                <small th:if="${emailError}" 
+                                    th:text="${emailError}" 
+                                    class="text-danger alert alert-danger">
+                                </small>
                             </td>
                         </tr>
                         <tr>

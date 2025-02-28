@@ -156,7 +156,7 @@ public class UserController {
         if(!updateUsername.equals(user.getUsername())){
             if(userService.existsByUsername(updateUsername)) {
                 log.error("- Username already taken: {}", updateUsername);
-                redirectAttributes.addFlashAttribute("errorMessage", "Username already taken");
+                redirectAttributes.addFlashAttribute("errorMessage", "Username already taken:" + updateUsername);
                 return "redirect:/user/profile/edit";
             }
         }
@@ -165,7 +165,7 @@ public class UserController {
         if(!updateEmail.equals(user.getEmail())){
             if(userService.existsByEmail(updateEmail)){
                 log.error("- Email already taken: {}", updateEmail);
-                redirectAttributes.addFlashAttribute("errorMessage", "Email already taken");
+                redirectAttributes.addFlashAttribute("errorMessage", "Email already taken : " + updateEmail);
                 return "redirect:/user/profile/edit";
             }
         }
