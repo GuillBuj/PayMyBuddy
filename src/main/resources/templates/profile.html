@@ -16,21 +16,25 @@
             </div>
             <div class="profile-info">
                 <h2>Profil</h2>
-                <form th:action="@{/user/profile}" method="post">
+                <form th:action="@{/user/profile}" method="post" th:object="${updateUserDTO}">
                     <input type="hidden" name="_method" value="patch">
                     <table class="profile-table">
                         <tr>
                             <td><strong>Nom d'utilisateur:</strong></td>
                             <td>
                                 <span  th:if="${!editMode}" th:text="${username}"></span>
-                                <input th:if="${editMode}" type="text" name="username" th:value="${username}">
+                                <input th:if="${editMode}" type="text" name="username" th:value="${updateUserDTO.username}">
+                                <small th:if="${usernameError}" 
+                                    th:text="${usernameError}" 
+                                    class="text-danger alert alert-danger">
+                                </small>
                             </td>
                         </tr>
                         <tr>
                             <td><strong>Email:</strong></td>
                             <td>
                                 <span  th:if="${!editMode}" th:text="${email}"></span>
-                                <input th:if="${editMode}" type="email" name="email" th:value="${email}">
+                                <input th:if="${editMode}" type="email" name="email" th:value="${updateUserDTO.email}">
                             </td>
                         </tr>
                         <tr>

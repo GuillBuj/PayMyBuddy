@@ -5,20 +5,17 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -30,15 +27,14 @@ import com.paymybuddy.paymybuddy.dto.BuddyForTransferDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionInListDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionRequestDTO;
 import com.paymybuddy.paymybuddy.dto.UpdateUserDTO;
-import com.paymybuddy.paymybuddy.dto.UserDTO;
 import com.paymybuddy.paymybuddy.exception.AlreadyExistsException;
 import com.paymybuddy.paymybuddy.exception.NotEnoughMoneyException;
 import com.paymybuddy.paymybuddy.exception.NotFoundException;
-import com.paymybuddy.paymybuddy.model.Transaction;
 import com.paymybuddy.paymybuddy.model.User;
 import com.paymybuddy.paymybuddy.service.TransactionService;
 import com.paymybuddy.paymybuddy.service.UserService;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -111,50 +107,70 @@ public class UserController {
 
     @GetMapping("/profile/edit")
     public String editProfile(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        
+        //TODO: validation
         String email = userDetails.getUsername();
         log.debug("- GET /user/profile/edit: {}", email);
 
         User user = userService.getUserByEmail(email);
 
-        String username = user.getUsername();
-        String userEmail = user.getEmail();
+        UpdateUserDTO updateUserDTO = new UpdateUserDTO();
+        updateUserDTO.setId(user.getId());
+        updateUserDTO.setUsername(user.getUsername());
+        updateUserDTO.setEmail(user.getEmail());
+        updateUserDTO.setPassword("");
 
-        model.addAttribute("username", username);
-        model.addAttribute("email", userEmail);
+        model.addAttribute("updateUserDTO", updateUserDTO);
         model.addAttribute("editMode", true);
 
         return "profile";
     }
 
     @PatchMapping("/profile")
-    public String updateProfile(@RequestParam String username,
-                                @RequestParam String email,
-                                @RequestParam String password,
+    public String updateProfile(@Valid UpdateUserDTO updateUserDTO, 
+                                BindingResult bindingResult,
                                 @AuthenticationPrincipal UserDetails userDetails,
                                 RedirectAttributes redirectAttributes
                                 ) {
-        log.debug("- PATCH /user/profile: {}", email);
-        
+        log.debug("- PATCH /user/profile: {}", updateUserDTO);
+
+        if (bindingResult.hasErrors()) {
+            log.error("Validation errors: {}", bindingResult.getAllErrors());
+            bindingResult.getFieldErrors().forEach(error -> 
+                redirectAttributes.addFlashAttribute(error.getField() + "Error", error.getDefaultMessage()));
+            // return "redirect:/user/profile/edit";
+            return "redirect:/user/profile/edit";
+        }
+
+        String updatePassword = updateUserDTO.getPassword();
+        if (updatePassword != null && !updatePassword.isEmpty()) {
+            if (updatePassword.length() < 3) {
+                log.error("- Password too short: {}", updatePassword);
+                redirectAttributes.addFlashAttribute("errorMessage", "Le mot de passe doit contenir au moins 3 caractères");
+                return "redirect:/user/profile/edit";
+            }
+        }
+  
         User user = userService.getUserByEmail(userDetails.getUsername());
         
-        if(!username.equals(user.getUsername())){
-            if(userService.existsByUsername(username)) {
-                log.error("- Username already taken.");
+        String updateUsername = updateUserDTO.getUsername();
+        if(!updateUsername.equals(user.getUsername())){
+            if(userService.existsByUsername(updateUsername)) {
+                log.error("- Username already taken: {}", updateUsername);
                 redirectAttributes.addFlashAttribute("errorMessage", "Username already taken");
                 return "redirect:/user/profile/edit";
             }
         }
         
-        if(!email.equals(user.getEmail())){
-            if(userService.existsByEmail(email)){
-                log.error("- Email already taken.");
+        String updateEmail = updateUserDTO.getEmail();
+        if(!updateEmail.equals(user.getEmail())){
+            if(userService.existsByEmail(updateEmail)){
+                log.error("- Email already taken: {}", updateEmail);
                 redirectAttributes.addFlashAttribute("errorMessage", "Email already taken");
                 return "redirect:/user/profile/edit";
             }
         }
 
-        userService.updateUser(new UpdateUserDTO(user.getId(),username, email, password));
+        userService.updateUser(new UpdateUserDTO(user.getId(), updateUsername, updateEmail, updateUserDTO.getPassword()));
         redirectAttributes.addFlashAttribute("successMessage", "Profile updated");
         
         return "redirect:/user/profile";
