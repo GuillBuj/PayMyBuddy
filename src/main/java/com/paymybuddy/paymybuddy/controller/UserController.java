@@ -187,14 +187,17 @@ public class UserController {
         TransactionRequestDTO transaction = new TransactionRequestDTO(email, buddyEmail, amount, description);
         log.debug("- POST /user/transfer: {}", transaction);
 
-        try{
-            transactionService.createTransaction(transaction);
-            redirectAttributes.addFlashAttribute("successMessage", "Transfert");
-            return "redirect:/user/transfer";
-        } catch(NotEnoughMoneyException e) {
-            log.info("--- NotEnoughMoney ---");
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());}
+        // try{
+        //     transactionService.createTransaction(transaction);
+        //     redirectAttributes.addFlashAttribute("successMessage", "Transfert");
+        //     return "redirect:/user/transfer";
+        // } catch(NotEnoughMoneyException e) {
+        //     log.info("--- NotEnoughMoney ---");
+        //     redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());}
         
+        transactionService.createTransaction(transaction);
+        redirectAttributes.addFlashAttribute("successMessage", "Transfert");
+
         return "redirect:/user/transfer";
     }
 

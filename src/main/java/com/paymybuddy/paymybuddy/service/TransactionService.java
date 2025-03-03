@@ -11,6 +11,7 @@ import com.paymybuddy.paymybuddy.dto.BalanceOperationDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionRequestDTO;
 import com.paymybuddy.paymybuddy.exception.NotEnoughMoneyException;
 import com.paymybuddy.paymybuddy.exception.NotFoundException;
+import com.paymybuddy.paymybuddy.exception.SelfSendException;
 import com.paymybuddy.paymybuddy.model.Transaction;
 import com.paymybuddy.paymybuddy.model.User;
 import com.paymybuddy.paymybuddy.repository.TransactionRepository;
@@ -34,6 +35,11 @@ public class TransactionService {
     public Transaction createTransaction(TransactionRequestDTO transactionDTO){
         log.debug("*** Creating transaction: {}", transactionDTO);
 
+        // pas possible en utilisation normale
+        if(transactionDTO.receiverEmail().equals(transactionDTO.senderEmail())){
+            throw new SelfSendException(transactionDTO.senderEmail());
+        }
+        
         User sender = userRepository.findByEmail(transactionDTO.senderEmail())
                 .orElseThrow(()-> new NotFoundException("User not found:" + transactionDTO.senderEmail()));
                 
@@ -83,8 +89,7 @@ public class TransactionService {
                 .orElseThrow(()-> new NotFoundException("User not found:" + operation.userEmail()));
 
         if(user.getBalance().compareTo(operation.amount())<0){
-            log.error("*** Not enough money for this transaction: {}", operation);
-            throw new NotEnoughMoneyException("Not enough money for this transaction");
+            throw new NotEnoughMoneyException("*** Not enough money for this transaction: " + operation);
         }
     }
 }
