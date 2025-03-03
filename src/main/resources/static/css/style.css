@@ -15,7 +15,7 @@ body {
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     width: 280px;
     min-height: 280px;
     text-align: center;
@@ -67,7 +67,6 @@ input {
 }
 
 .buttonCancel {
-    /* width: 40%; */
     padding: 10px;
     background-color: red;
     color: white;
@@ -106,6 +105,7 @@ nav {
     align-items: center;
     background-color: #f8f9fa;
     box-sizing: border-box;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .titleleft {
@@ -164,7 +164,7 @@ h2{
 
 div.transactions {
     height: 60vh;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 table.transactions {
@@ -178,12 +178,17 @@ h2 {
 
 input.buddyEmail{
     width: 300px;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 .formHorizontal {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
+    padding: 10px 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 div.balance{
@@ -196,10 +201,10 @@ div.balance{
 }
 
 small.text-danger {
-    display: block;         /* Pour forcer l'élément à occuper toute la largeur */
-    text-align: center;     /* Centre le texte */
-    margin-top: 5px;        /* Ajoute un petit espace au-dessus */
-    font-size: 0.75rem;    /* Optionnel : réduit légèrement la taille du texte */
+    display: block;
+    text-align: center;
+    margin-top: 5px;
+    font-size: 0.75rem;
 }
 
 
@@ -235,7 +240,7 @@ div.pagination {
 
 .profile-info {
     width: 350px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     padding: 0px 20px 20px 20px;
 }
 
@@ -251,10 +256,15 @@ div.profileBtn {
 }
 
 .deposit {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     text-align: center;
+    align-items: center;
     padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+form.deposit {
+    box-shadow: none;
 }

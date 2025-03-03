@@ -46,19 +46,19 @@ public class RegistrationController {
         
         if(userService.existsByUsername(userDTO.getUsername())){
             log.error("Username already taken: {}", userDTO.getUsername());
-            model.addAttribute("errorUsername", "Username already taken");
+            model.addAttribute("errorUsername", "Nom d'utilisateur déjà pris");
             return "register";
         }
         
         if(userService.existsByEmail(userDTO.getEmail())){
             log.error("Email already used: {}", userDTO.getPassword());
-            model.addAttribute("errorEmail", "Email already used");
+            model.addAttribute("errorEmail", "Adresse mail déjà utilisée");
             return "register";
         }
 
         userService.createUser(userDTO);
         log.debug("*** User created ***");
-        redirectAttributes.addFlashAttribute("successMessage", "Account successfully created!");
+        redirectAttributes.addFlashAttribute("successMessage", "Compte créé avec succès");
         
         return "redirect:/login";
     }

@@ -79,15 +79,14 @@ public class UserController {
         
         try {
             userService.deposit(new BalanceOperationDTO(userEmail, operation.amount()));
-            redirectAttributes.addFlashAttribute("successMessage", "Money added to balance");
+            redirectAttributes.addFlashAttribute("successMessage", "Argent ajouté");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Deposit failed");
+            redirectAttributes.addFlashAttribute("errorMessage", "Erreur dépôt");
         }
         
         return "redirect:/user/transfer";
     }
 
-    //web
     @GetMapping("/profile")
     public String getProfile(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         
@@ -107,7 +106,7 @@ public class UserController {
 
     @GetMapping("/profile/edit")
     public String editProfile(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        //TODO: validation
+        
         String email = userDetails.getUsername();
         log.debug("- GET /user/profile/edit: {}", email);
 
@@ -137,7 +136,6 @@ public class UserController {
             log.error("Validation errors: {}", bindingResult.getAllErrors());
             bindingResult.getFieldErrors().forEach(error -> 
                 redirectAttributes.addFlashAttribute(error.getField() + "Error", error.getDefaultMessage()));
-            // return "redirect:/user/profile/edit";
             return "redirect:/user/profile/edit";
         }
 
@@ -156,7 +154,7 @@ public class UserController {
         if(!updateUsername.equals(user.getUsername())){
             if(userService.existsByUsername(updateUsername)) {
                 log.error("- Username already taken: {}", updateUsername);
-                redirectAttributes.addFlashAttribute("errorMessage", "Username already taken:" + updateUsername);
+                redirectAttributes.addFlashAttribute("errorMessage", "Nom d'utilisateur déjà pris:" + updateUsername);
                 return "redirect:/user/profile/edit";
             }
         }
@@ -165,13 +163,13 @@ public class UserController {
         if(!updateEmail.equals(user.getEmail())){
             if(userService.existsByEmail(updateEmail)){
                 log.error("- Email already taken: {}", updateEmail);
-                redirectAttributes.addFlashAttribute("errorMessage", "Email already taken : " + updateEmail);
+                redirectAttributes.addFlashAttribute("errorMessage", "Adresse mail déjà utilisée: " + updateEmail);
                 return "redirect:/user/profile/edit";
             }
         }
 
         userService.updateUser(new UpdateUserDTO(user.getId(), updateUsername, updateEmail, updateUserDTO.getPassword()));
-        redirectAttributes.addFlashAttribute("successMessage", "Profile updated");
+        redirectAttributes.addFlashAttribute("successMessage", "Profil mis à jour");
         
         return "redirect:/user/profile";
     }
@@ -190,7 +188,7 @@ public class UserController {
 
         try{
             transactionService.createTransaction(transaction);
-            redirectAttributes.addFlashAttribute("successMessage", "Transfer successful!");
+            redirectAttributes.addFlashAttribute("successMessage", "Transfert");
             return "redirect:/user/transfer";
         } catch(NotEnoughMoneyException e) {
             log.info("--- NotEnoughMoney ---");
@@ -238,14 +236,14 @@ public class UserController {
 
         try{
             userService.addBuddy(buddyConnectionDTO);
-            redirectAttributes.addFlashAttribute("successMessage", "Relation ajoutée avec succès!");
+            redirectAttributes.addFlashAttribute("successMessage", "Buddy ajouté avec succès");
         } catch (NotFoundException e) {
             log.error("- User not found: {}", buddyEmail);
-            redirectAttributes.addFlashAttribute("errorMessage", "L'utilisateur avec cet email n'a pas été trouvé.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Aucun utilisateur trouvé avec cette adresse mail");
             return "redirect:/user/relation";
         } catch (AlreadyExistsException e) {
             log.error("- Buddy {} already in {} list", buddyEmail, userEmail);
-            redirectAttributes.addFlashAttribute("errorMessage", "Cette relation existe déjà entre les utilisateurs.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Buddy déjà dans votre liste");
             return "redirect:/user/relation";
         }
 

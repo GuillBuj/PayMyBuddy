@@ -14,9 +14,7 @@
             <p th:text="${errorMessage}"></p>
         </div>
         <form class="formHorizontal" th:action="@{relation}" method="post">
-            <div class="form-group">
-                <input class="buddyEmail" type="email" id="buddyEmail" name="buddyEmail" placeholder="Mail à ajouter" required>
-            </div>
+            <input class="buddyEmail" type="email" id="buddyEmail" name="buddyEmail" placeholder="Mail à ajouter" required>
             <button class="buttonSubmit" type="submit">Ajouter</button>
         </form>
         
@@ -25,8 +23,8 @@
             <table class="transactions">
                 <thead>
                     <tr>
-                        <th>Username</th>
-                        <th>Email</th>
+                        <th>Buddy</th>
+                        <th>Adresse mail</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,7 +34,7 @@
                         <td>
                             <form th:action="@{/user/relation/{id}(id=${buddy.id})}" method="post">
                                 <input type="hidden" name="_method" value="DELETE">
-                                <button type="submit" class="buttonCancel">Delete</button>
+                                <button type="submit" class="buttonCancel">x</button>
                             </form>
                         </td>
                     </tr>

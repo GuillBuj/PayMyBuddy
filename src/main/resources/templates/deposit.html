@@ -11,9 +11,7 @@
             <div class="deposit">
                 <h2>Déposer</h2>
                 <form th:action="@{/user/deposit}" method="POST" th:object="${balanceOperationDTO}" class="deposit">
-                    <div class="form-group">
-                        <input type="number" th:field="*{amount}" min="0" step="0.01" required />
-                    </div>
+                    <input type="number" th:field="*{amount}" min="0" step="0.01" required />
                     <button type="submit" class="buttonSubmit">Valider</button>
                 </form>
             </div>

@@ -18,7 +18,7 @@ public class LoginController {
         String errorMessage = (String) request.getSession().getAttribute("errorMessage");
 
         if (errorMessage != null) {
-            model.addAttribute("errorMessage", errorMessage);
+            model.addAttribute("errorMessage", "Erreur. Vérifiez mot de passe et adresse mail");
             request.getSession().removeAttribute("errorMessage");
         }
         
