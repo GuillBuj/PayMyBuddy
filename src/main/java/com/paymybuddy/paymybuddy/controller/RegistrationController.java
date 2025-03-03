@@ -51,7 +51,7 @@ public class RegistrationController {
         }
         
         if(userService.existsByEmail(userDTO.getEmail())){
-            log.error("Email already used: {}", userDTO.getPassword());
+            log.error("Email already used: {}", userDTO.getEmail());
             model.addAttribute("errorEmail", "Adresse mail déjà utilisée");
             return "register";
         }

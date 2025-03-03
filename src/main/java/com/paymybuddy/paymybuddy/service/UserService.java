@@ -27,7 +27,10 @@ import com.paymybuddy.paymybuddy.dto.RegisterUserDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionInListDTO;
 import com.paymybuddy.paymybuddy.dto.UpdateUserDTO;
 import com.paymybuddy.paymybuddy.dto.UserDTO;
-import com.paymybuddy.paymybuddy.exception.AlreadyExistsException;
+import com.paymybuddy.paymybuddy.exception.UsernameAlreadyTakenException;
+import com.paymybuddy.paymybuddy.exception.BuddyAlreadyAddedException;
+import com.paymybuddy.paymybuddy.exception.BuddyNotFoundException;
+import com.paymybuddy.paymybuddy.exception.EmailAlreadyUsedException;
 import com.paymybuddy.paymybuddy.exception.NotFoundException;
 import com.paymybuddy.paymybuddy.exception.SelfAddException;
 import com.paymybuddy.paymybuddy.model.Transaction;
@@ -70,13 +73,13 @@ public class UserService {
         String lowerCaseUserName = userDTO.getUsername().toLowerCase();
         if(userRepository.existsByUsername(lowerCaseUserName)){
             log.error("*** Username already taken: {}", lowerCaseUserName);
-            throw new AlreadyExistsException("Username already taken: " + lowerCaseUserName);
+            throw new UsernameAlreadyTakenException("Username already taken: " + lowerCaseUserName);
         }
         
         String normalizedEmail = userDTO.getEmail().trim().toLowerCase();
         if(userRepository.existsByEmail(normalizedEmail)){
             log.error("*** Email already used: {}", normalizedEmail);
-            throw new AlreadyExistsException("Email already used:" + normalizedEmail);
+            throw new EmailAlreadyUsedException("Email already used:" + normalizedEmail);
         }
         
         User user = new User();
@@ -103,7 +106,7 @@ public class UserService {
             String lowerCaseUserName = userDTO.getUsername().toLowerCase();
             if(userRepository.existsByUsername(lowerCaseUserName)){
                 log.error("*** Username already taken: {}", lowerCaseUserName);
-                throw new AlreadyExistsException("Username already taken: " + lowerCaseUserName);
+                throw new UsernameAlreadyTakenException("Username already taken: " + lowerCaseUserName);
             } else user.setUsername(lowerCaseUserName);
         }
         
@@ -111,7 +114,7 @@ public class UserService {
             String normalizedEmail = userDTO.getEmail().trim().toLowerCase();
             if(userRepository.existsByEmail(normalizedEmail)){
                 log.error("*** Email already used: {}", normalizedEmail);
-                throw new AlreadyExistsException("Email already used:" + normalizedEmail);
+                throw new EmailAlreadyUsedException("Email already used:" + normalizedEmail);
             } else user.setEmail(normalizedEmail);
         }
         
@@ -147,11 +150,11 @@ public class UserService {
                 .orElseThrow(()-> new NotFoundException("User not found with email " + buddyConnection.userEmail()));
                 
         User buddy = userRepository.findByEmail(buddyConnection.buddyEmail())
-                .orElseThrow(()-> new NotFoundException("Buddy not found with email " + buddyConnection.buddyEmail()));
+                .orElseThrow(()-> new BuddyNotFoundException("Buddy not found with email " + buddyConnection.buddyEmail(), buddyConnection.buddyEmail()));
 
         if (user.getBuddies().contains(buddy)){
-            throw new AlreadyExistsException("Buddy connection between " + 
-                buddyConnection.userEmail() + " and " + buddyConnection.buddyEmail() + "already exists");
+            throw new BuddyAlreadyAddedException("Buddy connection between " + 
+                buddyConnection.userEmail() + " and " + buddyConnection.buddyEmail() + "already exists", buddy.getUsername());
         };
         
         user.getBuddies().add(buddy);

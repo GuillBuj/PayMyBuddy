@@ -27,10 +27,6 @@ import com.paymybuddy.paymybuddy.dto.BuddyForTransferDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionInListDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionRequestDTO;
 import com.paymybuddy.paymybuddy.dto.UpdateUserDTO;
-import com.paymybuddy.paymybuddy.exception.AlreadyExistsException;
-import com.paymybuddy.paymybuddy.exception.NotEnoughMoneyException;
-import com.paymybuddy.paymybuddy.exception.NotFoundException;
-import com.paymybuddy.paymybuddy.exception.SelfAddException;
 import com.paymybuddy.paymybuddy.model.User;
 import com.paymybuddy.paymybuddy.service.TransactionService;
 import com.paymybuddy.paymybuddy.service.UserService;
@@ -187,16 +183,8 @@ public class UserController {
         TransactionRequestDTO transaction = new TransactionRequestDTO(email, buddyEmail, amount, description);
         log.debug("- POST /user/transfer: {}", transaction);
 
-        // try{
-        //     transactionService.createTransaction(transaction);
-        //     redirectAttributes.addFlashAttribute("successMessage", "Transfert");
-        //     return "redirect:/user/transfer";
-        // } catch(NotEnoughMoneyException e) {
-        //     log.info("--- NotEnoughMoney ---");
-        //     redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());}
-        
         transactionService.createTransaction(transaction);
-        redirectAttributes.addFlashAttribute("successMessage", "Transfert");
+        redirectAttributes.addFlashAttribute("successMessage", "Transfert réussi");
 
         return "redirect:/user/transfer";
     }
@@ -238,22 +226,8 @@ public class UserController {
         BuddyConnectionDTO buddyConnectionDTO = new BuddyConnectionDTO(userEmail, buddyEmail);
         log.debug("- POST /user/relation: {}", buddyConnectionDTO);
 
-        try{
-            userService.addBuddy(buddyConnectionDTO);
-            redirectAttributes.addFlashAttribute("successMessage", "Buddy ajouté avec succès");
-        } catch (NotFoundException e) {
-            log.error("- User not found: {}", buddyEmail);
-            redirectAttributes.addFlashAttribute("errorMessage", "Aucun utilisateur trouvé avec cette adresse mail");
-            return "redirect:/user/relation";
-        } catch (AlreadyExistsException e) {
-            log.error("- Buddy {} already in {} list", buddyEmail, userEmail);
-            redirectAttributes.addFlashAttribute("errorMessage", "Buddy déjà dans votre liste");
-            return "redirect:/user/relation";
-        } catch (SelfAddException e) {
-            log.error("- {} tried to add himself in his list", userEmail);
-            redirectAttributes.addFlashAttribute("errorMessage", "Vous ne pouvez pas vous ajouter vous-même");
-            return "redirect:/user/relation";
-        }
+        userService.addBuddy(buddyConnectionDTO);
+        redirectAttributes.addFlashAttribute("successMessage", "Buddy ajouté avec succès");
 
         return "redirect:/user/relation";
     }
