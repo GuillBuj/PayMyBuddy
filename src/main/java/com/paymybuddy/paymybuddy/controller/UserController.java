@@ -30,6 +30,7 @@ import com.paymybuddy.paymybuddy.dto.UpdateUserDTO;
 import com.paymybuddy.paymybuddy.exception.AlreadyExistsException;
 import com.paymybuddy.paymybuddy.exception.NotEnoughMoneyException;
 import com.paymybuddy.paymybuddy.exception.NotFoundException;
+import com.paymybuddy.paymybuddy.exception.SelfAddException;
 import com.paymybuddy.paymybuddy.model.User;
 import com.paymybuddy.paymybuddy.service.TransactionService;
 import com.paymybuddy.paymybuddy.service.UserService;
@@ -244,6 +245,10 @@ public class UserController {
         } catch (AlreadyExistsException e) {
             log.error("- Buddy {} already in {} list", buddyEmail, userEmail);
             redirectAttributes.addFlashAttribute("errorMessage", "Buddy déjà dans votre liste");
+            return "redirect:/user/relation";
+        } catch (SelfAddException e) {
+            log.error("- {} tried to add himself in his list", userEmail);
+            redirectAttributes.addFlashAttribute("errorMessage", "Vous ne pouvez pas vous ajouter vous-même");
             return "redirect:/user/relation";
         }
 

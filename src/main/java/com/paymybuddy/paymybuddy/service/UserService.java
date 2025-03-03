@@ -29,6 +29,7 @@ import com.paymybuddy.paymybuddy.dto.UpdateUserDTO;
 import com.paymybuddy.paymybuddy.dto.UserDTO;
 import com.paymybuddy.paymybuddy.exception.AlreadyExistsException;
 import com.paymybuddy.paymybuddy.exception.NotFoundException;
+import com.paymybuddy.paymybuddy.exception.SelfAddException;
 import com.paymybuddy.paymybuddy.model.Transaction;
 import com.paymybuddy.paymybuddy.model.User;
 import com.paymybuddy.paymybuddy.repository.TransactionRepository;
@@ -137,6 +138,10 @@ public class UserService {
     @Transactional
     public void addBuddy(BuddyConnectionDTO buddyConnection){
         log.debug("*** Adding buddy: {}", buddyConnection);
+
+        if(buddyConnection.userEmail().equals(buddyConnection.buddyEmail())){
+            throw new SelfAddException(buddyConnection.userEmail() + " tried to add himself in his list");
+        };
 
         User user = userRepository.findByEmail(buddyConnection.userEmail())
                 .orElseThrow(()-> new NotFoundException("User not found with email " + buddyConnection.userEmail()));

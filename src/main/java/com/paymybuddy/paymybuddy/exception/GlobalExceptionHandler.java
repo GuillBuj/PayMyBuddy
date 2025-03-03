@@ -46,4 +46,15 @@ public class GlobalExceptionHandler {
         log.error(message.toString(), e);
         return new ResponseEntity<ErrorMessage>(message, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(SelfAddException.class)
+    public ResponseEntity<ErrorMessage> resourceSelfAddException(SelfAddException e, WebRequest request){
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDateTime.now(),
+                e.getMessage(),
+                request.getDescription(false));
+        log.error(message.toString(), e);
+        return new ResponseEntity<ErrorMessage>(message, HttpStatus.BAD_REQUEST);
+    }
 }
