@@ -52,9 +52,9 @@ public class TransactionServiceTest {
 
     @BeforeEach
     void setUp(){
-        sender = new User(1, "rory", "rory@gmail.com", "123", new BigDecimal(100.00), null, LocalDateTime.now());
-        receiver = new User(2, "jimi", "jimi@gmail.com", "123", new BigDecimal(100.00), null, LocalDateTime.now());
-        transactionDTO = new TransactionRequestDTO("rory@gmail.com","jimi@gmail.com", new BigDecimal(50.00), "Test");
+        sender = new User(1, "rory", "rory@gmail.com", "123", BigDecimal.valueOf(100.00), null, LocalDateTime.now());
+        receiver = new User(2, "jimi", "jimi@gmail.com", "123", BigDecimal.valueOf(100.00), null, LocalDateTime.now());
+        transactionDTO = new TransactionRequestDTO("rory@gmail.com","jimi@gmail.com", BigDecimal.valueOf(50.00), "Test");
     }
 
     @Test
@@ -68,7 +68,7 @@ public class TransactionServiceTest {
         assertNotNull(result);
         assertEquals(sender, result.getSender());
         assertEquals(receiver, result.getReceiver());
-        assertEquals(BigDecimal.valueOf(50), result.getAmount());
+        assertEquals(BigDecimal.valueOf(50.00), result.getAmount());
         assertEquals("Test", result.getDescription());
         assertNotNull(result.getDateCreated());
 
