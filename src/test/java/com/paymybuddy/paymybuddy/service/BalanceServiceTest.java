@@ -4,12 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +41,7 @@ public class BalanceServiceTest {
     }
 
     @Test
-    void updateBalancePlus(){
+    void updateBalancePlusTest(){
         
         BalanceOperationDTO operation = new BalanceOperationDTO("rory@gmail.com", new BigDecimal(50.00));
         when(userRepository.findByEmail("rory@gmail.com")).thenReturn(Optional.of(user));
@@ -49,11 +49,11 @@ public class BalanceServiceTest {
         balanceService.updateBalance(operation, true);
 
         assertEquals(new BigDecimal(150.00), user.getBalance());
-        verify(userRepository).save(user);
+        verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
-    void updateBalanceMinus(){
+    void updateBalanceMinusTest(){
         
         BalanceOperationDTO operation = new BalanceOperationDTO("rory@gmail.com", new BigDecimal(50.00));
         when(userRepository.findByEmail("rory@gmail.com")).thenReturn(Optional.of(user));
@@ -61,15 +61,15 @@ public class BalanceServiceTest {
         balanceService.updateBalance(operation, false);
 
         assertEquals(new BigDecimal(50.00), user.getBalance());
-        verify(userRepository).save(user);
+        verify(userRepository,times(1)).save(user);
     }
 
     @Test
-    void updateBalanceNotFound(){
+    void updateBalanceNotFoundTest(){
         
         BalanceOperationDTO operation = new BalanceOperationDTO("unknown@gmail.com", new BigDecimal(50.00));
         when(userRepository.findByEmail("unknown@gmail.com")).thenReturn(Optional.empty());
-
+        
         NotFoundException e = assertThrows(
             NotFoundException.class,
             () -> balanceService.updateBalance(operation, true)
