@@ -76,7 +76,7 @@ public class UserService {
         String normalizedEmail = userDTO.getEmail().trim().toLowerCase();
         if(userRepository.existsByEmail(normalizedEmail)){
             log.error("*** Email already used: {}", normalizedEmail);
-            throw new AlreadyExistsException("Email already used:" + normalizedEmail);
+            throw new AlreadyExistsException("Email already used: " + normalizedEmail);
         }
         
         User user = new User();
@@ -115,7 +115,7 @@ public class UserService {
             } else user.setEmail(normalizedEmail);
         }
         
-        if(userDTO.getPassword()!=""){
+        if(userDTO.getPassword().isEmpty()){
             user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         }
         
