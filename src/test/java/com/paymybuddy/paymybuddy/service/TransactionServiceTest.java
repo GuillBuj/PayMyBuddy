@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -75,6 +76,21 @@ public class TransactionServiceTest {
     }
 
     @Test
+    void testCreateTransactionNotEnoughMoney() {
+        
+        sender.setBalance(BigDecimal.valueOf(10));
+        when(userRepository.findByEmail("rory@gmail.com")).thenReturn(Optional.of(sender));
+        when(userRepository.findByEmail("jimi@gmail.com")).thenReturn(Optional.of(receiver));
+
+        NotEnoughMoneyException thrown = assertThrows(NotEnoughMoneyException.class, () -> {
+            transactionService.createTransaction(transactionDTO);
+        });
+
+        assertEquals("Not enough money for this transaction", thrown.getMessage());
+        verify(transactionRepository, never()).save(any(Transaction.class));
+    }
+
+    @Test
     void validateEnoughMoneyOkTest() {
         
         when(userRepository.findByEmail("rory@example.com")).thenReturn(Optional.of(sender));
@@ -85,7 +101,7 @@ public class TransactionServiceTest {
     }
 
     @Test
-    void validateEnoughMoneyNokTest() {
+    void validateEnoughMoneyNotEnoughTest() {
     
         when(userRepository.findByEmail("rory@example.com")).thenReturn(Optional.of(sender));
 
