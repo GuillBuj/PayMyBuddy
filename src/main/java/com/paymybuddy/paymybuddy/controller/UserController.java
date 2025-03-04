@@ -136,6 +136,7 @@ public class UserController {
             return "redirect:/user/profile/edit";
         }
 
+        //hors validation classique car pas d'update du mot de passe si vide
         String updatePassword = updateUserDTO.getPassword();
         if (updatePassword != null && !updatePassword.isEmpty()) {
             if (updatePassword.length() < 3) {
@@ -146,26 +147,8 @@ public class UserController {
         }
   
         User user = userService.getUserByEmail(userDetails.getUsername());
-        
-        String updateUsername = updateUserDTO.getUsername();
-        if(!updateUsername.equals(user.getUsername())){
-            if(userService.existsByUsername(updateUsername)) {
-                log.error("- Username already taken: {}", updateUsername);
-                redirectAttributes.addFlashAttribute("errorMessage", "Nom d'utilisateur déjà pris:" + updateUsername);
-                return "redirect:/user/profile/edit";
-            }
-        }
-        
-        String updateEmail = updateUserDTO.getEmail();
-        if(!updateEmail.equals(user.getEmail())){
-            if(userService.existsByEmail(updateEmail)){
-                log.error("- Email already taken: {}", updateEmail);
-                redirectAttributes.addFlashAttribute("errorMessage", "Adresse mail déjà utilisée: " + updateEmail);
-                return "redirect:/user/profile/edit";
-            }
-        }
 
-        userService.updateUser(new UpdateUserDTO(user.getId(), updateUsername, updateEmail, updateUserDTO.getPassword()));
+        userService.updateUser(new UpdateUserDTO(user.getId(), updateUserDTO.getUsername(), updateUserDTO.getEmail(), updateUserDTO.getPassword()));
         redirectAttributes.addFlashAttribute("successMessage", "Profil mis à jour");
         
         return "redirect:/user/profile";

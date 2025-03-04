@@ -23,7 +23,7 @@ public class RegistrationController {
     
     @Autowired
     private UserService userService;
-
+    
     @GetMapping
     public String showRegistrationForm(Model model) {
         log.debug("- GET /register");
@@ -44,22 +44,11 @@ public class RegistrationController {
             return "register";
         }
         
-        if(userService.existsByUsername(userDTO.getUsername())){
-            log.error("Username already taken: {}", userDTO.getUsername());
-            model.addAttribute("errorUsername", "Nom d'utilisateur déjà pris");
-            return "register";
-        }
-        
-        if(userService.existsByEmail(userDTO.getEmail())){
-            log.error("Email already used: {}", userDTO.getEmail());
-            model.addAttribute("errorEmail", "Adresse mail déjà utilisée");
-            return "register";
-        }
-
         userService.createUser(userDTO);
         log.debug("*** User created ***");
         redirectAttributes.addFlashAttribute("successMessage", "Compte créé avec succès");
         
         return "redirect:/login";
     }
+
 }

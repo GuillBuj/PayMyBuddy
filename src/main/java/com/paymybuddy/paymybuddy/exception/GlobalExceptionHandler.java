@@ -1,12 +1,7 @@
 package com.paymybuddy.paymybuddy.exception;
 
-import java.time.LocalDateTime;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,51 +10,41 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    
-    // @ExceptionHandler(AlreadyExistsException.class)
-    // public ResponseEntity<ErrorMessage> resourceAlreadyExistsException(AlreadyExistsException e, WebRequest request){
-    //     ErrorMessage message = new ErrorMessage(
-    //             HttpStatus.BAD_REQUEST.value(),
-    //             LocalDateTime.now(),
-    //             e.getMessage(),
-    //             request.getDescription(false));
-    //     log.error(message.toString(), e);
-    //     return new ResponseEntity<ErrorMessage>(message, HttpStatus.BAD_REQUEST);
-    // }
-
-    // @ExceptionHandler(UsernameAlreadyTakenException.class)
-    // public String handleUsernameAlreadyTakenException(
-    //             UsernameAlreadyTakenException e,
-    //             RedirectAttributes redirectAttributes,
-    //             HttpServletRequest request){
         
-    //     ErrorMessage message = new ErrorMessage(
-    //         HttpStatus.BAD_REQUEST.value(),
-    //         LocalDateTime.now(),
-    //         e.getMessage(),
-    //         request.getRequestURI());
+    @ExceptionHandler(UsernameAlreadyTakenException.class)
+    public String handleUsernameAlreadyTakenException(UsernameAlreadyTakenException e, RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
-    //     log.error("UsernameAlreadyTakenException: {}", message.toString(), e);
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 
-    //     redirectAttributes.addFlashAttribute("errorUsername", "**Nom d'utilisateur déjà pris...");
+        String referer = request.getHeader("Referer");
+        if (referer != null) {
+            if (referer.contains("/register")) {
+                return "redirect:/register";
+            } else if (referer.contains("/profile/edit")) {
+                return "redirect:/user/profile/edit";
+            }
+        }
 
-    //     String referer = request.getHeader("Referer");
-    //     log.warn(referer, message, referer);
-    //     return "redirect:" + referer + "";
-    // }
-  
+        return "redirect:/";
+    }
 
-    // @ExceptionHandler(NotFoundException.class)
-    // public ResponseEntity<ErrorMessage> resourceNotFoundException(NotFoundException e, WebRequest request){
-    //     ErrorMessage message = new ErrorMessage(
-    //             HttpStatus.NOT_FOUND.value(),
-    //             LocalDateTime.now(),
-    //             e.getMessage(),
-    //             request.getDescription(false));
-    //     log.error(message.toString(), e);
-    //     return new ResponseEntity<ErrorMessage>(message, HttpStatus.NOT_FOUND);
-    // }
+    @ExceptionHandler(EmailAlreadyUsedException.class)
+    public String handleEmailAlreadyUsedException(EmailAlreadyUsedException e, RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+
+        String referer = request.getHeader("Referer");
+        if (referer != null) {
+            if (referer.contains("/register")) {
+                return "redirect:/register";
+            } else if (referer.contains("/profile/edit")) {
+                return "redirect:/user/profile/edit";
+            }
+        }
+
+        return "redirect:/";
+    }
+    
     @ExceptionHandler(NotEnoughMoneyException.class)
     public String handleNotEnoughMoneyException(NotEnoughMoneyException e, RedirectAttributes redirectAttributes){
         log.error("--- NotEnoughMoneyException ---", e.getMessage());

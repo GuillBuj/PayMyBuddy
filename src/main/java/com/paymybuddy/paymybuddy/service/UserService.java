@@ -79,7 +79,7 @@ public class UserService {
         String normalizedEmail = userDTO.getEmail().trim().toLowerCase();
         if(userRepository.existsByEmail(normalizedEmail)){
             log.error("*** Email already used: {}", normalizedEmail);
-            throw new EmailAlreadyUsedException("Email already used:" + normalizedEmail);
+            throw new EmailAlreadyUsedException("Email already used: " + normalizedEmail);
         }
         
         User user = new User();
@@ -114,7 +114,7 @@ public class UserService {
             String normalizedEmail = userDTO.getEmail().trim().toLowerCase();
             if(userRepository.existsByEmail(normalizedEmail)){
                 log.error("*** Email already used: {}", normalizedEmail);
-                throw new EmailAlreadyUsedException("Email already used:" + normalizedEmail);
+                throw new EmailAlreadyUsedException("Email already used: " + normalizedEmail);
             } else user.setEmail(normalizedEmail);
         }
         
