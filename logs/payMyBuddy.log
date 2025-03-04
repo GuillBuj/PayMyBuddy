@@ -2264,6 +2264,7 @@ java.lang.IllegalStateException: Neither BindingResult nor plain target object f
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
+<<<<<<< HEAD
 2025-03-04T09:34:16.950+01:00  INFO 6516 --- [paymybuddy] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
 2025-03-04T09:34:16.974+01:00  INFO 6516 --- [paymybuddy] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
 2025-03-04T09:34:17.063+01:00  WARN 6516 --- [paymybuddy] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
@@ -2427,12 +2428,56 @@ com.paymybuddy.paymybuddy.exception.UsernameAlreadyTakenException: Username alre
 2025-03-04T09:36:47.727+01:00  WARN 6516 --- [paymybuddy] [restartedMain] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
 2025-03-04T09:36:47.727+01:00  INFO 6516 --- [paymybuddy] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-14)']
+=======
+2025-03-03T10:48:38.485+01:00  INFO 10656 --- [paymybuddy] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-03-03T10:48:38.504+01:00  INFO 10656 --- [paymybuddy] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-03-03T10:48:38.562+01:00  WARN 10656 --- [paymybuddy] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-03-03T10:48:38.562+01:00  INFO 10656 --- [paymybuddy] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-03-03T10:48:38.730+01:00  INFO 10656 --- [paymybuddy] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-03-03T10:48:38.736+01:00  INFO 10656 --- [paymybuddy] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-03-03T10:48:38.739+01:00  INFO 10656 --- [paymybuddy] [restartedMain] c.p.paymybuddy.PaymybuddyApplication     : Started PaymybuddyApplication in 0.736 seconds (process running for 6219.826)
+2025-03-03T10:48:38.740+01:00  INFO 10656 --- [paymybuddy] [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2025-03-03T10:48:38.964+01:00  INFO 10656 --- [paymybuddy] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-03-03T10:48:38.964+01:00  INFO 10656 --- [paymybuddy] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-03-03T10:48:38.964+01:00  INFO 10656 --- [paymybuddy] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2025-03-03T10:48:38.964+01:00 DEBUG 10656 --- [paymybuddy] [http-nio-8080-exec-1] o.s.w.f.CommonsRequestLoggingFilter      : Before request [GET /user/relation]
+2025-03-03T10:48:39.030+01:00 DEBUG 10656 --- [paymybuddy] [http-nio-8080-exec-1] o.s.w.f.CommonsRequestLoggingFilter      : REQUEST DATA: GET /user/relation]
+2025-03-03T10:48:39.073+01:00 DEBUG 10656 --- [paymybuddy] [http-nio-8080-exec-2] o.s.w.f.CommonsRequestLoggingFilter      : Before request [GET /css/style.css]
+2025-03-03T10:48:39.076+01:00 DEBUG 10656 --- [paymybuddy] [http-nio-8080-exec-2] o.s.w.f.CommonsRequestLoggingFilter      : REQUEST DATA: GET /css/style.css]
+2025-03-03T10:48:42.220+01:00 DEBUG 10656 --- [paymybuddy] [http-nio-8080-exec-3] o.s.w.f.CommonsRequestLoggingFilter      : Before request [POST /user/relation]
+2025-03-03T10:48:42.227+01:00 ERROR 10656 --- [paymybuddy] [http-nio-8080-exec-3] c.p.p.controller.UserController          : - tomi@example.com tried to add himself in his list
+2025-03-03T10:48:42.230+01:00 DEBUG 10656 --- [paymybuddy] [http-nio-8080-exec-3] o.s.w.f.CommonsRequestLoggingFilter      : REQUEST DATA: POST /user/relation, payload=_csrf=OS8UkTeQLS1z5FjZyL1aKtITcPsT-O3yHi63ZFxzjEadg4veARp29QCnG0he3D27-pBuE7ByXZorzYjfLRiGUjkQvSL74Lrt&buddyEmail=tomi%40example.com]
+2025-03-03T10:48:42.234+01:00 DEBUG 10656 --- [paymybuddy] [http-nio-8080-exec-4] o.s.w.f.CommonsRequestLoggingFilter      : Before request [GET /user/relation]
+2025-03-03T10:48:42.258+01:00 DEBUG 10656 --- [paymybuddy] [http-nio-8080-exec-4] o.s.w.f.CommonsRequestLoggingFilter      : REQUEST DATA: GET /user/relation]
+2025-03-03T10:48:42.289+01:00 DEBUG 10656 --- [paymybuddy] [http-nio-8080-exec-5] o.s.w.f.CommonsRequestLoggingFilter      : Before request [GET /css/style.css]
+2025-03-03T10:48:42.297+01:00 DEBUG 10656 --- [paymybuddy] [http-nio-8080-exec-5] o.s.w.f.CommonsRequestLoggingFilter      : REQUEST DATA: GET /css/style.css]
+2025-03-03T10:52:35.589+01:00 DEBUG 10656 --- [paymybuddy] [http-nio-8080-exec-9] o.s.w.f.CommonsRequestLoggingFilter      : Before request [GET /user/transfer]
+2025-03-03T10:52:35.646+01:00 DEBUG 10656 --- [paymybuddy] [http-nio-8080-exec-9] o.s.w.f.CommonsRequestLoggingFilter      : REQUEST DATA: GET /user/transfer]
+2025-03-03T10:52:35.673+01:00 DEBUG 10656 --- [paymybuddy] [http-nio-8080-exec-10] o.s.w.f.CommonsRequestLoggingFilter      : Before request [GET /css/style.css]
+2025-03-03T10:52:35.678+01:00 DEBUG 10656 --- [paymybuddy] [http-nio-8080-exec-10] o.s.w.f.CommonsRequestLoggingFilter      : REQUEST DATA: GET /css/style.css]
+2025-03-04T11:14:22.198+01:00  INFO 6976 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : Starting PaymybuddyApplicationTests using Java 21.0.5 with PID 6976 (started by gbujon in C:\Users\gbujon\Desktop\PayMyBuddy)
+2025-03-04T11:14:22.198+01:00  INFO 6976 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : No active profile set, falling back to 1 default profile: "default"
+2025-03-04T11:14:23.348+01:00  INFO 6976 --- [paymybuddy] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-03-04T11:14:23.422+01:00  INFO 6976 --- [paymybuddy] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 55 ms. Found 2 JPA repository interfaces.
+2025-03-04T11:14:23.977+01:00  INFO 6976 --- [paymybuddy] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-03-04T11:14:24.045+01:00  INFO 6976 --- [paymybuddy] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.5.Final
+2025-03-04T11:14:24.131+01:00  INFO 6976 --- [paymybuddy] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-03-04T11:14:24.454+01:00  INFO 6976 --- [paymybuddy] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-03-04T11:14:24.495+01:00  INFO 6976 --- [paymybuddy] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-03-04T11:14:24.694+01:00  INFO 6976 --- [paymybuddy] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@10f20d38
+2025-03-04T11:14:24.697+01:00  INFO 6976 --- [paymybuddy] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-03-04T11:14:24.739+01:00  WARN 6976 --- [paymybuddy] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-03-04T11:14:24.739+01:00  WARN 6976 --- [paymybuddy] [main] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-03-04T11:14:24.754+01:00  INFO 6976 --- [paymybuddy] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+>>>>>>> 464b628 (BalnceServiceTest)
 	Database driver: undefined/unknown
 	Database version: 8.0
 	Autocommit mode: undefined/unknown
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
+<<<<<<< HEAD
 2025-03-04T09:36:47.799+01:00  INFO 6516 --- [paymybuddy] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
 2025-03-04T09:36:47.827+01:00  INFO 6516 --- [paymybuddy] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
 2025-03-04T09:36:47.980+01:00  WARN 6516 --- [paymybuddy] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
@@ -2479,12 +2524,39 @@ com.paymybuddy.paymybuddy.exception.UsernameAlreadyTakenException: Username alre
 2025-03-04T09:37:21.789+01:00  WARN 6516 --- [paymybuddy] [restartedMain] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
 2025-03-04T09:37:21.789+01:00  INFO 6516 --- [paymybuddy] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-15)']
+=======
+2025-03-04T11:14:25.725+01:00  INFO 6976 --- [paymybuddy] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-03-04T11:14:25.807+01:00  INFO 6976 --- [paymybuddy] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-03-04T11:14:26.283+01:00  WARN 6976 --- [paymybuddy] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-03-04T11:14:26.299+01:00  INFO 6976 --- [paymybuddy] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-03-04T11:14:27.053+01:00  INFO 6976 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : Started PaymybuddyApplicationTests in 5.204 seconds (process running for 6.618)
+2025-03-04T11:14:28.048+01:00  INFO 6976 --- [paymybuddy] [main] c.p.paymybuddy.service.BalanceService    : *** Balance updated: BalanceOperationDTO[userEmail=rory@gmail.com, amount=50], true.
+2025-03-04T11:14:28.154+01:00  INFO 6976 --- [paymybuddy] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-03-04T11:14:28.154+01:00  INFO 6976 --- [paymybuddy] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-03-04T11:14:28.187+01:00  INFO 6976 --- [paymybuddy] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-03-04T11:15:28.636+01:00  INFO 15144 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : Starting PaymybuddyApplicationTests using Java 21.0.5 with PID 15144 (started by gbujon in C:\Users\gbujon\Desktop\PayMyBuddy)
+2025-03-04T11:15:28.636+01:00  INFO 15144 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : No active profile set, falling back to 1 default profile: "default"
+2025-03-04T11:15:29.523+01:00  INFO 15144 --- [paymybuddy] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-03-04T11:15:29.590+01:00  INFO 15144 --- [paymybuddy] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 59 ms. Found 2 JPA repository interfaces.
+2025-03-04T11:15:30.126+01:00  INFO 15144 --- [paymybuddy] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-03-04T11:15:30.194+01:00  INFO 15144 --- [paymybuddy] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.5.Final
+2025-03-04T11:15:30.239+01:00  INFO 15144 --- [paymybuddy] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-03-04T11:15:30.600+01:00  INFO 15144 --- [paymybuddy] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-03-04T11:15:30.642+01:00  INFO 15144 --- [paymybuddy] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-03-04T11:15:30.848+01:00  INFO 15144 --- [paymybuddy] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@3e9fb485
+2025-03-04T11:15:30.848+01:00  INFO 15144 --- [paymybuddy] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-03-04T11:15:30.889+01:00  WARN 15144 --- [paymybuddy] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-03-04T11:15:30.889+01:00  WARN 15144 --- [paymybuddy] [main] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-03-04T11:15:30.922+01:00  INFO 15144 --- [paymybuddy] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+>>>>>>> 464b628 (BalnceServiceTest)
 	Database driver: undefined/unknown
 	Database version: 8.0
 	Autocommit mode: undefined/unknown
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
+<<<<<<< HEAD
 2025-03-04T09:37:21.845+01:00  INFO 6516 --- [paymybuddy] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
 2025-03-04T09:37:21.882+01:00  INFO 6516 --- [paymybuddy] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
 2025-03-04T09:37:21.973+01:00  WARN 6516 --- [paymybuddy] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
@@ -2661,12 +2733,40 @@ java.lang.IllegalStateException: Neither BindingResult nor plain target object f
 2025-03-04T09:46:00.274+01:00  WARN 6516 --- [paymybuddy] [restartedMain] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
 2025-03-04T09:46:00.274+01:00  INFO 6516 --- [paymybuddy] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-16)']
+=======
+2025-03-04T11:15:31.942+01:00  INFO 15144 --- [paymybuddy] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-03-04T11:15:32.044+01:00  INFO 15144 --- [paymybuddy] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-03-04T11:15:32.544+01:00  WARN 15144 --- [paymybuddy] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-03-04T11:15:32.568+01:00  INFO 15144 --- [paymybuddy] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-03-04T11:15:33.429+01:00  INFO 15144 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : Started PaymybuddyApplicationTests in 5.196 seconds (process running for 6.359)
+2025-03-04T11:15:34.384+01:00  INFO 15144 --- [paymybuddy] [main] c.p.paymybuddy.service.BalanceService    : *** Balance updated: BalanceOperationDTO[userEmail=rory@gmail.com, amount=50], true.
+2025-03-04T11:15:34.409+01:00  INFO 15144 --- [paymybuddy] [main] c.p.paymybuddy.service.BalanceService    : *** Balance updated: BalanceOperationDTO[userEmail=rory@gmail.com, amount=50], false.
+2025-03-04T11:15:34.548+01:00  INFO 15144 --- [paymybuddy] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-03-04T11:15:34.551+01:00  INFO 15144 --- [paymybuddy] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-03-04T11:15:34.573+01:00  INFO 15144 --- [paymybuddy] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-03-04T11:23:37.246+01:00  INFO 3704 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : Starting PaymybuddyApplicationTests using Java 21.0.5 with PID 3704 (started by gbujon in C:\Users\gbujon\Desktop\PayMyBuddy)
+2025-03-04T11:23:37.246+01:00  INFO 3704 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : No active profile set, falling back to 1 default profile: "default"
+2025-03-04T11:23:38.171+01:00  INFO 3704 --- [paymybuddy] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-03-04T11:23:38.244+01:00  INFO 3704 --- [paymybuddy] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 59 ms. Found 2 JPA repository interfaces.
+2025-03-04T11:23:38.970+01:00  INFO 3704 --- [paymybuddy] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-03-04T11:23:39.028+01:00  INFO 3704 --- [paymybuddy] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.5.Final
+2025-03-04T11:23:39.083+01:00  INFO 3704 --- [paymybuddy] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-03-04T11:23:39.425+01:00  INFO 3704 --- [paymybuddy] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-03-04T11:23:39.456+01:00  INFO 3704 --- [paymybuddy] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-03-04T11:23:39.634+01:00  INFO 3704 --- [paymybuddy] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4f3fec43
+2025-03-04T11:23:39.634+01:00  INFO 3704 --- [paymybuddy] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-03-04T11:23:39.675+01:00  WARN 3704 --- [paymybuddy] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-03-04T11:23:39.675+01:00  WARN 3704 --- [paymybuddy] [main] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-03-04T11:23:39.691+01:00  INFO 3704 --- [paymybuddy] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+>>>>>>> 464b628 (BalnceServiceTest)
 	Database driver: undefined/unknown
 	Database version: 8.0
 	Autocommit mode: undefined/unknown
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
+<<<<<<< HEAD
 2025-03-04T09:46:00.310+01:00  INFO 6516 --- [paymybuddy] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
 2025-03-04T09:46:00.338+01:00  INFO 6516 --- [paymybuddy] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
 2025-03-04T09:46:00.409+01:00  WARN 6516 --- [paymybuddy] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
@@ -2701,12 +2801,40 @@ java.lang.IllegalStateException: Neither BindingResult nor plain target object f
 2025-03-04T09:46:09.599+01:00  WARN 6516 --- [paymybuddy] [restartedMain] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
 2025-03-04T09:46:09.599+01:00  INFO 6516 --- [paymybuddy] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-17)']
+=======
+2025-03-04T11:23:40.571+01:00  INFO 3704 --- [paymybuddy] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-03-04T11:23:40.649+01:00  INFO 3704 --- [paymybuddy] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-03-04T11:23:41.147+01:00  WARN 3704 --- [paymybuddy] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-03-04T11:23:41.162+01:00  INFO 3704 --- [paymybuddy] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-03-04T11:23:41.880+01:00  INFO 3704 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : Started PaymybuddyApplicationTests in 5.038 seconds (process running for 6.088)
+2025-03-04T11:23:42.843+01:00  INFO 3704 --- [paymybuddy] [main] c.p.paymybuddy.service.BalanceService    : *** Balance updated: BalanceOperationDTO[userEmail=rory@gmail.com, amount=50], true.
+2025-03-04T11:23:42.885+01:00  INFO 3704 --- [paymybuddy] [main] c.p.paymybuddy.service.BalanceService    : *** Balance updated: BalanceOperationDTO[userEmail=rory@gmail.com, amount=50], false.
+2025-03-04T11:23:43.001+01:00  INFO 3704 --- [paymybuddy] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-03-04T11:23:43.023+01:00  INFO 3704 --- [paymybuddy] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-03-04T11:23:43.041+01:00  INFO 3704 --- [paymybuddy] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-03-04T11:27:42.000+01:00  INFO 13576 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : Starting PaymybuddyApplicationTests using Java 21.0.5 with PID 13576 (started by gbujon in C:\Users\gbujon\Desktop\PayMyBuddy)
+2025-03-04T11:27:42.002+01:00  INFO 13576 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : No active profile set, falling back to 1 default profile: "default"
+2025-03-04T11:27:42.863+01:00  INFO 13576 --- [paymybuddy] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-03-04T11:27:42.937+01:00  INFO 13576 --- [paymybuddy] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 61 ms. Found 2 JPA repository interfaces.
+2025-03-04T11:27:43.479+01:00  INFO 13576 --- [paymybuddy] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-03-04T11:27:43.538+01:00  INFO 13576 --- [paymybuddy] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.5.Final
+2025-03-04T11:27:43.583+01:00  INFO 13576 --- [paymybuddy] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-03-04T11:27:43.946+01:00  INFO 13576 --- [paymybuddy] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-03-04T11:27:43.987+01:00  INFO 13576 --- [paymybuddy] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-03-04T11:27:44.228+01:00  INFO 13576 --- [paymybuddy] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4f3fec43
+2025-03-04T11:27:44.231+01:00  INFO 13576 --- [paymybuddy] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-03-04T11:27:44.287+01:00  WARN 13576 --- [paymybuddy] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-03-04T11:27:44.289+01:00  WARN 13576 --- [paymybuddy] [main] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-03-04T11:27:44.312+01:00  INFO 13576 --- [paymybuddy] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+>>>>>>> 464b628 (BalnceServiceTest)
 	Database driver: undefined/unknown
 	Database version: 8.0
 	Autocommit mode: undefined/unknown
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
+<<<<<<< HEAD
 2025-03-04T09:46:09.664+01:00  INFO 6516 --- [paymybuddy] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
 2025-03-04T09:46:09.687+01:00  INFO 6516 --- [paymybuddy] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
 2025-03-04T09:46:09.773+01:00  WARN 6516 --- [paymybuddy] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
@@ -2757,12 +2885,40 @@ java.lang.IllegalStateException: Neither BindingResult nor plain target object f
 2025-03-04T09:46:51.813+01:00  WARN 6516 --- [paymybuddy] [restartedMain] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
 2025-03-04T09:46:51.815+01:00  INFO 6516 --- [paymybuddy] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-18)']
+=======
+2025-03-04T11:27:45.298+01:00  INFO 13576 --- [paymybuddy] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-03-04T11:27:45.372+01:00  INFO 13576 --- [paymybuddy] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-03-04T11:27:45.868+01:00  WARN 13576 --- [paymybuddy] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-03-04T11:27:45.887+01:00  INFO 13576 --- [paymybuddy] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-03-04T11:27:46.629+01:00  INFO 13576 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : Started PaymybuddyApplicationTests in 5.007 seconds (process running for 6.068)
+2025-03-04T11:27:47.566+01:00  INFO 13576 --- [paymybuddy] [main] c.p.paymybuddy.service.BalanceService    : *** Balance updated: BalanceOperationDTO[userEmail=rory@gmail.com, amount=50], true.
+2025-03-04T11:27:47.604+01:00  INFO 13576 --- [paymybuddy] [main] c.p.paymybuddy.service.BalanceService    : *** Balance updated: BalanceOperationDTO[userEmail=rory@gmail.com, amount=50], false.
+2025-03-04T11:27:47.699+01:00  INFO 13576 --- [paymybuddy] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-03-04T11:27:47.702+01:00  INFO 13576 --- [paymybuddy] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-03-04T11:27:47.728+01:00  INFO 13576 --- [paymybuddy] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-03-04T11:30:17.155+01:00  INFO 14916 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : Starting PaymybuddyApplicationTests using Java 21.0.5 with PID 14916 (started by gbujon in C:\Users\gbujon\Desktop\PayMyBuddy)
+2025-03-04T11:30:17.155+01:00  INFO 14916 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : No active profile set, falling back to 1 default profile: "default"
+2025-03-04T11:30:19.515+01:00  INFO 14916 --- [paymybuddy] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-03-04T11:30:19.715+01:00  INFO 14916 --- [paymybuddy] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 164 ms. Found 2 JPA repository interfaces.
+2025-03-04T11:30:21.082+01:00  INFO 14916 --- [paymybuddy] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-03-04T11:30:21.269+01:00  INFO 14916 --- [paymybuddy] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.5.Final
+2025-03-04T11:30:21.424+01:00  INFO 14916 --- [paymybuddy] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-03-04T11:30:22.369+01:00  INFO 14916 --- [paymybuddy] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-03-04T11:30:22.503+01:00  INFO 14916 --- [paymybuddy] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-03-04T11:30:22.922+01:00  INFO 14916 --- [paymybuddy] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@386643e
+2025-03-04T11:30:22.922+01:00  INFO 14916 --- [paymybuddy] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-03-04T11:30:23.023+01:00  WARN 14916 --- [paymybuddy] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-03-04T11:30:23.023+01:00  WARN 14916 --- [paymybuddy] [main] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-03-04T11:30:23.073+01:00  INFO 14916 --- [paymybuddy] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+>>>>>>> 464b628 (BalnceServiceTest)
 	Database driver: undefined/unknown
 	Database version: 8.0
 	Autocommit mode: undefined/unknown
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
+<<<<<<< HEAD
 2025-03-04T09:46:51.871+01:00  INFO 6516 --- [paymybuddy] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
 2025-03-04T09:46:51.897+01:00  INFO 6516 --- [paymybuddy] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
 2025-03-04T09:46:51.988+01:00  WARN 6516 --- [paymybuddy] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
@@ -2813,12 +2969,40 @@ java.lang.IllegalStateException: Neither BindingResult nor plain target object f
 2025-03-04T09:51:24.083+01:00  WARN 6516 --- [paymybuddy] [restartedMain] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
 2025-03-04T09:51:24.083+01:00  INFO 6516 --- [paymybuddy] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-19)']
+=======
+2025-03-04T11:30:25.605+01:00  INFO 14916 --- [paymybuddy] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-03-04T11:30:25.709+01:00  INFO 14916 --- [paymybuddy] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-03-04T11:30:26.530+01:00  WARN 14916 --- [paymybuddy] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-03-04T11:30:26.563+01:00  INFO 14916 --- [paymybuddy] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-03-04T11:30:27.728+01:00  INFO 14916 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : Started PaymybuddyApplicationTests in 11.417 seconds (process running for 14.589)
+2025-03-04T11:30:28.980+01:00  INFO 14916 --- [paymybuddy] [main] c.p.paymybuddy.service.BalanceService    : *** Balance updated: BalanceOperationDTO[userEmail=rory@gmail.com, amount=50], true.
+2025-03-04T11:30:29.066+01:00  INFO 14916 --- [paymybuddy] [main] c.p.paymybuddy.service.BalanceService    : *** Balance updated: BalanceOperationDTO[userEmail=rory@gmail.com, amount=50], false.
+2025-03-04T11:30:29.234+01:00  INFO 14916 --- [paymybuddy] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-03-04T11:30:29.248+01:00  INFO 14916 --- [paymybuddy] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-03-04T11:30:29.552+01:00  INFO 14916 --- [paymybuddy] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-03-04T11:32:15.890+01:00  INFO 15324 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : Starting PaymybuddyApplicationTests using Java 21.0.5 with PID 15324 (started by gbujon in C:\Users\gbujon\Desktop\PayMyBuddy)
+2025-03-04T11:32:15.894+01:00  INFO 15324 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : No active profile set, falling back to 1 default profile: "default"
+2025-03-04T11:32:18.633+01:00  INFO 15324 --- [paymybuddy] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-03-04T11:32:18.850+01:00  INFO 15324 --- [paymybuddy] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 193 ms. Found 2 JPA repository interfaces.
+2025-03-04T11:32:20.484+01:00  INFO 15324 --- [paymybuddy] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-03-04T11:32:20.719+01:00  INFO 15324 --- [paymybuddy] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.5.Final
+2025-03-04T11:32:20.886+01:00  INFO 15324 --- [paymybuddy] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-03-04T11:32:22.049+01:00  INFO 15324 --- [paymybuddy] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-03-04T11:32:22.104+01:00  INFO 15324 --- [paymybuddy] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-03-04T11:32:22.625+01:00  INFO 15324 --- [paymybuddy] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@68d93913
+2025-03-04T11:32:22.629+01:00  INFO 15324 --- [paymybuddy] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-03-04T11:32:22.742+01:00  WARN 15324 --- [paymybuddy] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-03-04T11:32:22.744+01:00  WARN 15324 --- [paymybuddy] [main] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-03-04T11:32:22.812+01:00  INFO 15324 --- [paymybuddy] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+>>>>>>> 464b628 (BalnceServiceTest)
 	Database driver: undefined/unknown
 	Database version: 8.0
 	Autocommit mode: undefined/unknown
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
+<<<<<<< HEAD
 2025-03-04T09:51:24.138+01:00  INFO 6516 --- [paymybuddy] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
 2025-03-04T09:51:24.174+01:00  INFO 6516 --- [paymybuddy] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
 2025-03-04T09:51:24.263+01:00  WARN 6516 --- [paymybuddy] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
@@ -3086,12 +3270,40 @@ com.paymybuddy.paymybuddy.exception.UsernameAlreadyTakenException: Username alre
 2025-03-04T09:52:54.146+01:00  WARN 6516 --- [paymybuddy] [restartedMain] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
 2025-03-04T09:52:54.147+01:00  INFO 6516 --- [paymybuddy] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-20)']
+=======
+2025-03-04T11:32:25.784+01:00  INFO 15324 --- [paymybuddy] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-03-04T11:32:25.928+01:00  INFO 15324 --- [paymybuddy] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-03-04T11:32:27.184+01:00  WARN 15324 --- [paymybuddy] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-03-04T11:32:27.232+01:00  INFO 15324 --- [paymybuddy] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-03-04T11:32:28.705+01:00  INFO 15324 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : Started PaymybuddyApplicationTests in 13.548 seconds (process running for 17.433)
+2025-03-04T11:32:30.677+01:00  INFO 15324 --- [paymybuddy] [main] c.p.paymybuddy.service.BalanceService    : *** Balance updated: BalanceOperationDTO[userEmail=rory@gmail.com, amount=50], true.
+2025-03-04T11:32:30.839+01:00  INFO 15324 --- [paymybuddy] [main] c.p.paymybuddy.service.BalanceService    : *** Balance updated: BalanceOperationDTO[userEmail=rory@gmail.com, amount=50], false.
+2025-03-04T11:32:31.548+01:00  INFO 15324 --- [paymybuddy] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-03-04T11:32:31.559+01:00  INFO 15324 --- [paymybuddy] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-03-04T11:32:31.891+01:00  INFO 15324 --- [paymybuddy] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-03-04T11:33:26.118+01:00  INFO 7528 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : Starting PaymybuddyApplicationTests using Java 21.0.5 with PID 7528 (started by gbujon in C:\Users\gbujon\Desktop\PayMyBuddy)
+2025-03-04T11:33:26.134+01:00  INFO 7528 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : No active profile set, falling back to 1 default profile: "default"
+2025-03-04T11:33:27.604+01:00  INFO 7528 --- [paymybuddy] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-03-04T11:33:27.710+01:00  INFO 7528 --- [paymybuddy] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 85 ms. Found 2 JPA repository interfaces.
+2025-03-04T11:33:28.512+01:00  INFO 7528 --- [paymybuddy] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-03-04T11:33:28.627+01:00  INFO 7528 --- [paymybuddy] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.5.Final
+2025-03-04T11:33:28.687+01:00  INFO 7528 --- [paymybuddy] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-03-04T11:33:29.195+01:00  INFO 7528 --- [paymybuddy] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-03-04T11:33:29.252+01:00  INFO 7528 --- [paymybuddy] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-03-04T11:33:29.551+01:00  INFO 7528 --- [paymybuddy] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2dacf052
+2025-03-04T11:33:29.551+01:00  INFO 7528 --- [paymybuddy] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-03-04T11:33:29.630+01:00  WARN 7528 --- [paymybuddy] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-03-04T11:33:29.630+01:00  WARN 7528 --- [paymybuddy] [main] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-03-04T11:33:29.667+01:00  INFO 7528 --- [paymybuddy] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+>>>>>>> 464b628 (BalnceServiceTest)
 	Database driver: undefined/unknown
 	Database version: 8.0
 	Autocommit mode: undefined/unknown
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
+<<<<<<< HEAD
 2025-03-04T09:52:54.190+01:00  INFO 6516 --- [paymybuddy] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
 2025-03-04T09:52:54.224+01:00  INFO 6516 --- [paymybuddy] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
 2025-03-04T09:52:54.305+01:00  WARN 6516 --- [paymybuddy] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
@@ -6219,3 +6431,15 @@ com.paymybuddy.paymybuddy.exception.UsernameAlreadyTakenException: Username alre
 2025-03-04T10:51:18.308+01:00  INFO 6516 --- [paymybuddy] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
 2025-03-04T10:51:18.308+01:00  INFO 6516 --- [paymybuddy] [restartedMain] c.p.paymybuddy.PaymybuddyApplication     : Started PaymybuddyApplication in 0.444 seconds (process running for 7633.933)
 2025-03-04T10:51:18.322+01:00  INFO 6516 --- [paymybuddy] [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+=======
+2025-03-04T11:33:31.435+01:00  INFO 7528 --- [paymybuddy] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-03-04T11:33:31.549+01:00  INFO 7528 --- [paymybuddy] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-03-04T11:33:32.201+01:00  WARN 7528 --- [paymybuddy] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-03-04T11:33:32.217+01:00  INFO 7528 --- [paymybuddy] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-03-04T11:33:33.291+01:00  INFO 7528 --- [paymybuddy] [main] c.p.p.PaymybuddyApplicationTests         : Started PaymybuddyApplicationTests in 7.795 seconds (process running for 10.651)
+2025-03-04T11:33:34.597+01:00  INFO 7528 --- [paymybuddy] [main] c.p.paymybuddy.service.BalanceService    : *** Balance updated: BalanceOperationDTO[userEmail=rory@gmail.com, amount=50], true.
+2025-03-04T11:33:34.662+01:00  INFO 7528 --- [paymybuddy] [main] c.p.paymybuddy.service.BalanceService    : *** Balance updated: BalanceOperationDTO[userEmail=rory@gmail.com, amount=50], false.
+2025-03-04T11:33:34.790+01:00  INFO 7528 --- [paymybuddy] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-03-04T11:33:34.790+01:00  INFO 7528 --- [paymybuddy] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-03-04T11:33:35.090+01:00  INFO 7528 --- [paymybuddy] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+>>>>>>> 464b628 (BalnceServiceTest)
