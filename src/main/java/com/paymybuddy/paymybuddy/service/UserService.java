@@ -119,7 +119,6 @@ public class UserService {
         }
         
         if(userDTO.getPassword().isEmpty()){
-        if(userDTO.getPassword().isEmpty()){
             user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         }
         

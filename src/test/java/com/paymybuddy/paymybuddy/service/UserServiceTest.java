@@ -1,9 +1,5 @@
 package com.paymybuddy.paymybuddy.service;
 
-<<<<<<< HEAD
-public class UserServiceTest {
-
-=======
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -27,7 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.paymybuddy.paymybuddy.dto.RegisterUserDTO;
 import com.paymybuddy.paymybuddy.dto.UpdateUserDTO;
-import com.paymybuddy.paymybuddy.exception.AlreadyExistsException;
+import com.paymybuddy.paymybuddy.exception.EmailAlreadyUsedException;
+import com.paymybuddy.paymybuddy.exception.UsernameAlreadyTakenException;
 import com.paymybuddy.paymybuddy.model.User;
 import com.paymybuddy.paymybuddy.repository.TransactionRepository;
 import com.paymybuddy.paymybuddy.repository.UserRepository;
@@ -84,30 +81,31 @@ public class UserServiceTest {
 
     @Test
     void createUserUsernameAlreadyTakenTest() {
-        
         when(userRepository.existsByUsername("rory")).thenReturn(true);
 
-        AlreadyExistsException thrown = assertThrows(AlreadyExistsException.class, () -> {
+        UsernameAlreadyTakenException thrown = assertThrows(UsernameAlreadyTakenException.class, () -> {
             userService.createUser(new RegisterUserDTO("rory", "roryg@gmail.com", "password123"));
         });
 
         assertEquals("Username already taken: rory", thrown.getMessage());
+
         verify(userRepository, never()).save(any(User.class));
     }
-
+    
     @Test
     void createUserEmailAlreadyUsedTest() {
-        
         when(userRepository.existsByUsername("roryg")).thenReturn(false);
         when(userRepository.existsByEmail("rory@gmail.com")).thenReturn(true);
 
-        AlreadyExistsException thrown = assertThrows(AlreadyExistsException.class, () -> {
+        EmailAlreadyUsedException thrown = assertThrows(EmailAlreadyUsedException.class, () -> {
             userService.createUser(new RegisterUserDTO("roryg", "rory@gmail.com", "password123"));
         });
 
         assertEquals("Email already used: rory@gmail.com", thrown.getMessage());
+
         verify(userRepository, never()).save(any(User.class));
     }
+
 
     @Test
     void updateUserOkTest() {
@@ -130,33 +128,61 @@ public class UserServiceTest {
         verify(userRepository).save(any(User.class));
     }
 
+    // @Test
+    // void updateUserUsernameAlreadyTakenTest() {
+        
+    //     when(userRepository.getById(1)).thenReturn(user);
+    //     when(userRepository.existsByUsername("existingusername")).thenReturn(true);
+
+    //     AlreadyExistsException thrown = assertThrows(AlreadyExistsException.class, () -> {
+    //         userService.updateUser(new UpdateUserDTO(1, "existingUsername", "rory@gmail.com", ""));
+    //     });
+
+    //     assertEquals("Username already taken: existingusername", thrown.getMessage());
+    //     verify(userRepository, never()).save(any(User.class));
+    // }
+
+    // @Test
+    // void updateUserEmailAlreadyUsedTest() {
+        
+    //     when(userRepository.getById(1)).thenReturn(user);
+        
+    //     when(userRepository.existsByEmail("usedemail@mail.com")).thenReturn(true);
+
+    //     AlreadyExistsException thrown = assertThrows(AlreadyExistsException.class, () -> {
+    //         userService.updateUser(new UpdateUserDTO(1, "rory", "usedEmail@mail.com", ""));
+    //     });
+
+    //     assertEquals("Username already taken: usedemail@mail.com", thrown.getMessage());
+    //     verify(userRepository, never()).save(any(User.class));
+    // }
+
     @Test
     void updateUserUsernameAlreadyTakenTest() {
-        
         when(userRepository.getById(1)).thenReturn(user);
         when(userRepository.existsByUsername("existingusername")).thenReturn(true);
 
-        AlreadyExistsException thrown = assertThrows(AlreadyExistsException.class, () -> {
+        UsernameAlreadyTakenException thrown = assertThrows(UsernameAlreadyTakenException.class, () -> {
             userService.updateUser(new UpdateUserDTO(1, "existingUsername", "rory@gmail.com", ""));
         });
 
         assertEquals("Username already taken: existingusername", thrown.getMessage());
+
         verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
     void updateUserEmailAlreadyUsedTest() {
-        
         when(userRepository.getById(1)).thenReturn(user);
-        
         when(userRepository.existsByEmail("usedemail@mail.com")).thenReturn(true);
 
-        AlreadyExistsException thrown = assertThrows(AlreadyExistsException.class, () -> {
+        EmailAlreadyUsedException thrown = assertThrows(EmailAlreadyUsedException.class, () -> {
             userService.updateUser(new UpdateUserDTO(1, "rory", "usedEmail@mail.com", ""));
         });
+        
+        assertEquals("Email already used: usedemail@mail.com", thrown.getMessage());
 
-        assertEquals("Username already taken: usedemail@mail.com", thrown.getMessage());
         verify(userRepository, never()).save(any(User.class));
+        
     }
->>>>>>> 8a76097 (UserServiceTest create et update provisoire)
 }
