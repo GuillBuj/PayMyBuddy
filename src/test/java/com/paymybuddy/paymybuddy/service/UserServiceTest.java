@@ -1,6 +1,7 @@
 package com.paymybuddy.paymybuddy.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -228,6 +229,37 @@ public class UserServiceTest {
         when(userRepository.findByEmail("notexisting@example.com")).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> userService.addBuddy(buddyConnection));
+
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void removeBuddyOkTest() {
+        User buddy = new User(2, "stevie", "stevie@gmail.com", "encodedPassword", BigDecimal.valueOf(100.00), new HashSet<>(), LocalDateTime.now());
+        BuddyConnectionDTO buddyConnection = new BuddyConnectionDTO("rory@example.com", "stevie@gmail.com");
+        
+        user.getBuddies().add(buddy);
+
+        when(userRepository.findByEmail("rory@example.com")).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail("stevie@gmail.com")).thenReturn(Optional.of(buddy));
+
+        userService.removeBuddy(buddyConnection);
+
+        assertFalse(user.getBuddies().contains(buddy));
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    void removeBuddyNotInListTest() {
+        User buddyNotInList = new User(4, "scott", "notinbuddieslist@example.com", "encodedPassword", BigDecimal.valueOf(100.00), new HashSet<>(), LocalDateTime.now());
+
+        BuddyConnectionDTO buddyConnection = new BuddyConnectionDTO("rory@example.com", "notinbuddieslist@example.com");
+
+        when(userRepository.findByEmail("rory@example.com")).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail("notinbuddieslist@example.com")).thenReturn(Optional.of(buddyNotInList));
+
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> userService.removeBuddy(buddyConnection));
+        assertTrue(exception.getMessage().contains("Buddy connection between rory@example.com and notinbuddieslist@example.com does not exist"));
 
         verify(userRepository, never()).save(any(User.class));
     }
