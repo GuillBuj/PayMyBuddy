@@ -118,7 +118,7 @@ public class UserService {
             } else user.setEmail(normalizedEmail);
         }
         
-        if(userDTO.getPassword().isEmpty()){
+        if(!userDTO.getPassword().isEmpty()){
             user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         }
         

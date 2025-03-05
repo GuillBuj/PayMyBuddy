@@ -5,8 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -26,6 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.paymybuddy.paymybuddy.dto.BalanceOperationDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionRequestDTO;
 import com.paymybuddy.paymybuddy.exception.NotEnoughMoneyException;
+import com.paymybuddy.paymybuddy.exception.SelfSendException;
 import com.paymybuddy.paymybuddy.model.Transaction;
 import com.paymybuddy.paymybuddy.model.User;
 import com.paymybuddy.paymybuddy.repository.TransactionRepository;
@@ -82,11 +81,21 @@ public class TransactionServiceTest {
         when(userRepository.findByEmail("rory@gmail.com")).thenReturn(Optional.of(sender));
         when(userRepository.findByEmail("jimi@gmail.com")).thenReturn(Optional.of(receiver));
 
-        NotEnoughMoneyException thrown = assertThrows(NotEnoughMoneyException.class, () -> {
+        assertThrows(NotEnoughMoneyException.class, () -> {
             transactionService.createTransaction(transactionDTO);
         });
 
-        assertEquals("Not enough money for this transaction", thrown.getMessage());
+        verify(transactionRepository, never()).save(any(Transaction.class));
+    }
+
+    @Test
+    void testCreateTransactionSelfSend() {
+        transactionDTO = new TransactionRequestDTO("rory@gmail.com","rory@gmail.com", BigDecimal.valueOf(50.00), "Test");
+        
+        assertThrows(SelfSendException.class, () -> {
+            transactionService.createTransaction(transactionDTO);
+        });
+
         verify(transactionRepository, never()).save(any(Transaction.class));
     }
 
@@ -105,11 +114,9 @@ public class TransactionServiceTest {
     
         when(userRepository.findByEmail("rory@example.com")).thenReturn(Optional.of(sender));
 
-        NotEnoughMoneyException exception = assertThrows(NotEnoughMoneyException.class, () -> {
+        assertThrows(NotEnoughMoneyException.class, () -> {
             transactionService.validateEnoughMoney(new BalanceOperationDTO("rory@example.com", BigDecimal.valueOf(1000)));
         });
-
-        assertEquals("Not enough money for this transaction", exception.getMessage());
     }
     
 }

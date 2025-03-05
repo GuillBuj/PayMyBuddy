@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.paymybuddy.paymybuddy.dto.BalanceOperationDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionRequestDTO;
+import com.paymybuddy.paymybuddy.exception.NegativeTransactionException;
 import com.paymybuddy.paymybuddy.exception.NotEnoughMoneyException;
 import com.paymybuddy.paymybuddy.exception.NotFoundException;
 import com.paymybuddy.paymybuddy.exception.SelfSendException;
@@ -34,11 +35,10 @@ public class TransactionService {
     @Transactional
     public Transaction createTransaction(TransactionRequestDTO transactionDTO){
         log.debug("*** Creating transaction: {}", transactionDTO);
-
+      
         // pas possible en utilisation normale
-        if(transactionDTO.receiverEmail().equals(transactionDTO.senderEmail())){
-            throw new SelfSendException(transactionDTO.senderEmail());
-        }
+        validateNotSelfSend(transactionDTO);
+        validatePositiveTransaction(transactionDTO);
         
         User sender = userRepository.findByEmail(transactionDTO.senderEmail())
                 .orElseThrow(()-> new NotFoundException("User not found:" + transactionDTO.senderEmail()));
@@ -60,8 +60,7 @@ public class TransactionService {
         transaction.setReceiver(receiver);
         transaction.setAmount(amount);
         transaction.setDescription(transactionDTO.description());
-        //pour l'instant à zéro
-        transaction.setFee(BigDecimal.ZERO);
+        transaction.setFee(BigDecimal.ZERO); // pour l'instant à zéro
         transaction.setDateCreated(LocalDateTime.now());
 
         Transaction transactionDone = transactionRepository.save(transaction);
@@ -90,6 +89,22 @@ public class TransactionService {
 
         if(user.getBalance().compareTo(operation.amount())<0){
             throw new NotEnoughMoneyException("*** Not enough money for this transaction: " + operation);
+        }
+    }
+
+    public void validateNotSelfSend(TransactionRequestDTO transactionDTO){
+        log.debug("*** Validating transaction is not self send: ", transactionDTO);
+
+        if(transactionDTO.receiverEmail().equals(transactionDTO.senderEmail())){
+            throw new SelfSendException("Self send transaction");
+        }
+    }
+
+    public void validatePositiveTransaction(TransactionRequestDTO transactionDTO){
+        log.debug("*** Validating amount is positive: ", transactionDTO);
+
+        if(transactionDTO.amount().compareTo(BigDecimal.ZERO) <= 0){
+            throw new NegativeTransactionException("Negative amount transaction");
         }
     }
 }

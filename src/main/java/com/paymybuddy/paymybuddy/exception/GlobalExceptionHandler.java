@@ -63,6 +63,15 @@ public class GlobalExceptionHandler {
         return "redirect:/user/transfer";
     }
 
+    @ExceptionHandler(NegativeTransactionException.class)
+    public String handleSelfSendException(NegativeTransactionException e, RedirectAttributes redirectAttributes){
+        log.error("--- NegativeTransactionException ---", e.getMessage());
+
+        redirectAttributes.addFlashAttribute("errorMessage", "Bien tenté. Veuillez entrer un montant positif");
+
+        return "redirect:/user/transfer";
+    }
+
     @ExceptionHandler(SelfAddException.class)
     public String handleSelfAddException(SelfAddException e, RedirectAttributes redirectAttributes){
         log.error("--- SelfAddException ---", e.getMessage());
