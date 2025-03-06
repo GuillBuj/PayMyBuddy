@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import javax.sql.DataSource;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 
@@ -26,15 +25,17 @@ import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.paymybuddy.paymybuddy.PaymybuddyApplication;
 import com.paymybuddy.paymybuddy.dto.UpdateUserDTO;
 import com.paymybuddy.paymybuddy.model.User;
 import com.paymybuddy.paymybuddy.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
+
 @SpringBootTest
-@AutoConfigureMockMvc
 @ActiveProfiles("test")
+@AutoConfigureMockMvc
 @Transactional
 public class UserControllerIT {
     
@@ -73,8 +74,8 @@ public class UserControllerIT {
     @Test
     @WithMockUser(username = "rory@gmail.com")
     void updateProfileIT() throws Exception {
-        String newUsername = "newUsername";
-        String newEmail = "newEmail@gmail.com";
+        String newUsername = "newusername";
+        String newEmail = "newemail@gmail.com";
         String newPassword = "newPassword123";
 
         mockMvc.perform(patch("/user/profile")
