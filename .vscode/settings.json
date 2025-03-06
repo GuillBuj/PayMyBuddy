@@ -13,6 +13,20 @@
             "database": "paymybuddy",
             "username": "root",
             "password": "root"
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "paymybuddy_test",
+            "database": "paymybuddy_test",
+            "username": "root",
+            "password": "root"
         }
     ],
     "java.compile.nullAnalysis.mode": "automatic",
