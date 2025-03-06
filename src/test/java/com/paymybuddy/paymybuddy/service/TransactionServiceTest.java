@@ -23,7 +23,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.paymybuddy.paymybuddy.dto.BalanceOperationDTO;
 import com.paymybuddy.paymybuddy.dto.TransactionRequestDTO;
+import com.paymybuddy.paymybuddy.exception.NegativeTransactionException;
 import com.paymybuddy.paymybuddy.exception.NotEnoughMoneyException;
+import com.paymybuddy.paymybuddy.exception.NotFoundException;
 import com.paymybuddy.paymybuddy.exception.SelfSendException;
 import com.paymybuddy.paymybuddy.model.Transaction;
 import com.paymybuddy.paymybuddy.model.User;
@@ -75,7 +77,7 @@ public class TransactionServiceTest {
     }
 
     @Test
-    void testCreateTransactionNotEnoughMoney() {
+    void createTransactionNotEnoughMoneyTest() {
         
         sender.setBalance(BigDecimal.valueOf(10));
         when(userRepository.findByEmail("rory@gmail.com")).thenReturn(Optional.of(sender));
@@ -89,10 +91,46 @@ public class TransactionServiceTest {
     }
 
     @Test
-    void testCreateTransactionSelfSend() {
+    void createTransactionSelfSendTest() {
         transactionDTO = new TransactionRequestDTO("rory@gmail.com","rory@gmail.com", BigDecimal.valueOf(50.00), "Test");
         
         assertThrows(SelfSendException.class, () -> {
+            transactionService.createTransaction(transactionDTO);
+        });
+
+        verify(transactionRepository, never()).save(any(Transaction.class));
+    }
+
+    @Test
+    void createTransactionSenderNotFoundTest() {
+        transactionDTO = new TransactionRequestDTO("unknown@gmail.com","rory@gmail.com", BigDecimal.valueOf(50.00), "Test");
+        when(userRepository.findByEmail(transactionDTO.senderEmail())).thenReturn(Optional.empty());
+        
+        assertThrows(NotFoundException.class, () -> {
+            transactionService.createTransaction(transactionDTO);
+        });
+
+        verify(transactionRepository, never()).save(any(Transaction.class));
+    }
+
+    @Test
+    void createTransactionReceiverNotFoundTest() {
+        transactionDTO = new TransactionRequestDTO("rory@gmail.com","unknown@gmail.com", BigDecimal.valueOf(50.00), "Test");
+        when(userRepository.findByEmail(transactionDTO.senderEmail())).thenReturn(Optional.of(sender));
+        when(userRepository.findByEmail(transactionDTO.receiverEmail())).thenReturn(Optional.empty());
+        
+        assertThrows(NotFoundException.class, () -> {
+            transactionService.createTransaction(transactionDTO);
+        });
+
+        verify(transactionRepository, never()).save(any(Transaction.class));
+    }
+
+    @Test
+    void createTransactionNegativeAmountTest(){
+        transactionDTO = new TransactionRequestDTO("rory@gmail.com","jimi@gmail.com", BigDecimal.valueOf(-10), "Test");
+        
+        assertThrows(NegativeTransactionException.class, () -> {
             transactionService.createTransaction(transactionDTO);
         });
 
