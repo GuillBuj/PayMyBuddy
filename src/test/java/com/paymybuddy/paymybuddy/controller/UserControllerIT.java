@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.is;
@@ -36,6 +37,7 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
+@Sql(scripts = "/paymybuddy_test.session.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Transactional
 public class UserControllerIT {
     
@@ -47,6 +49,7 @@ public class UserControllerIT {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
 
     @Test
     @WithMockUser(username = "rory@gmail.com")
