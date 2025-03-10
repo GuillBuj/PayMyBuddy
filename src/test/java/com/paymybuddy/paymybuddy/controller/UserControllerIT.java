@@ -10,6 +10,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -22,23 +26,35 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
-import static org.hamcrest.Matchers.is;
+
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.contains;
 
 import com.paymybuddy.paymybuddy.dto.BuddiesDTO;
 import com.paymybuddy.paymybuddy.dto.BuddyForTransferDTO;
+import com.paymybuddy.paymybuddy.dto.TransactionInListDTO;
+import com.paymybuddy.paymybuddy.dto.TransactionListDTO;
 import com.paymybuddy.paymybuddy.dto.UpdateUserDTO;
+import com.paymybuddy.paymybuddy.model.Transaction;
 import com.paymybuddy.paymybuddy.model.User;
+import com.paymybuddy.paymybuddy.repository.TransactionRepository;
 import com.paymybuddy.paymybuddy.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -58,6 +74,9 @@ public class UserControllerIT {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -268,4 +287,62 @@ public class UserControllerIT {
         assertFalse(updatedUser.getBuddies().contains(buddy));
         assertEquals(initialBuddiesNumber - 1, updatedBuddiesNumber);    
     }
+
+    @Test
+    @WithMockUser(username = "rory@gmail.com")
+    void showTransferFormGetIT() throws Exception {
+        
+        BuddiesDTO buddies = new BuddiesDTO(Set.of(
+                new BuddyForTransferDTO(2, "jimi", "jimi@gmail.com"),
+                new BuddyForTransferDTO(3, "stevie", "stevie@gmail.com")));
+
+        mockMvc.perform(get("/user/transfer")
+                        .param("page", "0")
+                        .param("size", "8"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("transfer"))
+                .andExpect(model().attribute("balance", comparesEqualTo(BigDecimal.valueOf(1000.00))))
+                .andExpect(model().attribute("transactions", hasProperty("content",hasSize(3))))
+                .andExpect(model().attribute("transactions", hasProperty("number", is(0))))
+                .andExpect(model().attribute("transactions", hasProperty("totalPages", is(1))))
+                .andExpect(model().attribute("transactions", hasProperty("content", not(empty()))))
+                .andExpect(model().attribute("buddies", buddies))
+                .andExpect(model().attribute("currentPage", 0))
+                .andExpect(model().attribute("totalPages", 1));
+    }
+
+    @Test
+    @WithMockUser(username = "rory@gmail.com")
+    void handleTransferOkIT() throws Exception {
+        
+        String userEmail = "rory@gmail.com";
+        String buddyEmail = "jimi@gmail.com";
+        BigDecimal amount = new BigDecimal("500.00");
+        String description = "Test";
+
+        mockMvc.perform(post("/user/transfer")
+                        .param("buddy", buddyEmail)
+                        .param("amount", amount.toString())
+                        .param("description", description)
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/user/transfer"))
+                .andExpect(flash().attributeExists("successMessage"));
+
+        User updatedUser = userRepository.findByEmail(userEmail).orElseThrow();
+        User updatedBuddy = userRepository.findByEmail(buddyEmail).orElseThrow();
+
+        assertEquals(BigDecimal.valueOf(500.00).setScale(2), updatedUser.getBalance().setScale(2));
+        assertEquals(BigDecimal.valueOf(1500.00).setScale(2), updatedBuddy.getBalance().setScale(2));
+
+
+    //     Optional<Transaction> lastTransaction = transactionRepository.findTopByOrderByDateCreatedDesc(); // Récupérer la dernière transaction
+    // assertTrue(lastTransaction.isPresent(), "La dernière transaction ne doit pas être nulle");
+    //     Transaction transaction = lastTransaction.get();
+    //     assertEquals(sender.getId(), transaction.getSender().getId(), "L'expéditeur de la dernière transaction n'est pas correct");
+    //     assertEquals(receiver.getId(), transaction.getReceiver().getId(), "Le destinataire de la dernière transaction n'est pas correct");
+    //     assertEquals(transferAmount, transaction.getAmount(), "Le montant de la dernière transaction n'est pas correct");
+    //     assertEquals(description, transaction.getDescription(), "La description de la dernière transaction n'est pas correcte");
+    }
+
 }
