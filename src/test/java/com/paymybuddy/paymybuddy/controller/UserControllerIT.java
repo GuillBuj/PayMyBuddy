@@ -11,9 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -26,31 +23,22 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.contains;
 
 import com.paymybuddy.paymybuddy.dto.BuddiesDTO;
 import com.paymybuddy.paymybuddy.dto.BuddyForTransferDTO;
-import com.paymybuddy.paymybuddy.dto.TransactionInListDTO;
-import com.paymybuddy.paymybuddy.dto.TransactionListDTO;
 import com.paymybuddy.paymybuddy.dto.UpdateUserDTO;
 import com.paymybuddy.paymybuddy.model.Transaction;
 import com.paymybuddy.paymybuddy.model.User;
@@ -130,7 +118,7 @@ public class UserControllerIT {
     void updateProfileWithoutPasswordIT() throws Exception {
         String newUsername = "newusername";
         String newEmail = "newemail@gmail.com";
-        String oldEncodedPassword = "$2a$10$Wj8wft8eK9F3CZyZ.xYZwTw2LGlJKl5Ejq5fnjFupm17Xx5PAkjr6";
+        String oldEncodedPassword = "$2b$12$NPO6GqMCfpmqlIQZCA7K4.QfY0G1uLbtvvHpjwz8NqmtOm1W3a8ke";
 
         mockMvc.perform(patch("/user/profile")
                 .with(csrf()) 
@@ -345,4 +333,86 @@ public class UserControllerIT {
         assertEquals(description, transaction.getDescription());
     }
 
+    @Test
+    @WithMockUser(username = "rory@gmail.com")
+    void handleTransferNegativeTransactionIT() throws Exception {
+        
+        String userEmail = "rory@gmail.com";
+        String buddyEmail = "jimi@gmail.com";
+        BigDecimal negativeAmount = new BigDecimal("-100.00");
+        String description = "Negative test";
+
+        mockMvc.perform(post("/user/transfer")
+                        .param("buddy", buddyEmail)
+                        .param("amount", negativeAmount.toString())
+                        .param("description", description)
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/user/transfer"))
+                .andExpect(flash().attributeExists("errorMessage"));
+
+        User updatedUser = userRepository.findByEmail(userEmail).orElseThrow();
+        User updatedBuddy = userRepository.findByEmail(buddyEmail).orElseThrow();
+
+        assertEquals(BigDecimal.valueOf(1000.00).setScale(2), updatedUser.getBalance().setScale(2));
+        assertEquals(BigDecimal.valueOf(1000.00).setScale(2), updatedBuddy.getBalance().setScale(2));
+
+        Optional<Transaction> lastTransaction = transactionRepository.findTopByOrderByDateCreatedDesc();
+        assertTrue(lastTransaction.isPresent());
+        Transaction transaction = lastTransaction.get();
+        assertNotEquals(negativeAmount, transaction.getAmount());
+        assertNotEquals(description, transaction.getDescription());
+    }
+
+    @Test
+    @WithMockUser(username = "rory@gmail.com")
+    void handleTransferNotEnoughMoneyIT() throws Exception {
+        
+        String userEmail = "rory@gmail.com";
+        String buddyEmail = "jimi@gmail.com";
+        BigDecimal tooMuchAmount = new BigDecimal("10000.00");
+        String description = "Not enough money test";
+
+        mockMvc.perform(post("/user/transfer")
+                        .param("buddy", buddyEmail)
+                        .param("amount", tooMuchAmount.toString())
+                        .param("description", description)
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/user/transfer"))
+                .andExpect(flash().attributeExists("errorMessage"));
+
+        User updatedUser = userRepository.findByEmail(userEmail).orElseThrow();
+        User updatedBuddy = userRepository.findByEmail(buddyEmail).orElseThrow();
+
+        assertEquals(BigDecimal.valueOf(1000.00).setScale(2), updatedUser.getBalance().setScale(2));
+        assertEquals(BigDecimal.valueOf(1000.00).setScale(2), updatedBuddy.getBalance().setScale(2));
+
+        Optional<Transaction> lastTransaction = transactionRepository.findTopByOrderByDateCreatedDesc();
+        assertTrue(lastTransaction.isPresent());
+        Transaction transaction = lastTransaction.get();
+        assertNotEquals(tooMuchAmount, transaction.getAmount());
+        assertNotEquals(description, transaction.getDescription());
+    }
+
+    @Test
+    @WithMockUser(username = "rory@gmail.com")
+    public void depositGetIT() throws Exception {
+        mockMvc.perform(get("/user/deposit"))
+               .andExpect(status().isOk())
+               .andExpect(view().name("deposit"))
+               .andExpect(model().attributeExists("balanceOperationDTO"));
+    }
+
+    @Test
+    @WithMockUser(username = "rory@gmail.com")
+    public void depositPostOkIT() throws Exception {
+        mockMvc.perform(post("/user/deposit")
+                        .with(csrf())
+                .param("userEmail", "rory@gmail.com")
+                .param("amount", "100.00"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/user/transfer"))
+                .andExpect(flash().attributeExists("successMessage"));
+    }
 }

@@ -13,7 +13,7 @@ VALUES
         1,
         'rory',
         'rory@gmail.com',
-        '$2a$10$Wj8wft8eK9F3CZyZ.xYZwTw2LGlJKl5Ejq5fnjFupm17Xx5PAkjr6',
+        '$2b$12$NPO6GqMCfpmqlIQZCA7K4.QfY0G1uLbtvvHpjwz8NqmtOm1W3a8ke', -- Password123 encoded with  BCrypt
         1000,
         NOW()
     ),
@@ -21,7 +21,7 @@ VALUES
         2,
         'jimi',
         'jimi@gmail.com',
-        '$2a$10$Wj8wft8eK9F3CZyZ.xYZwTw2LGlJKl5Ejq5fnjFupm17Xx5PAkjr6',
+        '$2b$12$NPO6GqMCfpmqlIQZCA7K4.QfY0G1uLbtvvHpjwz8NqmtOm1W3a8ke',
         1000,
         NOW()
     ),
@@ -29,7 +29,7 @@ VALUES
         3,
         'stevie',
         'stevie@gmail.com',
-        '$2a$10$Wj8wft8eK9F3CZyZ.xYZwTw2LGlJKl5Ejq5fnjFupm17Xx5PAkjr6',
+        '$2b$12$NPO6GqMCfpmqlIQZCA7K4.QfY0G1uLbtvvHpjwz8NqmtOm1W3a8ke',
         1000,
         NOW()
     )

@@ -47,18 +47,6 @@ public class UserController {
     @Autowired
     private final TransactionService transactionService;
 
-    // @GetMapping(produces = "application/json")
-    // public ResponseEntity<UserDTO> getUserById(@RequestParam int id) {
-    //     UserDTO userDTO = userService.getUserById(id);
-    //     return ResponseEntity.ok(userDTO);
-    // }
-
-    // @PostMapping("/pay")
-    // public ResponseEntity<Transaction> sendMoney(@RequestBody TransactionRequestDTO transactionDTO){
-    //     Transaction transaction = transactionService.createTransaction(transactionDTO);
-    //     return ResponseEntity.ok(transaction);
-    // }
-
     @GetMapping("/deposit")
     public String showDepositPage(Model model) {
         log.debug("- GET /user/deposit");
@@ -238,6 +226,5 @@ public class UserController {
         
         return "redirect:/user/relation";
     }
-
 }
 
