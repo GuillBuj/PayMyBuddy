@@ -5,6 +5,7 @@ body {
     background-color: #f4f4f4;
     margin: 0;
     padding: 0;
+    padding-top: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
