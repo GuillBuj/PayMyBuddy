@@ -219,6 +219,7 @@ public class UserController {
 
     @DeleteMapping("/relation/{id}")
     public String removeBuddy(@PathVariable int id, @AuthenticationPrincipal UserDetails userDetails) {
+        
         BuddyConnectionDTO buddyConnection = new BuddyConnectionDTO(userDetails.getUsername(), userService.getUserById(id).email());
         log.debug("- DELETE /user/relation", buddyConnection);
 

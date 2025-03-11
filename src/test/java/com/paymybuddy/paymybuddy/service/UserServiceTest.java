@@ -85,6 +85,7 @@ public class UserServiceTest {
 
     @BeforeEach
     void setUp(){
+        
         user = new User(1, "rory", "rory@gmail.com", "encodedPassword", BigDecimal.valueOf(100.00), new HashSet<>(), LocalDateTime.now());
     }
 
@@ -115,6 +116,7 @@ public class UserServiceTest {
 
     @Test
     void createUserUsernameAlreadyTakenTest() {
+        
         when(userRepository.existsByUsername("rory")).thenReturn(true);
 
         UsernameAlreadyTakenException thrown = assertThrows(UsernameAlreadyTakenException.class, () -> {
@@ -128,6 +130,7 @@ public class UserServiceTest {
     
     @Test
     void createUserEmailAlreadyUsedTest() {
+        
         when(userRepository.existsByUsername("roryg")).thenReturn(false);
         when(userRepository.existsByEmail("rory@gmail.com")).thenReturn(true);
 
@@ -164,6 +167,7 @@ public class UserServiceTest {
 
     @Test
     void updateUserUsernameAlreadyTakenTest() {
+        
         when(userRepository.getById(1)).thenReturn(user);
         when(userRepository.existsByUsername("existingusername")).thenReturn(true);
 
@@ -178,6 +182,7 @@ public class UserServiceTest {
 
     @Test
     void updateUserEmailAlreadyUsedTest() {
+        
         when(userRepository.getById(1)).thenReturn(user);
         when(userRepository.existsByEmail("usedemail@mail.com")).thenReturn(true);
 
@@ -222,6 +227,7 @@ public class UserServiceTest {
 
     @Test
     void addBuddyBuddyAlreadyAddedTest() {
+        
         User buddy = new User(2, "stevie", "stevie@gmail.com", "encodedPassword", BigDecimal.valueOf(100.00), new HashSet<>(), LocalDateTime.now());
         BuddyConnectionDTO buddyConnection = new BuddyConnectionDTO("rory@example.com", "stevie@gmail.com");
 
@@ -237,6 +243,7 @@ public class UserServiceTest {
 
     @Test
     void addBuddyBuddyNotFoundTest() {
+        
         BuddyConnectionDTO buddyConnection = new BuddyConnectionDTO("rory@example.com", "notexisting@gmail.com");
 
         when(userRepository.findByEmail("rory@example.com")).thenReturn(Optional.of(user));
@@ -249,6 +256,7 @@ public class UserServiceTest {
 
     @Test
     void addBuddyUserNotFoundTest() {
+        
         BuddyConnectionDTO buddyConnection = new BuddyConnectionDTO("notexisting@example.com", "rory@gmail.com");
 
         when(userRepository.findByEmail("notexisting@example.com")).thenReturn(Optional.empty());
@@ -260,6 +268,7 @@ public class UserServiceTest {
 
     @Test
     void removeBuddyOkTest() {
+        
         User buddy = new User(2, "stevie", "stevie@gmail.com", "encodedPassword", BigDecimal.valueOf(100.00), new HashSet<>(), LocalDateTime.now());
         BuddyConnectionDTO buddyConnection = new BuddyConnectionDTO("rory@example.com", "stevie@gmail.com");
         
@@ -276,6 +285,7 @@ public class UserServiceTest {
 
     @Test
     void removeBuddyNotInListTest() {
+        
         User buddyNotInList = new User(4, "scott", "notinbuddieslist@example.com", "encodedPassword", BigDecimal.valueOf(100.00), new HashSet<>(), LocalDateTime.now());
 
         BuddyConnectionDTO buddyConnection = new BuddyConnectionDTO("rory@example.com", "notinbuddieslist@example.com");
@@ -291,6 +301,7 @@ public class UserServiceTest {
 
     @Test
     void getUserByIdOkTest() {
+        
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
 
         UserDTO userDTO = userService.getUserById(1);
@@ -310,6 +321,7 @@ public class UserServiceTest {
 
     @Test
     void getBuddiesOkTest() {
+        
         User user2 = new User(2, "stevie", "stevie@gmail.com", "encodedPassword", BigDecimal.valueOf(100.00), Set.of(user), LocalDateTime.now());
 
         when(userRepository.findById(2)).thenReturn(Optional.of(user2));
@@ -323,6 +335,7 @@ public class UserServiceTest {
 
     @Test
     void getBuddiesNotFoundTest() {
+        
         when(userRepository.findById(1)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> userService.getBuddies(1));
@@ -330,6 +343,7 @@ public class UserServiceTest {
 
     @Test
     void authenticateUserOkTest() {
+        
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(mock(Authentication.class));
 
         userService.authenticateUser(mock(HttpServletRequest.class), "rory@gmail.com", "password123");
@@ -339,6 +353,7 @@ public class UserServiceTest {
 
     @Test
     void getTransactionsPaginatedOkTest() {
+        
         Pageable pageable = PageRequest.of(0, 8, Sort.by("dateCreated").descending());
         Page<Transaction> transactionsPage = new PageImpl<>(Collections.emptyList(), pageable, 0);
         when(transactionRepository.findBySenderIdOrReceiverIdOrderByDateCreatedDesc(1, 1, pageable)).thenReturn(transactionsPage);
@@ -362,6 +377,7 @@ public class UserServiceTest {
 
     @Test
     void existsByUsernameFalseTest() {
+        
         String username = "unknown";
         when(userRepository.existsByUsername(username.toLowerCase())).thenReturn(false);
 
@@ -373,6 +389,7 @@ public class UserServiceTest {
 
     @Test
     void existsByEmailTrueTest() {
+        
         String email = "rory@gmail.com";
         when(userRepository.existsByEmail(email.trim().toLowerCase())).thenReturn(true);
 
@@ -384,6 +401,7 @@ public class UserServiceTest {
 
     @Test
     void existsByEmailFalseTest() {
+        
         String email = "unknown@gmail.com";
         when(userRepository.existsByEmail(email.trim().toLowerCase())).thenReturn(false);
 
@@ -395,6 +413,7 @@ public class UserServiceTest {
 
     @Test
     void getUserByEmailOkTest() {
+        
         String email = "rory@gmail.com";
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
@@ -405,6 +424,7 @@ public class UserServiceTest {
 
     @Test
     void getUserByEmailNotFoundTest() {
+        
         String email = "unknown@gmail.com";
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
 
@@ -413,6 +433,7 @@ public class UserServiceTest {
 
     @Test
     void FindByEmailOkTest() {
+        
         String email = "rory@gmail.com";
         when(userRepository.existsByEmail(email.trim().toLowerCase())).thenReturn(true);
 
@@ -424,6 +445,7 @@ public class UserServiceTest {
     
     @Test
     void FindByEmailNotFoundTest() {
+        
         String email = "unknown@gmail.com";
         when(userRepository.existsByEmail(email.trim().toLowerCase())).thenReturn(false);
 
@@ -435,6 +457,7 @@ public class UserServiceTest {
 
     @Test
     void depositOkTest() {
+        
         BalanceOperationDTO operation = new BalanceOperationDTO("rory@gmail.com", new BigDecimal(100));
 
         userService.deposit(operation);

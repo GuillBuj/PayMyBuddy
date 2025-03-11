@@ -38,6 +38,7 @@ public class LoginControllerIT {
 
     @Test
     public void showLoginFormOkIT() throws Exception {
+        
         mockMvc.perform(get("/login"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("login"))
@@ -46,6 +47,7 @@ public class LoginControllerIT {
 
     @Test
     public void showLoginFormAfterFailureIT() throws Exception {
+        
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("errorMessage", "Erreur");
 
@@ -57,6 +59,7 @@ public class LoginControllerIT {
 
     @Test
     public void postLoginOkIT() throws Exception {
+        
         mockMvc.perform(post("/login")
                         .with(csrf())
                 .param("email", "rory@gmail.com")
@@ -67,6 +70,7 @@ public class LoginControllerIT {
 
     @Test
     public void postLoginFailedBadPasswordIT() throws Exception {
+        
         mockMvc.perform(post("/login")
                         .with(csrf())
                 .param("email", "rory@gmail.com")
@@ -77,6 +81,7 @@ public class LoginControllerIT {
 
     @Test
     public void postLoginFailedUnknownUserIT() throws Exception {
+        
         mockMvc.perform(post("/login")
                         .with(csrf())
                 .param("email", "unknown@gmail.com")

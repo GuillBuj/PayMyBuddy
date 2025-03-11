@@ -15,6 +15,7 @@ public class LoginController {
     
     @GetMapping
     public String showLoginForm(Model model, HttpServletRequest request) {
+        
         String errorMessage = (String) request.getSession().getAttribute("errorMessage");
 
         if (errorMessage != null) {

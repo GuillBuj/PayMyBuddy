@@ -43,6 +43,7 @@ public class RegistrationControllerIT {
 
     @Test
     public void showRegistrationFormGetIT() throws Exception {
+        
         mockMvc.perform(get("/register"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("register"))

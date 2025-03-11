@@ -53,6 +53,7 @@ public class TransactionServiceTest {
 
     @BeforeEach
     void setUp(){
+        
         sender = new User(1, "rory", "rory@gmail.com", "123", BigDecimal.valueOf(100.00), null, LocalDateTime.now());
         receiver = new User(2, "jimi", "jimi@gmail.com", "123", BigDecimal.valueOf(100.00), null, LocalDateTime.now());
         transactionDTO = new TransactionRequestDTO("rory@gmail.com","jimi@gmail.com", BigDecimal.valueOf(50.00), "Test");
@@ -60,6 +61,7 @@ public class TransactionServiceTest {
 
     @Test
     void createTransactionOkTest(){
+        
         when(userRepository.findByEmail("rory@gmail.com")).thenReturn(Optional.of(sender));
         when(userRepository.findByEmail("jimi@gmail.com")).thenReturn(Optional.of(receiver));
         when(transactionRepository.save(any(Transaction.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -103,6 +105,7 @@ public class TransactionServiceTest {
 
     @Test
     void createTransactionSenderNotFoundTest() {
+        
         transactionDTO = new TransactionRequestDTO("unknown@gmail.com","rory@gmail.com", BigDecimal.valueOf(50.00), "Test");
         when(userRepository.findByEmail(transactionDTO.senderEmail())).thenReturn(Optional.empty());
         
@@ -115,6 +118,7 @@ public class TransactionServiceTest {
 
     @Test
     void createTransactionReceiverNotFoundTest() {
+        
         transactionDTO = new TransactionRequestDTO("rory@gmail.com","unknown@gmail.com", BigDecimal.valueOf(50.00), "Test");
         when(userRepository.findByEmail(transactionDTO.senderEmail())).thenReturn(Optional.of(sender));
         when(userRepository.findByEmail(transactionDTO.receiverEmail())).thenReturn(Optional.empty());
@@ -128,6 +132,7 @@ public class TransactionServiceTest {
 
     @Test
     void createTransactionNegativeAmountTest(){
+        
         transactionDTO = new TransactionRequestDTO("rory@gmail.com","jimi@gmail.com", BigDecimal.valueOf(-10), "Test");
         
         assertThrows(NegativeTransactionException.class, () -> {

@@ -191,11 +191,6 @@ public class UserService {
         operationService.updateBalance(operation, true);
     }
 
-    // @Transactional
-    // public void withdraw(BalanceOperationDTO operation){
-    //     operationService.updateBalance(operation, false);
-    // }
-
     public Page<TransactionInListDTO> getTransactionsPaginated(User user, int page, int size){
         return getTransactionsPaginated(user.getId(), page, size);
     }

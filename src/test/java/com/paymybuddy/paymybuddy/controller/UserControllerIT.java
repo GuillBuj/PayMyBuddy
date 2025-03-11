@@ -73,6 +73,7 @@ public class UserControllerIT {
     @Test
     @WithMockUser(username = "rory@gmail.com")
     void getProfileGetIT() throws Exception {
+        
         mockMvc.perform(get("/user/profile"))
             .andExpect(status().isOk())
             .andExpect(view().name("profile"))
@@ -84,27 +85,29 @@ public class UserControllerIT {
     @Test
     @WithMockUser(username = "rory@gmail.com")
     void editProfileGetIT() throws Exception {
+        
         mockMvc.perform(get("/user/profile/edit"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("profile"))
-            .andExpect(model().attributeExists("updateUserDTO"))
-            .andExpect(model().attribute("updateUserDTO", hasProperty("username", is("rory"))))
-            .andExpect(model().attribute("updateUserDTO", hasProperty("email", is("rory@gmail.com"))))
-            .andExpect(model().attribute("editMode", true));
+                .andExpect(status().isOk())
+                .andExpect(view().name("profile"))
+                .andExpect(model().attributeExists("updateUserDTO"))
+                .andExpect(model().attribute("updateUserDTO", hasProperty("username", is("rory"))))
+                .andExpect(model().attribute("updateUserDTO", hasProperty("email", is("rory@gmail.com"))))
+                .andExpect(model().attribute("editMode", true));
     }
 
     @Test
     @WithMockUser(username = "rory@gmail.com")
     void updateProfileIT() throws Exception {
+        
         String newUsername = "newusername";
         String newEmail = "newemail@gmail.com";
         String newPassword = "newPassword123";
 
         mockMvc.perform(patch("/user/profile")
-                .with(csrf()) 
-                .flashAttr("updateUserDTO", new UpdateUserDTO(1, newUsername, newEmail, newPassword)))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/user/profile"));
+                        .with(csrf()) 
+                        .flashAttr("updateUserDTO", new UpdateUserDTO(1, newUsername, newEmail, newPassword)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/user/profile"));
         
         User updatedUser = userRepository.findById(1).orElseThrow();
 
@@ -116,15 +119,16 @@ public class UserControllerIT {
     @Test
     @WithMockUser(username = "rory@gmail.com")
     void updateProfileWithoutPasswordIT() throws Exception {
+        
         String newUsername = "newusername";
         String newEmail = "newemail@gmail.com";
         String oldEncodedPassword = "$2b$12$NPO6GqMCfpmqlIQZCA7K4.QfY0G1uLbtvvHpjwz8NqmtOm1W3a8ke";
 
         mockMvc.perform(patch("/user/profile")
-                .with(csrf()) 
-                .flashAttr("updateUserDTO", new UpdateUserDTO(1, newUsername, newEmail, "")))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/user/profile"));
+                        .with(csrf()) 
+                        .flashAttr("updateUserDTO", new UpdateUserDTO(1, newUsername, newEmail, "")))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/user/profile"));
         
         User updatedUser = userRepository.findById(1).orElseThrow();
 
@@ -136,18 +140,18 @@ public class UserControllerIT {
     @Test
     @WithMockUser(username = "rory@gmail.com")
     void updateProfilePasswordTooShortIT() throws Exception {
+        
         String newUsername = "newusername";
         String newEmail = "newemail@gmail.com";
         String newPasswordTooShort = "12";
 
         mockMvc.perform(patch("/user/profile")
-                .with(csrf()) 
-                .flashAttr("updateUserDTO", new UpdateUserDTO(1, newUsername, newEmail, newPasswordTooShort)))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/user/profile/edit"))
-            .andExpect(flash().attributeExists("errorMessage"))
-            .andExpect(flash().attribute("errorMessage", Matchers.containsString("mot de passe")))
-            ;
+                        .with(csrf()) 
+                        .flashAttr("updateUserDTO", new UpdateUserDTO(1, newUsername, newEmail, newPasswordTooShort)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/user/profile/edit"))
+                .andExpect(flash().attributeExists("errorMessage"))
+                .andExpect(flash().attribute("errorMessage", Matchers.containsString("mot de passe")));
         
         User updatedUser = userRepository.findById(1).orElseThrow();
 
@@ -159,16 +163,17 @@ public class UserControllerIT {
     @Test
     @WithMockUser(username = "rory@gmail.com")
     void updateProfileEmailValidationErrorIT() throws Exception {
+        
         String newUsername = "newusername";
         String newEmailValidationError = "newemailvalidationerror";
         String newPassword = "newPassword123";
 
         mockMvc.perform(patch("/user/profile")
-                .with(csrf()) 
-                .flashAttr("updateUserDTO", new UpdateUserDTO(1, newUsername, newEmailValidationError, newPassword)))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/user/profile/edit"))
-            .andExpect(flash().attributeExists("emailError"));
+                        .with(csrf()) 
+                        .flashAttr("updateUserDTO", new UpdateUserDTO(1, newUsername, newEmailValidationError, newPassword)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/user/profile/edit"))
+                .andExpect(flash().attributeExists("emailError"));
         
         User updatedUser = userRepository.findById(1).orElseThrow();
 
@@ -186,9 +191,9 @@ public class UserControllerIT {
                 new BuddyForTransferDTO(3, "stevie", "stevie@gmail.com")));
 
         mockMvc.perform(get("/user/relation"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("relation"))
-            .andExpect(model().attribute("buddies", expectedBuddies));
+                .andExpect(status().isOk())
+                .andExpect(view().name("relation"))
+                .andExpect(model().attribute("buddies", expectedBuddies));
     }
 
     @Test
@@ -200,9 +205,9 @@ public class UserControllerIT {
         mockMvc.perform(post("/user/relation")
                         .with(csrf()) 
                         .param("buddyEmail", buddyEmail))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/user/relation"))
-            .andExpect(flash().attributeExists("successMessage"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/user/relation"))
+                .andExpect(flash().attributeExists("successMessage"));
 
         User user = userRepository.getById(3);
         User buddy = userRepository.getById(2);
@@ -222,9 +227,9 @@ public class UserControllerIT {
         mockMvc.perform(post("/user/relation")
                         .with(csrf()) 
                         .param("buddyEmail", buddyEmail))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/user/relation"))
-            .andExpect(flash().attributeExists("errorMessage"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/user/relation"))
+                .andExpect(flash().attributeExists("errorMessage"));
 
         User updatedUser = userRepository.getById(1);
         int updatedBuddiesNumber = updatedUser.getBuddies().size();
@@ -244,9 +249,9 @@ public class UserControllerIT {
         mockMvc.perform(post("/user/relation")
                         .with(csrf()) 
                         .param("buddyEmail", notExistingbuddyEmail))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/user/relation"))
-            .andExpect(flash().attributeExists("errorMessage"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/user/relation"))
+                .andExpect(flash().attributeExists("errorMessage"));
 
         User updatedUser = userRepository.getById(1);
         int updatedBuddiesNumber = updatedUser.getBuddies().size();
@@ -265,8 +270,8 @@ public class UserControllerIT {
         
         mockMvc.perform(delete("/user/relation/{id}", buddyId)
                         .with(csrf()))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/user/relation"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/user/relation"));
 
         User updatedUser = userRepository.getById(1);
         int updatedBuddiesNumber = updatedUser.getBuddies().size();
@@ -398,6 +403,7 @@ public class UserControllerIT {
     @Test
     @WithMockUser(username = "rory@gmail.com")
     public void depositGetIT() throws Exception {
+        
         mockMvc.perform(get("/user/deposit"))
                .andExpect(status().isOk())
                .andExpect(view().name("deposit"))
@@ -407,6 +413,7 @@ public class UserControllerIT {
     @Test
     @WithMockUser(username = "rory@gmail.com")
     public void depositPostOkIT() throws Exception {
+        
         mockMvc.perform(post("/user/deposit")
                         .with(csrf())
                 .param("userEmail", "rory@gmail.com")
