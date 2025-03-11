@@ -336,13 +336,13 @@ public class UserControllerIT {
         assertEquals(BigDecimal.valueOf(1500.00).setScale(2), updatedBuddy.getBalance().setScale(2));
 
 
-    //     Optional<Transaction> lastTransaction = transactionRepository.findTopByOrderByDateCreatedDesc(); // Récupérer la dernière transaction
-    // assertTrue(lastTransaction.isPresent(), "La dernière transaction ne doit pas être nulle");
-    //     Transaction transaction = lastTransaction.get();
-    //     assertEquals(sender.getId(), transaction.getSender().getId(), "L'expéditeur de la dernière transaction n'est pas correct");
-    //     assertEquals(receiver.getId(), transaction.getReceiver().getId(), "Le destinataire de la dernière transaction n'est pas correct");
-    //     assertEquals(transferAmount, transaction.getAmount(), "Le montant de la dernière transaction n'est pas correct");
-    //     assertEquals(description, transaction.getDescription(), "La description de la dernière transaction n'est pas correcte");
+        Optional<Transaction> lastTransaction = transactionRepository.findTopByOrderByDateCreatedDesc();
+        assertTrue(lastTransaction.isPresent());
+        Transaction transaction = lastTransaction.get();
+        assertEquals(userEmail, transaction.getSender().getEmail());
+        assertEquals(buddyEmail, transaction.getReceiver().getEmail());
+        assertEquals(amount, transaction.getAmount());
+        assertEquals(description, transaction.getDescription());
     }
 
 }

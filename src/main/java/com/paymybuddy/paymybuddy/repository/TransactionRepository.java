@@ -1,5 +1,7 @@
 package com.paymybuddy.paymybuddy.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +14,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
     
     Page<Transaction> findBySenderIdOrReceiverIdOrderByDateCreatedDesc(
         int senderId, int receiverId, Pageable pageable);
+
+    Optional<Transaction> findTopByOrderByDateCreatedDesc();
 }
