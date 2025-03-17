@@ -14,6 +14,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Represents a user in the system.
+ * Contains the user's personal details, balance, and buddy relationships with other users.
+ */
 @Entity
 @Table(name = "user")
 @Getter

@@ -44,8 +44,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Controller for handling user registration processes, including displaying the registration form 
- * and processing the registration request.
+ * Service class responsible for managing user-related operations such as user creation, update, 
+ * authentication, buddy management, and transaction handling.
  */
 @Service
 @AllArgsConstructor

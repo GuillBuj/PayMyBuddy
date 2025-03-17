@@ -9,6 +9,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Represents a financial transaction between two users.
+ * Contains information about the sender, receiver, amount, fee, and a description of the transaction.
+ */
 @Entity
 @Table(name = "transaction")
 @Getter
