@@ -13,9 +13,10 @@
         <div th:if="${errorMessage}" class="alert alert-danger">
             <p th:text="${errorMessage}"></p>
         </div>
+        <div class="messageBox">Chercher une relation</div>
         <form class="formHorizontal" th:action="@{relation}" method="post">
-            <input class="buddyEmail" type="email" id="buddyEmail" name="buddyEmail" placeholder="Mail à ajouter" required>
-            <button class="buttonSubmit" type="submit">Ajouter</button>
+            <input class="buddyEmail" type="email" id="buddyEmail" name="buddyEmail" placeholder="Saisir une adresse email" required>
+            <button class="buttonSubmitOrange" type="submit">Ajouter</button>
         </form>
         
         <div class="transactions">
@@ -25,6 +26,7 @@
                     <tr>
                         <th>Buddy</th>
                         <th>Adresse mail</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>

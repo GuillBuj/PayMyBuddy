@@ -15,9 +15,8 @@ body {
 .registerlogin-container {
     background-color: #fff;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     width: 280px;
+    border: 1px solid grey;
     min-height: 280px;
     text-align: center;
 }
@@ -26,7 +25,7 @@ body {
     width: 50%;
     font-size: medium;
     padding: 10px;
-    background-color: rgb(255, 136, 0);
+    background-color: rgb(255, 150, 0);
     color: #ffffff;
     border-radius: 4px;
     display: block;
@@ -69,7 +68,7 @@ input {
 
 .buttonCancel {
     padding: 10px;
-    background-color: red;
+    background-color: salmon;
     color: white;
     border: none;
     border-radius: 4px;
@@ -78,12 +77,28 @@ input {
     text-align: center;
 }
 
+.buttonSubmitOrange {
+    width: 60%;
+    padding: 10px;
+    background-color: rgb(255, 150, 0);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
 .buttonSubmit:hover {
     background-color: #06c;
 }
 
 .buttonCancel:hover {
     background-color: rgb(235, 65, 65);
+}
+
+.buttonSubmitOrange:hover {
+    background-color: rgb(255, 170, 0
+    );
 }
 
 a.btn{
@@ -106,10 +121,9 @@ nav {
     align-items: center;
     background-color: #f8f9fa;
     box-sizing: border-box;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-.titleleft {
+.titleleft{
     flex: 1;
     font-weight: bold;
 }
@@ -165,12 +179,24 @@ h2{
 
 div.transactions {
     height: 60vh;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid lightgrey;
+    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); */
 }
 
 table.transactions {
     border-spacing: 30px;
+    border-collapse: collapse;
     width: 100%;
+}
+
+th, td {
+    border-bottom: 1px solid #ddd;
+    padding: 15px;
+    text-align: left;
+}
+
+td.right {
+    text-align: right;
 }
 
 h2 {
@@ -178,7 +204,7 @@ h2 {
 }
 
 input.buddyEmail{
-    width: 300px;
+    width: 400px;
     padding: 10px;
     box-sizing: border-box;
 }
@@ -189,7 +215,7 @@ input.buddyEmail{
     justify-content: center;
     gap: 10px;
     padding: 10px 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
 }
 
 div.balance{
@@ -239,9 +265,12 @@ div.pagination {
     height: 50px;
 }
 
+.profile-info th, .profile-info td {
+    border:  none;
+}
+
 .profile-info {
     width: 350px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     padding: 0px 20px 20px 20px;
 }
 
@@ -268,4 +297,8 @@ div.profileBtn {
 
 form.deposit {
     box-shadow: none;
+}
+
+.messageBox{
+    font-weight: bold;
 }

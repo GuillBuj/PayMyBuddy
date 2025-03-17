@@ -25,7 +25,7 @@
                 </select>
                 <input type="text" name="description" id="description" placeholder="Description">
                 <input type="number" name="amount" id="amount" step="0.01" placeholder="Montant">
-                <button class="buttonSubmit" type="submit">Transférer</button>
+                <button class="buttonSubmit" type="submit">Payer</button>
             </form>
             <div class="transactions">
                 <h2>Mes transactions</h2>
@@ -43,7 +43,7 @@
                             <td th:text="${transaction.senderName}"></td>
                             <td th:text="${transaction.receiverName}"></td>
                             <td th:text="${transaction.description}"></td>
-                            <td th:text="${transaction.amount} + '€'"></td>
+                            <td th:text="${transaction.amount} + '€'" class="right"></td>
                         </tr>
                     </tbody>
                 </table>

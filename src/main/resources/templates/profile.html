@@ -15,12 +15,11 @@
                 <p th:text="${errorMessage}"></p>
             </div>
             <div class="profile-info">
-                <h2>Profil</h2>
                 <form th:action="@{/user/profile}" method="post" th:object="${updateUserDTO}">
                     <input type="hidden" name="_method" value="patch">
                     <table class="profile-table">
                         <tr>
-                            <td><strong>Nom d'utilisateur:</strong></td>
+                            <td><strong>Username</strong></td>
                             <td>
                                 <span  th:if="${!editMode}" th:text="${username}"></span>
                                 <input th:if="${editMode}" type="text" name="username" th:value="${updateUserDTO.username}">
@@ -31,7 +30,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><strong>Email:</strong></td>
+                            <td><strong>Mail</strong></td>
                             <td>
                                 <span  th:if="${!editMode}" th:text="${email}"></span>
                                 <input th:if="${editMode}" type="email" name="email" th:value="${updateUserDTO.email}">
@@ -42,16 +41,16 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><strong>Mot de passe:</strong></td>
+                            <td><strong>Mot de passe</strong></td>
                             <td>
-                                <span  th:if="${!editMode}">********</span>
+                                <span  th:if="${!editMode}">mot de passe</span>
                                 <input th:if="${editMode}" type="password" name="password">
                             </td>
                         </tr>
                     </table>
                     <div class="profileBtn">
-                        <a th:if="${!editMode}" href="/user/profile/edit" class="btn buttonSubmit">Modifier</a>
-                        <button th:if="${editMode}" type="submit" class="buttonSubmit">Enregistrer</button>
+                        <a th:if="${!editMode}" href="/user/profile/edit" class="btn buttonSubmitOrange">Modifier</a>
+                        <button th:if="${editMode}" type="submit" class="buttonSubmitOrange">Enregistrer</button>
                         <a th:if="${editMode}" href="/user/profile" class="btn buttonCancel">Annuler</a>
                     </div>
                 </form>     
