@@ -16,6 +16,10 @@ import com.paymybuddy.paymybuddy.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Controller for handling user registration processes, including displaying the registration form 
+ * and processing the registration request.
+ */
 @Controller
 @RequestMapping("/register")
 @Slf4j
@@ -24,6 +28,13 @@ public class RegistrationController {
     @Autowired
     private UserService userService;
     
+    /**
+     * Displays the registration form for a new user.
+     * 
+     * @param model The Spring MVC model used to pass attributes to the view.
+     * @return The name of the view to be displayed. In this case, it returns "register", 
+     *         which corresponds to the registration form view.
+     */
     @GetMapping
     public String showRegistrationForm(Model model) {
         log.debug("- GET /register");
@@ -32,6 +43,16 @@ public class RegistrationController {
         return "register";
     }
     
+    /**
+     * Processes the user registration form submission, validates the data, and creates a new user account.
+     * 
+     * @param userDTO The `RegisterUserDTO` object containing the data submitted by the user via the registration form.
+     * @param bindingResult The `BindingResult` object used to check for validation errors.
+     * @param model The Spring MVC model used to pass attributes to the view.
+     * @param redirectAttributes The `RedirectAttributes` object used to pass temporary attributes during redirects.
+     * @return A redirect to the login page if the registration is successful. If validation errors occur, 
+     *         it returns the registration form view with error messages.
+     */
     @PostMapping
     public String registerUser(@Valid @ModelAttribute("userDTO") RegisterUserDTO userDTO,
                                 BindingResult bindingResult,
@@ -50,5 +71,4 @@ public class RegistrationController {
         
         return "redirect:/login";
     }
-
 }

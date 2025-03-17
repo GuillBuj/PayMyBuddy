@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlobalExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">paymybuddy</a> &gt; <a href="index.source.html" class="el_package">com.paymybuddy.paymybuddy.exception</a> &gt; <span class="el_source">GlobalExceptionHandler.java</span></div><h1>GlobalExceptionHandler.java</h1><pre class="source lang-java linenums">package com.paymybuddy.paymybuddy.exception;
+
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+
+<span class="fc" id="L10">@Slf4j</span>
+@ControllerAdvice
+<span class="fc" id="L12">public class GlobalExceptionHandler {</span>
+        
+    @ExceptionHandler(UsernameAlreadyTakenException.class)
+    public String handleUsernameAlreadyTakenException(UsernameAlreadyTakenException e, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+
+<span class="fc" id="L17">        redirectAttributes.addFlashAttribute(&quot;errorMessage&quot;, e.getMessage());</span>
+
+<span class="fc" id="L19">        String referer = request.getHeader(&quot;Referer&quot;);</span>
+<span class="pc bpc" id="L20" title="1 of 2 branches missed.">        if (referer != null) {</span>
+<span class="nc bnc" id="L21" title="All 2 branches missed.">            if (referer.contains(&quot;/register&quot;)) {</span>
+<span class="nc" id="L22">                return &quot;redirect:/register&quot;;</span>
+<span class="nc bnc" id="L23" title="All 2 branches missed.">            } else if (referer.contains(&quot;/profile/edit&quot;)) {</span>
+<span class="nc" id="L24">                return &quot;redirect:/user/profile/edit&quot;;</span>
+            }
+        }
+
+<span class="fc" id="L28">        return &quot;redirect:/&quot;;</span>
+    }
+
+    @ExceptionHandler(EmailAlreadyUsedException.class)
+    public String handleEmailAlreadyUsedException(EmailAlreadyUsedException e, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+
+<span class="fc" id="L34">        redirectAttributes.addFlashAttribute(&quot;errorMessage&quot;, e.getMessage());</span>
+
+<span class="fc" id="L36">        String referer = request.getHeader(&quot;Referer&quot;);</span>
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">        if (referer != null) {</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">            if (referer.contains(&quot;/register&quot;)) {</span>
+<span class="nc" id="L39">                return &quot;redirect:/register&quot;;</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">            } else if (referer.contains(&quot;/profile/edit&quot;)) {</span>
+<span class="nc" id="L41">                return &quot;redirect:/user/profile/edit&quot;;</span>
+            }
+        }
+
+<span class="fc" id="L45">        return &quot;redirect:/&quot;;</span>
+    }
+    
+    @ExceptionHandler(NotEnoughMoneyException.class)
+    public String handleNotEnoughMoneyException(NotEnoughMoneyException e, RedirectAttributes redirectAttributes){
+<span class="fc" id="L50">        log.error(&quot;--- NotEnoughMoneyException ---&quot;, e.getMessage());</span>
+
+<span class="fc" id="L52">        redirectAttributes.addFlashAttribute(&quot;errorMessage&quot;, &quot;Solde insuffisant pour cette opération&quot;);</span>
+
+<span class="fc" id="L54">        return &quot;redirect:/user/transfer&quot;;</span>
+    }
+
+    @ExceptionHandler(SelfSendException.class)
+    public String handleSelfSendException(SelfSendException e, RedirectAttributes redirectAttributes){
+<span class="nc" id="L59">        log.error(&quot;--- SelfSendException ---&quot;, e.getMessage());</span>
+
+<span class="nc" id="L61">        redirectAttributes.addFlashAttribute(&quot;errorMessage&quot;, &quot;Vous ne pouvez pas vous payer vous-même&quot;);</span>
+
+<span class="nc" id="L63">        return &quot;redirect:/user/transfer&quot;;</span>
+    }
+
+    @ExceptionHandler(NegativeTransactionException.class)
+    public String handleSelfSendException(NegativeTransactionException e, RedirectAttributes redirectAttributes){
+<span class="fc" id="L68">        log.error(&quot;--- NegativeTransactionException ---&quot;, e.getMessage());</span>
+
+<span class="fc" id="L70">        redirectAttributes.addFlashAttribute(&quot;errorMessage&quot;, &quot;Bien tenté. Veuillez entrer un montant positif&quot;);</span>
+
+<span class="fc" id="L72">        return &quot;redirect:/user/transfer&quot;;</span>
+    }
+
+    @ExceptionHandler(SelfAddException.class)
+    public String handleSelfAddException(SelfAddException e, RedirectAttributes redirectAttributes){
+<span class="nc" id="L77">        log.error(&quot;--- SelfAddException ---&quot;, e.getMessage());</span>
+
+<span class="nc" id="L79">        redirectAttributes.addFlashAttribute(&quot;errorMessage&quot;, &quot;Vous ne pouvez pas vous ajouter vous-même&quot;);</span>
+
+<span class="nc" id="L81">        return &quot;redirect:/user/relation&quot;;</span>
+    }
+    
+    @ExceptionHandler(BuddyAlreadyAddedException.class)
+    public String handleBuddyAlreadyAddedException(BuddyAlreadyAddedException e, RedirectAttributes redirectAttributes){
+<span class="fc" id="L86">        log.error(&quot;--- BuddyAlreadyAddedException ---&quot;, e.getMessage());</span>
+
+<span class="fc" id="L88">        redirectAttributes.addFlashAttribute(&quot;errorMessage&quot;, e.buddyEmail + &quot; est déjà dans votre liste&quot;);</span>
+
+<span class="fc" id="L90">        return &quot;redirect:/user/relation&quot;;</span>
+    }
+
+    @ExceptionHandler(BuddyNotFoundException.class)
+    public String handleBuddyNotFoundException(BuddyNotFoundException e, RedirectAttributes redirectAttributes){
+<span class="fc" id="L95">        log.error(&quot;--- BuddyNotFoundException ---&quot;, e.getMessage());</span>
+
+<span class="fc" id="L97">        redirectAttributes.addFlashAttribute(&quot;errorMessage&quot;, &quot;Aucun compte avec l'adresse &quot; + e.buddyEmail);</span>
+
+<span class="fc" id="L99">        return &quot;redirect:/user/relation&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

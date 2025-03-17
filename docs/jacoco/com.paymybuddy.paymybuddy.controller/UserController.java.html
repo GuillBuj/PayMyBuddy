@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">paymybuddy</a> &gt; <a href="index.source.html" class="el_package">com.paymybuddy.paymybuddy.controller</a> &gt; <span class="el_source">UserController.java</span></div><h1>UserController.java</h1><pre class="source lang-java linenums">package com.paymybuddy.paymybuddy.controller;
+
+import java.math.BigDecimal;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.paymybuddy.paymybuddy.dto.BalanceOperationDTO;
+import com.paymybuddy.paymybuddy.dto.BuddiesDTO;
+import com.paymybuddy.paymybuddy.dto.BuddyConnectionDTO;
+import com.paymybuddy.paymybuddy.dto.BuddyForTransferDTO;
+import com.paymybuddy.paymybuddy.dto.TransactionInListDTO;
+import com.paymybuddy.paymybuddy.dto.TransactionRequestDTO;
+import com.paymybuddy.paymybuddy.dto.UpdateUserDTO;
+import com.paymybuddy.paymybuddy.model.User;
+import com.paymybuddy.paymybuddy.service.TransactionService;
+import com.paymybuddy.paymybuddy.service.UserService;
+
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequestMapping(&quot;/user&quot;)
+@AllArgsConstructor
+<span class="fc" id="L41">@Slf4j</span>
+public class UserController {
+
+    @Autowired
+    private final UserService userService;
+
+    @Autowired
+    private final TransactionService transactionService;
+
+    @GetMapping(&quot;/deposit&quot;)
+    public String showDepositPage(Model model) {
+<span class="fc" id="L52">        log.debug(&quot;- GET /user/deposit&quot;);</span>
+
+<span class="fc" id="L54">        model.addAttribute(&quot;balanceOperationDTO&quot;, new BalanceOperationDTO(&quot;&quot;, BigDecimal.ZERO));</span>
+        
+<span class="fc" id="L56">        return &quot;deposit&quot;;</span>
+    }
+    
+    @PostMapping(&quot;/deposit&quot;)
+    public String deposit(@ModelAttribute BalanceOperationDTO operation, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
+<span class="fc" id="L61">        log.debug(&quot;- POST /user/deposit: {}&quot;, operation);</span>
+        
+<span class="fc" id="L63">        String userEmail = userDetails.getUsername();</span>
+        
+        try {
+<span class="fc" id="L66">            userService.deposit(new BalanceOperationDTO(userEmail, operation.amount()));</span>
+<span class="fc" id="L67">            redirectAttributes.addFlashAttribute(&quot;successMessage&quot;, &quot;Argent ajouté&quot;);</span>
+<span class="nc" id="L68">        } catch (Exception e) {</span>
+<span class="nc" id="L69">            redirectAttributes.addFlashAttribute(&quot;errorMessage&quot;, &quot;Erreur dépôt&quot;);</span>
+<span class="fc" id="L70">        }</span>
+        
+<span class="fc" id="L72">        return &quot;redirect:/user/transfer&quot;;</span>
+    }
+
+    @GetMapping(&quot;/profile&quot;)
+    public String getProfile(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        
+<span class="fc" id="L78">        String email = userDetails.getUsername();</span>
+<span class="fc" id="L79">        log.debug(&quot;- GET /user/profile: {}&quot;, email);</span>
+
+<span class="fc" id="L81">        User user = userService.getUserByEmail(email);</span>
+<span class="fc" id="L82">        String username = user.getUsername();</span>
+<span class="fc" id="L83">        String userEmail = user.getEmail();</span>
+
+<span class="fc" id="L85">        model.addAttribute(&quot;username&quot;, username);</span>
+<span class="fc" id="L86">        model.addAttribute(&quot;email&quot;, userEmail);</span>
+<span class="fc" id="L87">        model.addAttribute(&quot;editMode&quot;, false);</span>
+
+<span class="fc" id="L89">        return &quot;profile&quot;;</span>
+    }
+
+    @GetMapping(&quot;/profile/edit&quot;)
+    public String editProfile(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        
+<span class="fc" id="L95">        String email = userDetails.getUsername();</span>
+<span class="fc" id="L96">        log.debug(&quot;- GET /user/profile/edit: {}&quot;, email);</span>
+
+<span class="fc" id="L98">        User user = userService.getUserByEmail(email);</span>
+
+<span class="fc" id="L100">        UpdateUserDTO updateUserDTO = new UpdateUserDTO();</span>
+<span class="fc" id="L101">        updateUserDTO.setId(user.getId());</span>
+<span class="fc" id="L102">        updateUserDTO.setUsername(user.getUsername());</span>
+<span class="fc" id="L103">        updateUserDTO.setEmail(user.getEmail());</span>
+<span class="fc" id="L104">        updateUserDTO.setPassword(&quot;&quot;);</span>
+
+<span class="fc" id="L106">        model.addAttribute(&quot;updateUserDTO&quot;, updateUserDTO);</span>
+<span class="fc" id="L107">        model.addAttribute(&quot;editMode&quot;, true);</span>
+
+<span class="fc" id="L109">        return &quot;profile&quot;;</span>
+    }
+
+    @PatchMapping(&quot;/profile&quot;)
+    public String updateProfile(@Valid UpdateUserDTO updateUserDTO, 
+                                BindingResult bindingResult,
+                                @AuthenticationPrincipal UserDetails userDetails,
+                                RedirectAttributes redirectAttributes
+                                ) {
+<span class="fc" id="L118">        log.debug(&quot;- PATCH /user/profile: {}&quot;, updateUserDTO);</span>
+
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        if (bindingResult.hasErrors()) {</span>
+<span class="fc" id="L121">            log.error(&quot;Validation errors: {}&quot;, bindingResult.getAllErrors());</span>
+<span class="fc" id="L122">            bindingResult.getFieldErrors().forEach(error -&gt; </span>
+<span class="fc" id="L123">                redirectAttributes.addFlashAttribute(error.getField() + &quot;Error&quot;, error.getDefaultMessage()));</span>
+<span class="fc" id="L124">            return &quot;redirect:/user/profile/edit&quot;;</span>
+        }
+
+        //hors validation classique car pas d'update du mot de passe si vide
+<span class="fc" id="L128">        String updatePassword = updateUserDTO.getPassword();</span>
+<span class="pc bpc" id="L129" title="1 of 4 branches missed.">        if (updatePassword != null &amp;&amp; !updatePassword.isEmpty()) {</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">            if (updatePassword.length() &lt; 3) {</span>
+<span class="fc" id="L131">                log.error(&quot;- Password too short: {}&quot;, updatePassword);</span>
+<span class="fc" id="L132">                redirectAttributes.addFlashAttribute(&quot;errorMessage&quot;, &quot;Le mot de passe doit contenir au moins 3 caractères&quot;);</span>
+<span class="fc" id="L133">                return &quot;redirect:/user/profile/edit&quot;;</span>
+            }
+        }
+  
+<span class="fc" id="L137">        User user = userService.getUserByEmail(userDetails.getUsername());</span>
+
+<span class="fc" id="L139">        userService.updateUser(new UpdateUserDTO(user.getId(), updateUserDTO.getUsername(), updateUserDTO.getEmail(), updateUserDTO.getPassword()));</span>
+<span class="fc" id="L140">        redirectAttributes.addFlashAttribute(&quot;successMessage&quot;, &quot;Profil mis à jour&quot;);</span>
+        
+<span class="fc" id="L142">        return &quot;redirect:/user/profile&quot;;</span>
+    }
+
+    @PostMapping(&quot;/transfer&quot;)
+    public String handleTransfer(@RequestParam(&quot;buddy&quot;) String buddyEmail,
+                                @RequestParam(&quot;amount&quot;) BigDecimal amount,
+                                @RequestParam(&quot;description&quot;) String description,
+                                Model model,
+                                RedirectAttributes redirectAttributes,
+                                @AuthenticationPrincipal UserDetails userDetails) {
+        
+<span class="fc" id="L153">        String email = userDetails.getUsername();</span>
+<span class="fc" id="L154">        TransactionRequestDTO transaction = new TransactionRequestDTO(email, buddyEmail, amount, description);</span>
+<span class="fc" id="L155">        log.debug(&quot;- POST /user/transfer: {}&quot;, transaction);</span>
+
+<span class="fc" id="L157">        transactionService.createTransaction(transaction);</span>
+<span class="fc" id="L158">        redirectAttributes.addFlashAttribute(&quot;successMessage&quot;, &quot;Transfert réussi&quot;);</span>
+
+<span class="fc" id="L160">        return &quot;redirect:/user/transfer&quot;;</span>
+    }
+
+    @GetMapping(&quot;/transfer&quot;)
+    public String showTransferForm( Model model,
+                                    @AuthenticationPrincipal UserDetails userDetails,
+                                    @RequestParam(defaultValue = &quot;0&quot;) int page,
+                                    @RequestParam(defaultValue = &quot;8&quot;) int size
+                                    ) {
+        
+<span class="fc" id="L170">        String email = userDetails.getUsername();</span>
+<span class="fc" id="L171">        log.debug(&quot;- GET /user/transfer: {}&quot;, email);</span>
+
+<span class="fc" id="L173">        User user = userService.getUserByEmail(email);</span>
+<span class="fc" id="L174">        BigDecimal balance = user.getBalance();</span>
+        
+<span class="fc" id="L176">        Page&lt;TransactionInListDTO&gt; transactionsPage = userService.getTransactionsPaginated(user.getId(), page, size);</span>
+<span class="pc bpc" id="L177" title="2 of 4 branches missed.">        if (page &lt; 0 || page &gt;= transactionsPage.getTotalPages()) {</span>
+<span class="nc" id="L178">            page = 0;</span>
+        }
+<span class="fc" id="L180">        BuddiesDTO buddies = new BuddiesDTO(user.getBuddies().stream()</span>
+<span class="fc" id="L181">                                .map(buddy -&gt; new BuddyForTransferDTO(buddy.getId(), buddy.getUsername(), buddy.getEmail()))</span>
+<span class="fc" id="L182">                                .collect(Collectors.toSet()));</span>
+
+<span class="fc" id="L184">        model.addAttribute(&quot;balance&quot;, balance);</span>
+<span class="fc" id="L185">        model.addAttribute(&quot;transactions&quot;, transactionsPage);</span>
+<span class="fc" id="L186">        model.addAttribute(&quot;buddies&quot;, buddies);</span>
+<span class="fc" id="L187">        model.addAttribute(&quot;currentPage&quot;, transactionsPage.getNumber());</span>
+<span class="fc" id="L188">        model.addAttribute(&quot;totalPages&quot;, transactionsPage.getTotalPages());</span>
+        
+<span class="fc" id="L190">        return &quot;transfer&quot;;</span>
+    }
+
+    @PostMapping(&quot;/relation&quot;)
+    public String addBuddy(@RequestParam(&quot;buddyEmail&quot;) String buddyEmail, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes){
+        
+<span class="fc" id="L196">        String userEmail = userDetails.getUsername();</span>
+<span class="fc" id="L197">        BuddyConnectionDTO buddyConnectionDTO = new BuddyConnectionDTO(userEmail, buddyEmail);</span>
+<span class="fc" id="L198">        log.debug(&quot;- POST /user/relation: {}&quot;, buddyConnectionDTO);</span>
+
+<span class="fc" id="L200">        userService.addBuddy(buddyConnectionDTO);</span>
+<span class="fc" id="L201">        redirectAttributes.addFlashAttribute(&quot;successMessage&quot;, &quot;Buddy ajouté avec succès&quot;);</span>
+
+<span class="fc" id="L203">        return &quot;redirect:/user/relation&quot;;</span>
+    }
+
+    @GetMapping(&quot;/relation&quot;)
+    public String showRelationForm(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        
+<span class="fc" id="L209">        String email = userDetails.getUsername();</span>
+<span class="fc" id="L210">        log.debug(&quot;- GET /user/relation: {}&quot;, email);</span>
+
+<span class="fc" id="L212">        User user = userService.getUserByEmail(email);</span>
+<span class="fc" id="L213">        BuddiesDTO buddies = userService.getBuddies(user.getId());</span>
+
+<span class="fc" id="L215">        model.addAttribute(&quot;buddies&quot;, buddies);</span>
+
+<span class="fc" id="L217">        return &quot;relation&quot;;</span>
+    }
+
+    @DeleteMapping(&quot;/relation/{id}&quot;)
+    public String removeBuddy(@PathVariable int id, @AuthenticationPrincipal UserDetails userDetails) {
+        
+<span class="fc" id="L223">        BuddyConnectionDTO buddyConnection = new BuddyConnectionDTO(userDetails.getUsername(), userService.getUserById(id).email());</span>
+<span class="fc" id="L224">        log.debug(&quot;- DELETE /user/relation&quot;, buddyConnection);</span>
+
+<span class="fc" id="L226">        userService.removeBuddy(buddyConnection);</span>
+        
+<span class="fc" id="L228">        return &quot;redirect:/user/relation&quot;;</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

@@ -1,0 +1,8 @@
+com.paymybuddy.paymybuddy.config
+com.paymybuddy.paymybuddy.controller
+com.paymybuddy.paymybuddy.dto
+com.paymybuddy.paymybuddy.exception
+com.paymybuddy.paymybuddy.model
+com.paymybuddy.paymybuddy
+com.paymybuddy.paymybuddy.repository
+com.paymybuddy.paymybuddy.service

@@ -35,6 +35,10 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Controller for managing user-related actions such as deposits, profile updates, 
+ * transferring money, and managing buddy relationships.
+ */
 @Controller
 @RequestMapping("/user")
 @AllArgsConstructor
@@ -47,31 +51,13 @@ public class UserController {
     @Autowired
     private final TransactionService transactionService;
 
-    @GetMapping("/deposit")
-    public String showDepositPage(Model model) {
-        log.debug("- GET /user/deposit");
-
-        model.addAttribute("balanceOperationDTO", new BalanceOperationDTO("", BigDecimal.ZERO));
-        
-        return "deposit";
-    }
-    
-    @PostMapping("/deposit")
-    public String deposit(@ModelAttribute BalanceOperationDTO operation, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
-        log.debug("- POST /user/deposit: {}", operation);
-        
-        String userEmail = userDetails.getUsername();
-        
-        try {
-            userService.deposit(new BalanceOperationDTO(userEmail, operation.amount()));
-            redirectAttributes.addFlashAttribute("successMessage", "Argent ajouté");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Erreur dépôt");
-        }
-        
-        return "redirect:/user/transfer";
-    }
-
+    /**
+     * Displays the user's profile information.
+     * 
+     * @param model The Spring MVC model used to pass attributes to the view.
+     * @param userDetails The authenticated user details.
+     * @return The name of the view displaying the profile.
+     */
     @GetMapping("/profile")
     public String getProfile(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         
@@ -89,6 +75,13 @@ public class UserController {
         return "profile";
     }
 
+    /**
+     * Displays the profile edit form where the user can update their information.
+     * 
+     * @param model The Spring MVC model used to pass attributes to the view.
+     * @param userDetails The authenticated user details.
+     * @return The name of the view for profile editing.
+     */
     @GetMapping("/profile/edit")
     public String editProfile(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         
@@ -109,6 +102,15 @@ public class UserController {
         return "profile";
     }
 
+    /**
+     * Handles the profile update submission (e.g., username, email, password).
+     * 
+     * @param updateUserDTO The updated user information.
+     * @param bindingResult Holds any validation errors.
+     * @param userDetails The authenticated user details.
+     * @param redirectAttributes Used to pass flash attributes to the view (for success or error messages).
+     * @return Redirects to the user's profile page after a successful update or back to edit page if there are validation errors.
+     */
     @PatchMapping("/profile")
     public String updateProfile(@Valid UpdateUserDTO updateUserDTO, 
                                 BindingResult bindingResult,
@@ -142,24 +144,16 @@ public class UserController {
         return "redirect:/user/profile";
     }
 
-    @PostMapping("/transfer")
-    public String handleTransfer(@RequestParam("buddy") String buddyEmail,
-                                @RequestParam("amount") BigDecimal amount,
-                                @RequestParam("description") String description,
-                                Model model,
-                                RedirectAttributes redirectAttributes,
-                                @AuthenticationPrincipal UserDetails userDetails) {
-        
-        String email = userDetails.getUsername();
-        TransactionRequestDTO transaction = new TransactionRequestDTO(email, buddyEmail, amount, description);
-        log.debug("- POST /user/transfer: {}", transaction);
-
-        transactionService.createTransaction(transaction);
-        redirectAttributes.addFlashAttribute("successMessage", "Transfert réussi");
-
-        return "redirect:/user/transfer";
-    }
-
+    
+    /**
+     * Displays the transfer form along with the user's balance and transaction history.
+     * 
+     * @param model The Spring MVC model used to pass attributes to the view.
+     * @param userDetails The authenticated user details.
+     * @param page The current page number for pagination.
+     * @param size The number of transactions per page.
+     * @return The name of the view displaying the transfer form.
+     */
     @GetMapping("/transfer")
     public String showTransferForm( Model model,
                                     @AuthenticationPrincipal UserDetails userDetails,
@@ -190,19 +184,42 @@ public class UserController {
         return "transfer";
     }
 
-    @PostMapping("/relation")
-    public String addBuddy(@RequestParam("buddyEmail") String buddyEmail, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes){
+    /**
+     * Handles the transfer of funds between users.
+     * 
+     * @param buddyEmail The recipient's email address.
+     * @param amount The amount to be transferred.
+     * @param description A description of the transaction.
+     * @param model The Spring MVC model used to pass attributes to the view.
+     * @param redirectAttributes Used to pass flash attributes to the view (for success or error messages).
+     * @param userDetails The authenticated user details.
+     * @return Redirects to the transfer page after processing the transfer.
+     */
+    @PostMapping("/transfer")
+    public String handleTransfer(@RequestParam("buddy") String buddyEmail,
+                                @RequestParam("amount") BigDecimal amount,
+                                @RequestParam("description") String description,
+                                Model model,
+                                RedirectAttributes redirectAttributes,
+                                @AuthenticationPrincipal UserDetails userDetails) {
         
-        String userEmail = userDetails.getUsername();
-        BuddyConnectionDTO buddyConnectionDTO = new BuddyConnectionDTO(userEmail, buddyEmail);
-        log.debug("- POST /user/relation: {}", buddyConnectionDTO);
+        String email = userDetails.getUsername();
+        TransactionRequestDTO transaction = new TransactionRequestDTO(email, buddyEmail, amount, description);
+        log.debug("- POST /user/transfer: {}", transaction);
 
-        userService.addBuddy(buddyConnectionDTO);
-        redirectAttributes.addFlashAttribute("successMessage", "Buddy ajouté avec succès");
+        transactionService.createTransaction(transaction);
+        redirectAttributes.addFlashAttribute("successMessage", "Transfert réussi");
 
-        return "redirect:/user/relation";
+        return "redirect:/user/transfer";
     }
 
+    /**
+     * Displays the user's buddy list.
+     * 
+     * @param model The Spring MVC model used to pass attributes to the view.
+     * @param userDetails The authenticated user details.
+     * @return The name of the view displaying the user's buddy list.
+     */
     @GetMapping("/relation")
     public String showRelationForm(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         
@@ -216,16 +233,86 @@ public class UserController {
 
         return "relation";
     }
+    
+    /**
+     * Adds a buddy to the user's buddy list.
+     * 
+     * @param buddyEmail The email address of the buddy to add.
+     * @param userDetails The authenticated user details.
+     * @param redirectAttributes Used to pass flash attributes to the view (for success or error messages).
+     * @return Redirects to the buddy relation page after adding the buddy.
+     */
+    @PostMapping("/relation")
+    public String addBuddy(@RequestParam("buddyEmail") String buddyEmail, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes){
+        
+        String userEmail = userDetails.getUsername();
+        BuddyConnectionDTO buddyConnectionDTO = new BuddyConnectionDTO(userEmail, buddyEmail);
+        log.debug("- POST /user/relation: {}", buddyConnectionDTO);
 
+        userService.addBuddy(buddyConnectionDTO);
+        redirectAttributes.addFlashAttribute("successMessage", "Buddy ajouté avec succès");
+
+        return "redirect:/user/relation";
+    }
+
+    /**
+     * Removes a buddy from the user's buddy list.
+     * 
+     * This method allows the authenticated user to remove a buddy from their buddy list by providing the buddy's ID.
+     * The buddy's email is fetched by their ID, and a connection DTO is created to remove the buddy from the user's list.
+     * 
+     * @param id The ID of the buddy to remove.
+     * @param userDetails The authenticated user's details, used to identify the current user.
+     * @return Redirects to the buddy relation page after removing the buddy.
+     */
     @DeleteMapping("/relation/{id}")
     public String removeBuddy(@PathVariable int id, @AuthenticationPrincipal UserDetails userDetails) {
         
         BuddyConnectionDTO buddyConnection = new BuddyConnectionDTO(userDetails.getUsername(), userService.getUserById(id).email());
-        log.debug("- DELETE /user/relation", buddyConnection);
+        log.debug("- DELETE /user/relation: {}", buddyConnection);
 
         userService.removeBuddy(buddyConnection);
         
         return "redirect:/user/relation";
+    }
+
+    /**
+     * Displays the deposit page where users can add money to their account.
+     * 
+     * @param model The Spring MVC model used to pass attributes to the view.
+     * @return The name of the view to display the deposit form.
+     */
+    @GetMapping("/deposit")
+    public String showDepositPage(Model model) {
+        log.debug("- GET /user/deposit");
+
+        model.addAttribute("balanceOperationDTO", new BalanceOperationDTO("", BigDecimal.ZERO));
+        
+        return "deposit";
+    }
+    
+    /**
+     * Handles the deposit form submission. Adds money to the user's balance.
+     * 
+     * @param operation The balance operation to be processed (deposit).
+     * @param userDetails The authenticated user details.
+     * @param redirectAttributes Used to pass flash attributes to the view (for success or error messages).
+     * @return Redirects to the transfer page after processing the deposit.
+     */
+    @PostMapping("/deposit")
+    public String deposit(@ModelAttribute BalanceOperationDTO operation, @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
+        log.debug("- POST /user/deposit: {}", operation);
+        
+        String userEmail = userDetails.getUsername();
+        
+        try {
+            userService.deposit(new BalanceOperationDTO(userEmail, operation.amount()));
+            redirectAttributes.addFlashAttribute("successMessage", "Argent ajouté");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Erreur dépôt");
+        }
+        
+        return "redirect:/user/transfer";
     }
 }
 

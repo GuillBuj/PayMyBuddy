@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SecurityConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">paymybuddy</a> &gt; <a href="index.source.html" class="el_package">com.paymybuddy.paymybuddy.config</a> &gt; <span class="el_source">SecurityConfig.java</span></div><h1>SecurityConfig.java</h1><pre class="source lang-java linenums">package com.paymybuddy.paymybuddy.config;
+
+import java.io.IOException;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+
+import com.paymybuddy.paymybuddy.repository.UserRepository;
+import com.paymybuddy.paymybuddy.service.CustomUserDetailsService;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+
+@Configuration
+@EnableWebSecurity
+<span class="fc" id="L29">@Slf4j</span>
+<span class="fc" id="L30">public class SecurityConfig {</span>
+
+    UserRepository userRepository;
+    
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+<span class="fc" id="L36">        return new BCryptPasswordEncoder();</span>
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+<span class="fc" id="L41">        http</span>
+<span class="fc" id="L42">            .authorizeHttpRequests(auth -&gt; auth</span>
+<span class="fc" id="L43">                .requestMatchers(&quot;/register&quot;, &quot;/login&quot;, &quot;/css/**&quot;, &quot;/js/**&quot;).permitAll()</span>
+<span class="fc" id="L44">                .requestMatchers(&quot;/user/relation&quot;, &quot;/profile&quot;, &quot;/user/transaction&quot;).authenticated()</span>
+<span class="fc" id="L45">                .anyRequest().authenticated()</span>
+            )
+<span class="fc" id="L47">            .formLogin(login -&gt; login</span>
+<span class="fc" id="L48">                .loginPage(&quot;/login&quot;)</span>
+<span class="fc" id="L49">                .usernameParameter(&quot;email&quot;)</span>
+<span class="fc" id="L50">                .passwordParameter(&quot;password&quot;)</span>
+<span class="fc" id="L51">                .defaultSuccessUrl(&quot;/user/profile&quot;, true)</span>
+<span class="fc" id="L52">                .failureHandler(authenticationFailureHandler())</span>
+<span class="fc" id="L53">                .permitAll()</span>
+            )
+<span class="fc" id="L55">            .logout(logout -&gt; logout</span>
+<span class="fc" id="L56">                .logoutUrl(&quot;/logout&quot;)</span>
+<span class="fc" id="L57">                .logoutSuccessUrl(&quot;/login?logout&quot;)</span>
+<span class="fc" id="L58">                .invalidateHttpSession(true)</span>
+<span class="fc" id="L59">                .deleteCookies(&quot;JSESSIONID&quot;)</span>
+<span class="fc" id="L60">                .permitAll()</span>
+            );
+
+<span class="fc" id="L63">        return http.build();</span>
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(
+                CustomUserDetailsService customUserDetailsService,
+                PasswordEncoder passwordEncoder) {
+
+<span class="fc" id="L71">        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();</span>
+<span class="fc" id="L72">        authProvider.setUserDetailsService(customUserDetailsService);</span>
+<span class="fc" id="L73">        authProvider.setPasswordEncoder(passwordEncoder);</span>
+<span class="fc" id="L74">        authProvider.setHideUserNotFoundExceptions(false);</span>
+
+<span class="fc" id="L76">        return new ProviderManager(authProvider);</span>
+    }
+
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+<span class="fc" id="L81">        return new SimpleUrlAuthenticationFailureHandler(&quot;/login?error=true&quot;) {</span>
+            @Override
+            public void onAuthenticationFailure(HttpServletRequest httpServletRequest,
+                                                HttpServletResponse httpServletResponse,
+                                                AuthenticationException exception) throws IOException, ServletException {
+<span class="fc" id="L86">                log.info(&quot;---- &quot; + exception);</span>
+
+<span class="fc" id="L88">                String errorMessage = &quot;Invalid login attempt&quot;;</span>
+
+<span class="fc" id="L90">                httpServletRequest.getSession().setAttribute(&quot;errorMessage&quot;, errorMessage);</span>
+
+<span class="fc" id="L92">                super.onAuthenticationFailure(httpServletRequest, httpServletResponse, exception);</span>
+<span class="fc" id="L93">            }</span>
+        };
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

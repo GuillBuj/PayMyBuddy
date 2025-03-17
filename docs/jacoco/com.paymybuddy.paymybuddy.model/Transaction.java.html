@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Transaction.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">paymybuddy</a> &gt; <a href="index.source.html" class="el_package">com.paymybuddy.paymybuddy.model</a> &gt; <span class="el_source">Transaction.java</span></div><h1>Transaction.java</h1><pre class="source lang-java linenums">package com.paymybuddy.paymybuddy.model;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Table(name = &quot;transaction&quot;)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Transaction {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(nullable = false)
+    private BigDecimal amount;
+
+    @ManyToOne
+    @JoinColumn(name = &quot;sender_id&quot;, nullable = false)
+    private User sender;
+
+    @ManyToOne
+    @JoinColumn(name = &quot;receiver_id&quot;, nullable = false)
+    private User receiver;
+
+    private String description;
+
+    private BigDecimal fee;
+
+    @Column(name = &quot;date_created&quot;)
+    private LocalDateTime dateCreated;
+
+    @Override
+    public String toString() {
+<span class="fc" id="L43">        return String.format(</span>
+            &quot;Transaction{id=%d, sender=%s, receiver=%s, amount=%s, fee=%s, description='%s', dateCreated=%s}&quot;,
+<span class="fc" id="L45">            id, sender.getUsername(), receiver.getUsername(), amount, fee, description, dateCreated</span>
+        );
+}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

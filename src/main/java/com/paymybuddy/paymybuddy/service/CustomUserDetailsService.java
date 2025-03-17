@@ -14,6 +14,17 @@ import com.paymybuddy.paymybuddy.repository.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+     * Loads the user details by email for authentication.
+     * 
+     * This method is called by Spring Security during the authentication process. It retrieves
+     * the user from the repository using the provided email. If the user is found, a `UserDetails`
+     * object is returned. If the user is not found, a `UsernameNotFoundException` is thrown.
+     *
+     * @param email The email of the user trying to log in.
+     * @return A `UserDetails` object containing the user's email, password, and authorities.
+     * @throws UsernameNotFoundException If the user is not found in the repository.
+     */
 @Service
 @Primary
 @Slf4j
