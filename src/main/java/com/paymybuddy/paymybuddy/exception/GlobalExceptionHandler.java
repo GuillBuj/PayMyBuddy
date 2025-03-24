@@ -12,7 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler {
         
     @ExceptionHandler(UsernameAlreadyTakenException.class)
-    public String handleUsernameAlreadyTakenException(UsernameAlreadyTakenException e, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+    public String handleUsernameAlreadyTakenException(UsernameAlreadyTakenException e,
+                                                RedirectAttributes redirectAttributes, 
+                                                HttpServletRequest request) {
 
         redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 

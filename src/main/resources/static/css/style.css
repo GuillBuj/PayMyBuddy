@@ -101,6 +101,27 @@ input {
     );
 }
 
+.buttonSubmit:focus,
+.buttonSubmit:focus-visible {
+    background-color: #06c;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.5);
+}
+
+.buttonCancel:focus,
+.buttonCancel:focus-visible {
+    background-color: rgb(235, 65, 65);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(235, 65, 65, 0.5);
+}
+
+.buttonSubmitOrange:focus,      
+.buttonSubmitOrange:focus-visible {
+    background-color: rgb(255, 170, 0);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 170, 0, 0.5);
+}
+
 a.btn{
     text-align: center;
     color: white;
@@ -180,7 +201,6 @@ h2{
 div.transactions {
     height: 60vh;
     border: 1px solid lightgrey;
-    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); */
 }
 
 table.transactions {
@@ -215,7 +235,6 @@ input.buddyEmail{
     justify-content: center;
     gap: 10px;
     padding: 10px 5px;
-    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
 }
 
 div.balance{
