@@ -196,12 +196,18 @@ public class UserController {
      * @return Redirects to the transfer page after processing the transfer.
      */
     @PostMapping("/transfer")
-    public String handleTransfer(@RequestParam("buddy") String buddyEmail,
+    public String handleTransfer(@RequestParam(value="buddy", required = false) String buddyEmail,
                                 @RequestParam("amount") BigDecimal amount,
                                 @RequestParam("description") String description,
                                 Model model,
                                 RedirectAttributes redirectAttributes,
                                 @AuthenticationPrincipal UserDetails userDetails) {
+        
+        
+        if(buddyEmail == null || buddyEmail.trim().isEmpty()){
+            redirectAttributes.addFlashAttribute("errorMessage", "Veuillez sélectionner une relation");
+            return "redirect:/user/transfer";
+        }
         
         String email = userDetails.getUsername();
         TransactionRequestDTO transaction = new TransactionRequestDTO(email, buddyEmail, amount, description);

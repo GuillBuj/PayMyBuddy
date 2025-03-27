@@ -15,22 +15,22 @@
                 <p th:text="${errorMessage}"></p>
             </div>
             <div class="balance">Disponible: <span th:text="${balance}"></span> €</div>
-            <form class="formHorizontal" th:action="@{transfer}" method="post">
+            <form class="formHorizontal" th:action="@{transfer}" method="post" th:if="${not #lists.isEmpty(buddies.buddies)}">
                 <select id="buddySelect" name="buddy">
-                    <option value="">-- Sélectionner une relation --</option>
+                    <option value=" "  disabled selected>-- Sélectionner une relation --</option>
                     <option th:each="buddy : ${buddies.buddies}" 
                             th:value="${buddy.email}" 
                             th:text="${buddy.username}">
                     </option>
                 </select>
                 <input type="text" name="description" id="description" placeholder="Description">
-                <input type="number" name="amount" id="amount" step="0.01" placeholder="Montant">
+                <input type="number" name="amount" id="amount" step="0.01" placeholder="Montant" value="0" required>
                 <button class="buttonSubmit" type="submit">Payer</button>
             </form>
             <div class="transactions">
                 <h2>Mes transactions</h2>
                 <table class="transactions">
-                    <thead>
+                    <thead>             
                         <tr>
                            <th>Emetteur</th>
                            <th>Destinataire</th>
